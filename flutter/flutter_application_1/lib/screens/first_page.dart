@@ -6,16 +6,36 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Primera pantalla'),
-      ),
+      body: Container(
+        color: const Color(0xFFFAFDF4),
 
-      body: const Center(
-        child: Text(
-          'Primera pantalla',
-          style: TextStyle(
-            fontSize: 24,
-          ),
+        child: const Column(
+          children: [
+            SizedBox(height: 30),
+
+            Center(
+              child: Text(
+                '¿A qué contenedor tirarías...?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF298133),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 15), // Separación entre ambos
+
+            Text(
+              'Nivel 1',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF298133),
+              ),
+            ),
+          ],
         ),
       ),
     );
