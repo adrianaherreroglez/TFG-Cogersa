@@ -29,24 +29,27 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
 
+            // Empuja el botón hacia abajo
             const Spacer(),
 
-            ElevatedButton(
-              onPressed: () {
-                context.go('/first');
-              },
+            // Centra el botón horizontalmente
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  context.go('/first');
+                },
 
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    const Color.fromARGB(255, 18, 66, 25),
-                foregroundColor: Colors.white,
-                fixedSize: const Size(120, 45),
-              ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF644633),
+                  foregroundColor: Colors.white,
+                  fixedSize: const Size(120, 45),
+                ),
 
-              child: const Text(
-                "Iniciar",
-                style: TextStyle(
-                  fontSize: 16,
+                child: const Text(
+                  "Iniciar",
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
