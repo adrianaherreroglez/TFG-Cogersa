@@ -17,43 +17,67 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      body: Container(
+        // Color de fondo de toda la pantalla
+        color: const Color(0xFFfafdf4), 
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
 
-        child: Column(
-          children: [
+          child: Column(
+            children: [
 
-            // Empuja el botón hacia abajo
-            const Spacer(),
+              // Empuja el contenido hacia el centro
+              const Spacer(),
 
-            // Centra el botón horizontalmente
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  context.go('/first');
-                },
-
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF644633),
-                  foregroundColor: Colors.white,
-                  fixedSize: const Size(120, 45),
+              // TÍTULO
+              const Text(
+                'EcoKids',
+                style: TextStyle(
+                  fontSize: 122,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF298133),
                 ),
+              ),
 
-                child: const Text(
-                  "Iniciar",
-                  style: TextStyle(
-                    fontSize: 16,
+              const SizedBox(height: 10),
+
+              // SUBTÍTULO
+              const Text(
+                'Aprendiendo a reciclar',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  color: Color(0xFF298133),
+                ),
+              ),
+
+              // Empuja el botón hacia abajo
+              const Spacer(),
+
+              // BOTÓN
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.go('/first');
+                  },
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF644633),
+                    foregroundColor: Colors.white,
+                    fixedSize: const Size(120, 45),
+                  ),
+
+                  child: const Text(
+                    'Iniciar',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -10,7 +10,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const MyHomePage(
-        title: 'Home Page',
+        title: 'EcoKids',
       ),
     ),
 
