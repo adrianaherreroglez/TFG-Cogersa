@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-    required this.title,
-  });
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -19,24 +17,23 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Container(
         // Color de fondo de toda la pantalla
-        color: const Color(0xFFfafdf4), 
+        color: const Color(0xFFfafdf4),
 
         child: Padding(
           padding: const EdgeInsets.all(20),
 
           child: Column(
             children: [
-
               // Empuja el contenido hacia el centro
               const Spacer(),
 
               // TÍTULO
-              const Text(
+              Text( //no poner const con GoogleFonts
                 'EcoKids',
-                style: TextStyle(
+                style: GoogleFonts.quicksand(
                   fontSize: 122,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF298133),
+                  color: const Color(0xFF298133),
                 ),
               ),
 
@@ -46,10 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const Text(
                 'Aprendiendo a reciclar',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  color: Color(0xFF298133),
-                ),
+                style: TextStyle(fontSize: 28, color: Color(0xFF298133)),
               ),
 
               // Empuja el botón hacia abajo
@@ -68,12 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     fixedSize: const Size(120, 45),
                   ),
 
-                  child: const Text(
-                    'Iniciar',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
+                  child: const Text('Iniciar', style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],
@@ -83,4 +72,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
