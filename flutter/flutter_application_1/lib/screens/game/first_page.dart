@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
@@ -13,24 +14,25 @@ class FirstPage extends StatelessWidget {
           children: [
             const SizedBox(height: 30),
 
-            // TÍTULO
-            const Text(
+            // Título del juego
+            Text(
               '¿A qué contenedor tirarías...?',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.quicksand(
                 fontSize: 34,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF298133),
               ),
             ),
-
+            
+            // Crea separación
             const SizedBox(height: 15),
 
-            // SUBTÍTULO
-            const Text(
+            // Subtítulo (Nivel X)
+            Text(
               'Nivel 1',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.quicksand(
                 fontSize: 20,
                 color: Color(0xFF298133),
               ),
@@ -38,16 +40,16 @@ class FirstPage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // BOTELLA
+            // Botella (ejemplo)
             Center(
               child: Image.asset(
-                'assets/icons/objetos/botella-de-plastico.png',
+                'assets/icons/objetos/amarillo/botella-de-plastico.png',
                 width: 90,
                 height: 90,
               ),
             ),
 
-            // Empuja los iconos hacia abajo
+            // Empujar los iconos de los contenedores hacia abajo
             const Spacer(),
 
             // TRES ICONOS
