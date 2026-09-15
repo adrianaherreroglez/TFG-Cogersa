@@ -40,10 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 10),
 
               // SUBTÍTULO
-              const Text(
+              Text(
                 'Aprendiendo a reciclar',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 28, color: Color(0xFF298133)),
+                style: GoogleFonts.quicksand(fontSize: 28, color: Color(0xFF298133)),
               ),
 
               // Empuja el botón hacia abajo

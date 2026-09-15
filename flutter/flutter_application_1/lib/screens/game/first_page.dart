@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,8 +11,79 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  // Indica si la botella sigue visible
-  bool botellaVisible = true;
+
+  // Lista de objetos
+  final List<Map<String, String>> objetos = [
+    {
+      'nombre': 'botella',
+      'imagen':
+          'assets/icons/objetos/amarillo/botella-de-plastico.png',
+      'contenedor': 'amarillo',
+    },
+    {
+      'nombre': 'avion',
+      'imagen':
+          'assets/icons/objetos/azul/avion-de-papel.png',
+      'contenedor': 'azul',
+    },
+    {
+      'nombre': 'botella de vidrio',
+      'imagen':
+          'assets/icons/objetos/verde/botella-de-vidrio.png',
+      'contenedor': 'verde',
+    },
+  ];
+
+  // Lista de objetos mezclada aleatoriamente
+  late List<Map<String, String>> objetosMezclados;
+
+  // Índice del objeto que estamos mostrando
+  int indiceObjetoActual = 0;
+
+  // Indica si el objeto actual está visible
+  bool objetoVisible = true;
+
+
+  // Inicializar juego
+  @override
+  void initState() {
+    super.initState();
+    objetosMezclados = List.from(objetos);
+    objetosMezclados.shuffle(Random());
+  }
+
+  Map<String, String> get objetoActual {
+    return objetosMezclados[indiceObjetoActual];
+  }
+
+  void comprobarRespuesta(String contenedor) {
+    // Contenedor correcto del objeto actual
+    final contenedorCorrecto = objetoActual['contenedor'];
+
+    if (contenedor == contenedorCorrecto) {
+      // Respuesta correcta
+      setState(() {
+        indiceObjetoActual++;
+
+        // Comprobamos si todavía quedan objetos
+        if (indiceObjetoActual < objetosMezclados.length) {
+          objetoVisible = true;
+        } else {
+          // Ya se han completado todos los objetos
+          objetoVisible = false;
+        }
+      });
+    } else {
+      // Respuesta incorrecta
+      // No cambiamos el índice.
+      // Por tanto, el mismo objeto sigue apareciendo.
+      setState(() {
+        objetoVisible = true;
+      });
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,43 +108,45 @@ class _FirstPageState extends State<FirstPage> {
 
             const SizedBox(height: 15),
 
-            // Subtítulo
+            // Subtítulo (Nivel X)
             Text(
               'Nivel 1',
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
                 fontSize: 20,
-                color: const Color(0xFF298133),
+                color: Color(0xFF298133),
               ),
             ),
 
+
             const SizedBox(height: 40),
 
-            // Botella arrastable
-            if (botellaVisible)
+            // Objeto arrastable
+            if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
               Draggable<String>(
-                data: 'botella',
+                // Nombre del objeto
+                data: objetoActual['nombre']!,
 
-                // Imagen que se muestra mientras arrastramos
+                // Imagen arrastable
                 feedback: Image.asset(
-                  'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                  objetoActual['imagen']!,
                   width: 90,
                   height: 90,
                 ),
 
-                // Qué queda en la posición original mientras se arrastra
+                // Imagen que queda en la posición original
                 childWhenDragging: Opacity(
                   opacity: 0.0,
                   child: Image.asset(
-                    'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                    objetoActual['imagen']!,
                     width: 90,
                     height: 90,
                   ),
                 ),
 
-                // Botella normalmente
+                //Imagen normal
                 child: Image.asset(
-                  'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                  objetoActual['imagen']!,
                   width: 90,
                   height: 90,
                 ),
@@ -79,18 +154,15 @@ class _FirstPageState extends State<FirstPage> {
 
             const Spacer(),
 
-            // Tres contenedores a los que se puede arrastrar
+            // Contenedores
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
                 // Contenedor amarillo
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    if (details.data == 'botella') {
-                      setState(() {
-                        botellaVisible = false;
-                      });
-                    }
+                    comprobarRespuesta('amarillo');
                   },
 
                   builder: (
@@ -108,16 +180,10 @@ class _FirstPageState extends State<FirstPage> {
 
                 const SizedBox(width: 20),
 
-                // Contendor azul
+                // Contenedor azul
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    if (details.data == 'botella') {
-                      // Si falla, la botella vuelve automáticamente
-                      // porque no hemos cambiado botellaVisible.
-                      setState(() {
-                        botellaVisible = true;
-                      });
-                    }
+                    comprobarRespuesta('azul');
                   },
 
                   builder: (
@@ -135,15 +201,10 @@ class _FirstPageState extends State<FirstPage> {
 
                 const SizedBox(width: 20),
 
-                // Contendor verde
+                // Contenedor verde
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    if (details.data == 'botella') {
-                      // Si falla, la botella vuelve automáticamente
-                      setState(() {
-                        botellaVisible = true;
-                      });
-                    }
+                    comprobarRespuesta('verde');
                   },
 
                   builder: (
