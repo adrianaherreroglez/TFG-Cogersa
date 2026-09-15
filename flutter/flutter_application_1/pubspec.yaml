@@ -63,7 +63,9 @@ flutter:
 
   assets:
     - assets/icons/contenedores/
-    - assets/icons/objetos/
+    - assets/icons/objetos/amarillo/
+    - assets/icons/objetos/marron/
+    - assets/icons/objetos/gris/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

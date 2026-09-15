@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ThirdPage extends StatelessWidget {
-  const ThirdPage({super.key});
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class ThirdPage extends StatelessWidget {
 
             // Subtítulo (Nivel X)
             Text(
-              'Nivel 3',
+              'Nivel 2',
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
                 fontSize: 20,
@@ -43,7 +43,7 @@ class ThirdPage extends StatelessWidget {
             // Plátano (ejemplo)
             Center(
               child: Image.asset(
-                'assets/icons/objetos/gris/juguete-de-peluche.png',
+                'assets/icons/objetos/marron/platano.png',
                 width: 90,
                 height: 90,
               ),
@@ -85,15 +85,6 @@ class ThirdPage extends StatelessWidget {
                   width: 180,
                   height: 180,
                 ),
-
-                const SizedBox(width: 20),
-
-                Image.asset(
-                  'assets/icons/contenedores/basura-gris.png',
-                  width: 180,
-                  height: 180,
-                ),
-
               ],
             ),
 
