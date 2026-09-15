@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FirstPage extends StatelessWidget {
+class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+  // Indica si la botella sigue visible
+  bool botellaVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -21,66 +29,138 @@ class FirstPage extends StatelessWidget {
               style: GoogleFonts.quicksand(
                 fontSize: 34,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF298133),
+                color: const Color(0xFF298133),
               ),
             ),
-            
-            // Crea separación
+
             const SizedBox(height: 15),
 
-            // Subtítulo (Nivel X)
+            // Subtítulo
             Text(
               'Nivel 1',
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
                 fontSize: 20,
-                color: Color(0xFF298133),
+                color: const Color(0xFF298133),
               ),
             ),
 
             const SizedBox(height: 40),
 
-            // Botella (ejemplo)
-            Center(
-              child: Image.asset(
-                'assets/icons/objetos/amarillo/botella-de-plastico.png',
-                width: 90,
-                height: 90,
-              ),
-            ),
+            // Botella arrastable
+            if (botellaVisible)
+              Draggable<String>(
+                data: 'botella',
 
-            // Empujar los iconos de los contenedores hacia abajo
+                // Imagen que se muestra mientras arrastramos
+                feedback: Image.asset(
+                  'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                  width: 90,
+                  height: 90,
+                ),
+
+                // Qué queda en la posición original mientras se arrastra
+                childWhenDragging: Opacity(
+                  opacity: 0.0,
+                  child: Image.asset(
+                    'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                    width: 90,
+                    height: 90,
+                  ),
+                ),
+
+                // Botella normalmente
+                child: Image.asset(
+                  'assets/icons/objetos/amarillo/botella-de-plastico.png',
+                  width: 90,
+                  height: 90,
+                ),
+              ),
+
             const Spacer(),
 
-            // TRES ICONOS
+            // Tres contenedores a los que se puede arrastrar
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/contenedores/basura-amarilla.png',
-                  width: 180,
-                  height: 180,
+                // Contenedor amarillo
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    if (details.data == 'botella') {
+                      setState(() {
+                        botellaVisible = false;
+                      });
+                    }
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-amarilla.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
                 const SizedBox(width: 20),
 
-                Image.asset(
-                  'assets/icons/contenedores/basura-azul.png',
-                  width: 180,
-                  height: 180,
+                // Contendor azul
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    if (details.data == 'botella') {
+                      // Si falla, la botella vuelve automáticamente
+                      // porque no hemos cambiado botellaVisible.
+                      setState(() {
+                        botellaVisible = true;
+                      });
+                    }
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-azul.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
                 const SizedBox(width: 20),
 
-                Image.asset(
-                  'assets/icons/contenedores/basura-verde.png',
-                  width: 180,
-                  height: 180,
+                // Contendor verde
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    if (details.data == 'botella') {
+                      // Si falla, la botella vuelve automáticamente
+                      setState(() {
+                        botellaVisible = true;
+                      });
+                    }
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-verde.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
               ],
             ),
 
-            // Separación del borde inferior
             const SizedBox(height: 30),
           ],
         ),
