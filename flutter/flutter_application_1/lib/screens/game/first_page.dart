@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -12,7 +13,7 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
 
-  // Lista de objetos
+  // Lista de objetos del Primer Nivel
   final List<Map<String, String>> objetos = [
     {
       'nombre': 'botella',
@@ -71,6 +72,9 @@ class _FirstPageState extends State<FirstPage> {
         } else {
           // Ya se han completado todos los objetos
           objetoVisible = false;
+          // Si se acaban pasamos al siguiente nivel
+          context.go('/second');
+
         }
       });
     } else {
@@ -83,6 +87,7 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
 
+  
 
 
   @override
