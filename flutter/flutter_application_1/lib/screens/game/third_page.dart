@@ -1,8 +1,118 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 
-class ThirdPage extends StatelessWidget {
+class ThirdPage extends StatefulWidget {
   const ThirdPage({super.key});
+
+  @override
+  State<ThirdPage> createState() => _ThirdPageState();
+}
+
+class _ThirdPageState extends State<ThirdPage> {
+
+  // Lista de objetos del Tercer Nivel
+  final List<Map<String, String>> objetos = [
+    {
+      'nombre': 'juguete',
+      'imagen':
+          'assets/icons/objetos/gris/juguete-de-peluche.png',
+      'contenedor': 'gris',
+    },
+    {
+      'nombre': 'biberon',
+      'imagen':
+          'assets/icons/objetos/gris/biberon.png',
+      'contenedor': 'gris',
+    },
+    {
+      'nombre': 'tirita',
+      'imagen':
+          'assets/icons/objetos/gris/tirita.png',
+      'contenedor': 'gris',
+    },
+    {
+      'nombre': 'periodico',
+      'imagen':
+          'assets/icons/objetos/azul/periodico.png',
+      'contenedor': 'azul',
+    },
+    {
+      'nombre': 'leche',
+      'imagen':
+          'assets/icons/objetos/amarillo/leche.png',
+      'contenedor': 'amarillo',
+    },
+    {
+      'nombre': 'perfume',
+      'imagen':
+          'assets/icons/objetos/verde/perfume.png',
+      'contenedor': 'verde',
+    },
+    {
+      'nombre': 'manzana',
+      'imagen':
+          'assets/icons/objetos/marron/manzana.png',
+      'contenedor': 'marron',
+    },
+  ];
+
+  // Lista de objetos mezclada aleatoriamente
+  late List<Map<String, String>> objetosMezclados;
+
+  // Índice del objeto que estamos mostrando
+  int indiceObjetoActual = 0;
+
+  // Indica si el objeto actual está visible
+  bool objetoVisible = true;
+
+
+  // Inicializar juego
+  @override
+  void initState() {
+    super.initState();
+    objetosMezclados = List.from(objetos);
+    objetosMezclados.shuffle(Random());
+  }
+
+  Map<String, String> get objetoActual {
+    return objetosMezclados[indiceObjetoActual];
+  }
+
+  void comprobarRespuesta(String contenedor) {
+    // Contenedor correcto del objeto actual
+    final contenedorCorrecto = objetoActual['contenedor'];
+
+    if (contenedor == contenedorCorrecto) {
+      // Respuesta correcta
+      setState(() {
+        indiceObjetoActual++;
+
+        // Comprobamos si todavía quedan objetos
+        if (indiceObjetoActual < objetosMezclados.length) {
+          objetoVisible = true;
+        } else {
+          // Ya se han completado todos los objetos
+          objetoVisible = false;
+          // Si se acaban pasamos al siguiente nivel
+          context.go('/');
+
+        }
+      });
+    } else {
+      // Respuesta incorrecta
+      // No cambiamos el índice.
+      // Por tanto, el mismo objeto sigue apareciendo.
+      setState(() {
+        objetoVisible = true;
+      });
+    }
+  }
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +131,10 @@ class ThirdPage extends StatelessWidget {
               style: GoogleFonts.quicksand(
                 fontSize: 34,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF298133),
+                color: const Color(0xFF298133),
               ),
             ),
-            
-            // Crea separación
+
             const SizedBox(height: 15),
 
             // Subtítulo (Nivel X)
@@ -38,66 +147,153 @@ class ThirdPage extends StatelessWidget {
               ),
             ),
 
+
             const SizedBox(height: 40),
 
-            // Plátano (ejemplo)
-            Center(
-              child: Image.asset(
-                'assets/icons/objetos/gris/juguete-de-peluche.png',
-                width: 90,
-                height: 90,
-              ),
-            ),
+            // Objeto arrastable
+            if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
+              Draggable<String>(
+                // Nombre del objeto
+                data: objetoActual['nombre']!,
 
-            // Empujar los iconos de los contenedores hacia abajo
+                // Imagen arrastable
+                feedback: Image.asset(
+                  objetoActual['imagen']!,
+                  width: 90,
+                  height: 90,
+                ),
+
+                // Imagen que queda en la posición original
+                childWhenDragging: Opacity(
+                  opacity: 0.0,
+                  child: Image.asset(
+                    objetoActual['imagen']!,
+                    width: 90,
+                    height: 90,
+                  ),
+                ),
+
+                //Imagen normal
+                child: Image.asset(
+                  objetoActual['imagen']!,
+                  width: 90,
+                  height: 90,
+                ),
+              ),
+
             const Spacer(),
 
-            // TRES ICONOS
+            // Contenedores
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/contenedores/basura-amarilla.png',
-                  width: 180,
-                  height: 180,
+
+                // Contenedor amarillo
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    comprobarRespuesta('amarillo');
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-amarilla.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
                 const SizedBox(width: 20),
 
-                Image.asset(
-                  'assets/icons/contenedores/basura-azul.png',
-                  width: 180,
-                  height: 180,
+                // Contenedor azul
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    comprobarRespuesta('azul');
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-azul.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
                 const SizedBox(width: 20),
 
-                Image.asset(
-                  'assets/icons/contenedores/basura-verde.png',
-                  width: 180,
-                  height: 180,
+                // Contenedor verde
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    comprobarRespuesta('verde');
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-verde.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
+                ),
+
+                const SizedBox(width: 20),
+                
+                // Contenedor marron
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    comprobarRespuesta('marron');
+                  },
+
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-marron.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
                 const SizedBox(width: 20),
 
-                Image.asset(
-                  'assets/icons/contenedores/basura-marron.png',
-                  width: 180,
-                  height: 180,
-                ),
+                // Contenedor gris
+                DragTarget<String>(
+                  onAcceptWithDetails: (details) {
+                    comprobarRespuesta('gris');
+                  },
 
-                const SizedBox(width: 20),
-
-                Image.asset(
-                  'assets/icons/contenedores/basura-gris.png',
-                  width: 180,
-                  height: 180,
+                  builder: (
+                    BuildContext context,
+                    List<String?> candidateData,
+                    List<dynamic> rejectedData,
+                  ) {
+                    return Image.asset(
+                      'assets/icons/contenedores/basura-gris.png',
+                      width: 180,
+                      height: 180,
+                    );
+                  },
                 ),
 
               ],
             ),
 
-            // Separación del borde inferior
             const SizedBox(height: 30),
           ],
         ),
