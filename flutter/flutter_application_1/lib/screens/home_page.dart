@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
               // Empuja el botón hacia abajo
               const Spacer(),
 
-              // BOTÓN
+              // Botón
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -63,6 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
 
                   child: const Text('Iniciar', style: TextStyle(fontSize: 16)),
+
+                  
                 ),
               ),
             ],

@@ -5,44 +5,40 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class SecondPage extends StatefulWidget {
-  const SecondPage({super.key});
+  final int puntosPrevios;
+
+  const SecondPage({super.key, required this.puntosPrevios});
 
   @override
   State<SecondPage> createState() => _SecondPageState();
 }
 
 class _SecondPageState extends State<SecondPage> {
-
   // Lista de objetos del Segundo Nivel
   final List<Map<String, String>> objetos = [
     {
       'nombre': 'platano',
-      'imagen':
-          'assets/icons/objetos/marron/platano.png',
+      'imagen': 'assets/icons/objetos/marron/platano.png',
       'contenedor': 'marron',
     },
     {
       'nombre': 'espina',
-      'imagen':
-          'assets/icons/objetos/marron/espina-de-pescado.png',
+      'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
       'contenedor': 'marron',
     },
     {
       'nombre': 'tarro',
-      'imagen':
-          'assets/icons/objetos/verde/tarro-de-mermelada.png',
+      'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
       'contenedor': 'verde',
     },
     {
       'nombre': 'caja',
-      'imagen':
-          'assets/icons/objetos/azul/caja.png',
+      'imagen': 'assets/icons/objetos/azul/caja.png',
       'contenedor': 'azul',
     },
     {
       'nombre': 'lata',
-      'imagen':
-          'assets/icons/objetos/amarillo/lata-de-refresco.png',
+      'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
       'contenedor': 'amarillo',
     },
   ];
@@ -56,11 +52,16 @@ class _SecondPageState extends State<SecondPage> {
   // Indica si el objeto actual está visible
   bool objetoVisible = true;
 
+  int puntos = 0;
+
+  // INTENTOS DEL OBJETO ACTUAL
+  int intentos = 0;
 
   // Inicializar juego
   @override
   void initState() {
     super.initState();
+    puntos = widget.puntosPrevios;
     objetosMezclados = List.from(objetos);
     objetosMezclados.shuffle(Random());
   }
@@ -70,13 +71,37 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
+    // Cada vez que se intenta colocar el objeto,
+    // aumentamos el número de intentos.
+    intentos++;
+
     // Contenedor correcto del objeto actual
     final contenedorCorrecto = objetoActual['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
+      // Puntos que gana según el intento
+      int puntosGanados = 0;
+
+      if (intentos == 1) {
+        puntosGanados = 40;
+      } else if (intentos == 2) {
+        puntosGanados = 30;
+      } else if (intentos == 3) {
+        puntosGanados = 20;
+      }else if (intentos == 4) {
+        puntosGanados = 10;
+      }
+
       // Respuesta correcta
       setState(() {
+        // Los puntos SE ACUMULAN.
+        puntos += puntosGanados;
+
         indiceObjetoActual++;
+
+        // El contador de intentos empieza de nuevo
+        // para el nuevo objeto.
+        intentos = 0;
 
         // Comprobamos si todavía quedan objetos
         if (indiceObjetoActual < objetosMezclados.length) {
@@ -86,7 +111,6 @@ class _SecondPageState extends State<SecondPage> {
           objetoVisible = false;
           // Si se acaban pasamos al siguiente nivel
           context.go('/third');
-
         }
       });
     } else {
@@ -98,9 +122,6 @@ class _SecondPageState extends State<SecondPage> {
       });
     }
   }
-
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +156,17 @@ class _SecondPageState extends State<SecondPage> {
               ),
             ),
 
+            const SizedBox(height: 10),
+
+            // PUNTOS
+            Text(
+              'Puntos: $puntos',
+              style: GoogleFonts.quicksand(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: const Color.fromARGB(255, 244, 64, 9),
+              ),
+            ),
 
             const SizedBox(height: 40),
 
@@ -175,24 +207,24 @@ class _SecondPageState extends State<SecondPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 // Contenedor amarillo
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('amarillo');
                   },
 
-                  builder: (
-                    BuildContext context,
-                    List<String?> candidateData,
-                    List<dynamic> rejectedData,
-                  ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-amarilla.png',
-                      width: 180,
-                      height: 180,
-                    );
-                  },
+                  builder:
+                      (
+                        BuildContext context,
+                        List<String?> candidateData,
+                        List<dynamic> rejectedData,
+                      ) {
+                        return Image.asset(
+                          'assets/icons/contenedores/basura-amarilla.png',
+                          width: 180,
+                          height: 180,
+                        );
+                      },
                 ),
 
                 const SizedBox(width: 20),
@@ -203,17 +235,18 @@ class _SecondPageState extends State<SecondPage> {
                     comprobarRespuesta('azul');
                   },
 
-                  builder: (
-                    BuildContext context,
-                    List<String?> candidateData,
-                    List<dynamic> rejectedData,
-                  ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-azul.png',
-                      width: 180,
-                      height: 180,
-                    );
-                  },
+                  builder:
+                      (
+                        BuildContext context,
+                        List<String?> candidateData,
+                        List<dynamic> rejectedData,
+                      ) {
+                        return Image.asset(
+                          'assets/icons/contenedores/basura-azul.png',
+                          width: 180,
+                          height: 180,
+                        );
+                      },
                 ),
 
                 const SizedBox(width: 20),
@@ -224,38 +257,40 @@ class _SecondPageState extends State<SecondPage> {
                     comprobarRespuesta('verde');
                   },
 
-                  builder: (
-                    BuildContext context,
-                    List<String?> candidateData,
-                    List<dynamic> rejectedData,
-                  ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-verde.png',
-                      width: 180,
-                      height: 180,
-                    );
-                  },
+                  builder:
+                      (
+                        BuildContext context,
+                        List<String?> candidateData,
+                        List<dynamic> rejectedData,
+                      ) {
+                        return Image.asset(
+                          'assets/icons/contenedores/basura-verde.png',
+                          width: 180,
+                          height: 180,
+                        );
+                      },
                 ),
 
                 const SizedBox(width: 20),
-                
+
                 // Contenedor marron
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('marron');
                   },
 
-                  builder: (
-                    BuildContext context,
-                    List<String?> candidateData,
-                    List<dynamic> rejectedData,
-                  ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-marron.png',
-                      width: 180,
-                      height: 180,
-                    );
-                  },
+                  builder:
+                      (
+                        BuildContext context,
+                        List<String?> candidateData,
+                        List<dynamic> rejectedData,
+                      ) {
+                        return Image.asset(
+                          'assets/icons/contenedores/basura-marron.png',
+                          width: 180,
+                          height: 180,
+                        );
+                      },
                 ),
               ],
             ),

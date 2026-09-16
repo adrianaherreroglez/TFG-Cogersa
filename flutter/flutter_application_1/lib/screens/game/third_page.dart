@@ -97,7 +97,7 @@ class _ThirdPageState extends State<ThirdPage> {
           // Ya se han completado todos los objetos
           objetoVisible = false;
           // Si se acaban pasamos al siguiente nivel
-          context.go('/');
+          context.go('/mygame');
 
         }
       });
