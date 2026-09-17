@@ -135,10 +135,10 @@ class _SecondPageState extends State<SecondPage> {
 
             // Título del juego
             Text(
-              '¿A qué contenedor tirarías...?',
+              '¿A QUÉ CONTENEDOR TIRARÍAS...?',
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
-                fontSize: 34,
+                fontSize: 54,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF298133),
               ),
@@ -152,6 +152,7 @@ class _SecondPageState extends State<SecondPage> {
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
                 fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: Color(0xFF298133),
               ),
             ),

@@ -143,10 +143,10 @@ class _FirstPageState extends State<FirstPage> {
             const SizedBox(height: 30),
 
             Text(
-              '¿A qué contenedor tirarías...?',
+              '¿A QUÉ CONTENEDOR TIRARÍAS...?',
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
-                fontSize: 34,
+                fontSize: 54,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF298133),
               ),
@@ -159,6 +159,7 @@ class _FirstPageState extends State<FirstPage> {
               textAlign: TextAlign.center,
               style: GoogleFonts.quicksand(
                 fontSize: 20,
+                fontWeight: FontWeight.bold,
                 color: const Color(0xFF298133),
               ),
             ),
