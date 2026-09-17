@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    context.go('/first');
+                    context.go('/listgame');
                   },
 
                   style: ElevatedButton.styleFrom(

@@ -157,6 +157,66 @@ class _ThirdPageState extends State<ThirdPage> {
 
         child: Column(
           children: [
+            // =========================
+            // BARRA DE NAVEGACIÓN
+            // =========================
+            Container(
+              width: double.infinity,
+              height: 80,
+              color: const Color(0xFF298133),
+
+              child: Row(
+                children: [
+                  const SizedBox(width: 40),
+
+                  Text(
+                    'EcoKids',
+                    style: GoogleFonts.quicksand(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  TextButton(
+                    onPressed: () {
+                      context.go('/');
+                    },
+                    child: Text(
+                      'Inicio',
+                      style: GoogleFonts.quicksand(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 30),
+
+                  TextButton(
+                    onPressed: () {
+                      context.go('/listgame');
+                    },
+                    child: Text(
+                      'Juegos',
+                      style: GoogleFonts.quicksand(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 30),
+
+
+                  const SizedBox(width: 40),
+                ],
+              ),
+            ),
             const SizedBox(height: 30),
 
             // Título del juego
@@ -196,7 +256,7 @@ class _ThirdPageState extends State<ThirdPage> {
             ),
 
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 10),
 
             // Objeto arrastable
             if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
@@ -342,7 +402,6 @@ class _ThirdPageState extends State<ThirdPage> {
               ],
             ),
 
-            const SizedBox(height: 30),
           ],
         ),
       ),

@@ -7,6 +7,8 @@ import 'screens/game/first_page.dart';
 import 'screens/game/second_page.dart';
 import 'screens/game/third_page.dart';
 import 'screens/results/mygame.dart';
+import 'screens/game/list_game.dart';
+
 
 final GoRouter router = GoRouter(
   routes: [
@@ -14,6 +16,8 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (context, state) => const MyHomePage(title: 'EcoKids'),
     ),
+
+    GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 
     GoRoute(path: '/first', builder: (context, state) => const FirstPage()),
 
