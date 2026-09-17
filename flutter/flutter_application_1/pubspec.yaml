@@ -69,6 +69,7 @@ flutter:
     - assets/icons/objetos/azul/
     - assets/icons/objetos/verde/
     - assets/icons/app/
+    - assets/icons/puntolimpio/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
