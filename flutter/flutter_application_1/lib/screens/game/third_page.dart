@@ -5,7 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class ThirdPage extends StatefulWidget {
-  const ThirdPage({super.key});
+    final int puntosPrevios;
+
+    const ThirdPage({super.key, required this.puntosPrevios});
+
 
   @override
   State<ThirdPage> createState() => _ThirdPageState();
@@ -68,11 +71,17 @@ class _ThirdPageState extends State<ThirdPage> {
   // Indica si el objeto actual está visible
   bool objetoVisible = true;
 
+  int puntos = 0;
+
+  // INTENTOS DEL OBJETO ACTUAL
+  int intentos = 0;
+
 
   // Inicializar juego
   @override
   void initState() {
     super.initState();
+    puntos = widget.puntosPrevios;
     objetosMezclados = List.from(objetos);
     objetosMezclados.shuffle(Random());
   }
@@ -82,13 +91,39 @@ class _ThirdPageState extends State<ThirdPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
+    // Cada vez que se intenta colocar el objeto,
+    // aumentamos el número de intentos.
+    intentos++;
+
     // Contenedor correcto del objeto actual
     final contenedorCorrecto = objetoActual['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
       // Respuesta correcta
+      // Puntos que gana según el intento
+      int puntosGanados = 0;
+
+      if (intentos == 1) {
+        puntosGanados = 50;
+      } else if (intentos == 2) {
+        puntosGanados = 40;
+      } else if (intentos == 3) {
+        puntosGanados = 30;
+      } else if (intentos == 4) {
+        puntosGanados = 20;
+      } else if (intentos == 5){
+        puntosGanados = 10;
+      }
+
       setState(() {
+        // Los puntos SE ACUMULAN.
+        puntos += puntosGanados;
+
         indiceObjetoActual++;
+
+        // El contador de intentos empieza de nuevo
+        // para el nuevo objeto.
+        intentos = 0;
 
         // Comprobamos si todavía quedan objetos
         if (indiceObjetoActual < objetosMezclados.length) {
@@ -97,7 +132,7 @@ class _ThirdPageState extends State<ThirdPage> {
           // Ya se han completado todos los objetos
           objetoVisible = false;
           // Si se acaban pasamos al siguiente nivel
-          context.go('/mygame');
+          context.go('/mygame', extra: puntos);
 
         }
       });
@@ -144,6 +179,18 @@ class _ThirdPageState extends State<ThirdPage> {
               style: GoogleFonts.quicksand(
                 fontSize: 20,
                 color: Color(0xFF298133),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // PUNTOS
+            Text(
+              'Puntos: $puntos',
+              style: GoogleFonts.quicksand(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: const Color.fromARGB(255, 244, 64, 9),
               ),
             ),
 

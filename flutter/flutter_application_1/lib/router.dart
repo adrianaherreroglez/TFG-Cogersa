@@ -26,8 +26,23 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/third', builder: (context, state) => const ThirdPage()),
+    GoRoute(
+      path: '/third',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
 
-    GoRoute(path: '/mygame', builder: (context, state) => const MyGame()),
+        return ThirdPage(puntosPrevios: puntos);
+      },
+    ),
+
+    GoRoute(
+      path: '/mygame',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
+
+        return MyGame(puntosPrevios: puntos);
+      },
+    ),
+
   ],
 );

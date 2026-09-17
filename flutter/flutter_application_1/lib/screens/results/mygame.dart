@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MyGame extends StatefulWidget {
-  const MyGame({super.key});
+  final int puntosPrevios;
+
+  const MyGame({super.key, required this.puntosPrevios});
 
   @override
   State<MyGame> createState() => _MyGameState();
@@ -14,42 +15,55 @@ class _MyGameState extends State<MyGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // Color de fondo de toda la pantalla
         color: const Color(0xFFfafdf4),
 
-        child: Row(
-            children: [
-              // Empuja el contenido hacia el centro
-              //const Spacer(),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
 
-              // TÍTULO
-              Text( //no poner const con GoogleFonts
-                'Clasificación',
+            // TÍTULOS
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Clasificación',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+
+                const SizedBox(width: 200),
+
+                Text(
+                  'Mi Partida',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // PUNTOS
+            Padding(
+              padding: const EdgeInsets.only(left: 500),
+              child: Text(
+                'Puntos: ${widget.puntosPrevios}',
                 style: GoogleFonts.quicksand(
-                  fontSize: 50,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF298133),
+                  color: const Color.fromARGB(255, 244, 64, 9),
                 ),
               ),
-
-              const SizedBox(width: 520),
-
-              Text( //no poner const con GoogleFonts
-                'Mi Partida',
-                style: GoogleFonts.quicksand(
-                  fontSize: 50,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF298133),
-                ),
-              ),
-
-            ],
-          ),
-
-          
-          
+            ),
+          ],
         ),
+      ),
     );
   }
 }
-

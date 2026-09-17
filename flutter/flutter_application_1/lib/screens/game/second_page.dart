@@ -110,7 +110,7 @@ class _SecondPageState extends State<SecondPage> {
           // Ya se han completado todos los objetos
           objetoVisible = false;
           // Si se acaban pasamos al siguiente nivel
-          context.go('/third');
+          context.go('/third', extra: puntos);
         }
       });
     } else {
