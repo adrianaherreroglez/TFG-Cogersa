@@ -12,25 +12,21 @@ class PuntoLimpioPage extends StatefulWidget {
 }
 
 class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
-
   // Lista de objetos del Punto Limpio
   final List<Map<String, String>> objetos = [
     {
       'nombre': 'botella',
-      'imagen':
-          'assets/icons/objetos/amarillo/botella-de-plastico.png',
+      'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
       'contenedor': 'amarillo',
     },
     {
       'nombre': 'avion',
-      'imagen':
-          'assets/icons/objetos/azul/avion-de-papel.png',
+      'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
       'contenedor': 'azul',
     },
     {
       'nombre': 'botella de vidrio',
-      'imagen':
-          'assets/icons/objetos/verde/botella-de-vidrio.png',
+      'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
       'contenedor': 'verde',
     },
   ];
@@ -44,10 +40,8 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
   // Indica si el objeto está visible
   bool objetoVisible = true;
 
-
   // PUNTOS TOTALES DE LA PARTIDA
   int puntos = 0;
-
 
   // INTENTOS DEL OBJETO ACTUAL
   int intentos = 0;
@@ -67,7 +61,6 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
 
   // COMPROBAR RESPUESTA
   void comprobarRespuesta(String contenedor) {
-
     // Cada vez que se intenta colocar el objeto,
     // aumentamos el número de intentos.
     intentos++;
@@ -77,9 +70,7 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
 
     // RESPUESTA CORRECTA
     if (contenedor == contenedorCorrecto) {
-
       setState(() {
-
         // Pasamos al siguiente objeto
         indiceObjetoActual++;
 
@@ -97,15 +88,12 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
 
       // FIN DEL NIVEL
       if (indiceObjetoActual >= objetosMezclados.length) {
-
         //print('PUNTOS FINALES: $puntos');
 
         // Pasamos al siguiente nivel
         //context.go('/second',extra: puntos);
       }
-
     } else {
-
       // RESPUESTA INCORRECTA
       setState(() {
         // El objeto continúa visible
@@ -181,7 +169,6 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
 
                   const SizedBox(width: 30),
 
-
                   const SizedBox(width: 40),
                 ],
               ),
@@ -202,16 +189,14 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
             const SizedBox(height: 10),
 
             // PUNTOS
-            
-
             const SizedBox(height: 10),
 
             // OBJETOARRASTRABLE
             Image.asset(
-                       'assets/icons/puntolimpio/telefono-inteligente.png',
-                      width: 80,
-                      height: 80,
-                    ),
+              'assets/icons/puntolimpio/telefono-inteligente.png',
+              width: 80,
+              height: 80,
+            ),
 
             const Spacer(),
 
@@ -219,56 +204,161 @@ class _PuntoLimpioPageState extends State<PuntoLimpioPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 // CONTENEDOR ILUMINACIÓN
-                Image.asset(
-                       'assets/icons/contenedores/contenedor-de-comidav2.png',
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
                     ),
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'ILUMINACIÓN',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 const SizedBox(width: 20),
 
                 // CONTENEDOR PEQUEÑOS ELECTRODOMÉSTICOS
-                Image.asset(
-                       'assets/icons/contenedores/contenedor-de-basura.png',
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
                     ),
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'ELECTRODOMÉSTICOS',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 const SizedBox(width: 20),
 
                 // CONTENEDOR INFORMÁTICA
-                Image.asset(
-                       'assets/icons/contenedores/contenedor-de-basura.png',
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
                     ),
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'INFORMÁTICA',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 // CONTENEDOR TÓNER Y CARTUCHOS
-                Image.asset(
-                       'assets/icons/contenedores/contenedor-de-basura.png',
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
                     ),
-                
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'TONER Y CARTUCHOS',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 // CONTENEDOR DVD-CD Y RADIOGRAFÍAS
-                Image.asset(
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
                       'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
                     ),
-                
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'DVD-CD Y RADIOGRAFÍAS',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 // CONTENEDOR PILAS Y BATERÍAS
-                Image.asset(
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
                       'assets/icons/contenedores/contenedor-de-basura.png',
                       width: 180,
                       height: 180,
-                    )
+                    ),
+
+                    SizedBox(
+                      width: 130, // margen respecto a la imagen
+                      child: Text(
+                        'PILAS Y BATERÍAS',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-
-            
           ],
         ),
       ),

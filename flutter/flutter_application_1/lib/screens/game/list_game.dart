@@ -79,21 +79,6 @@ class _ListGameState extends State<ListGame> {
 
                   const SizedBox(width: 30),
 
-                  // MI PARTIDA
-                  TextButton(
-                    onPressed: () {
-                      context.go('/game');
-                    },
-                    child: Text(
-                      'Mi partida',
-                      style: GoogleFonts.quicksand(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
                   const SizedBox(width: 40),
                 ],
               ),
@@ -132,16 +117,12 @@ class _ListGameState extends State<ListGame> {
 
                         const SizedBox(height: 40),
 
-                        // =================================================
                         // JUEGOS
-                        // =================================================
                         Wrap(
                           spacing: 40,
                           runSpacing: 30,
                           children: [
-                            // =================================================
                             // RECICLAJE
-                            // =================================================
                             MouseRegion(
                               cursor: SystemMouseCursors.click,
 
@@ -228,9 +209,8 @@ class _ListGameState extends State<ListGame> {
                               ),
                             ),
 
-                            // =================================================
+
                             // PUNTO LIMPIO
-                            // =================================================
                             MouseRegion(
                               cursor: SystemMouseCursors.click,
 
