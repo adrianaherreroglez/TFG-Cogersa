@@ -19,15 +19,15 @@ class _ThirdPageState extends State<ThirdPage> {
   // Lista de objetos del Tercer Nivel
   final List<Map<String, String>> objetos = [
     {
-      'nombre': 'juguete',
+      'nombre': 'toallitas',
       'imagen':
-          'assets/icons/objetos/gris/juguete-de-peluche.png',
+          'assets/icons/objetos/gris/toallitas.png',
       'contenedor': 'gris',
     },
     {
-      'nombre': 'biberon',
+      'nombre': 'ceramica',
       'imagen':
-          'assets/icons/objetos/gris/biberon.png',
+          'assets/icons/objetos/gris/ceramica.png',
       'contenedor': 'gris',
     },
     {
