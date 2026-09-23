@@ -8,7 +8,8 @@ import 'screens/game/second_page.dart';
 import 'screens/game/third_page.dart';
 import 'screens/results/mygame.dart';
 import 'screens/game/list_game.dart';
-import 'screens/punto_limpio_game/punto_limpio.dart';
+import 'screens/punto_limpio_game/punto_limpio_first_level.dart';
+import 'screens/punto_limpio_game/punto_limpio_second_level.dart';
 
 
 final GoRouter router = GoRouter(
@@ -49,7 +50,9 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/puntolimpio', builder: (context, state) => const PuntoLimpioPage()),
+    GoRoute(path: '/puntolimpio/firstlevel', builder: (context, state) => const PuntoLimpioFirstPage()),
+
+    GoRoute(path: '/puntolimpio/secondlevel', builder: (context, state) => const PuntoLimpioSecondPage()),
 
   ],
 );

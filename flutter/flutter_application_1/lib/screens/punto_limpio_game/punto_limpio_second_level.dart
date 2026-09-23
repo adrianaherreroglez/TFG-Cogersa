@@ -4,45 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-class PuntoLimpioPage extends StatefulWidget {
-  const PuntoLimpioPage({super.key});
+class PuntoLimpioSecondPage extends StatefulWidget {
+  const PuntoLimpioSecondPage({super.key});
 
   @override
-  State<PuntoLimpioPage> createState() => _FirstPageState();
+  State<PuntoLimpioSecondPage> createState() => _SecondPageState();
 }
 
-class _FirstPageState extends State<PuntoLimpioPage> {
+class _SecondPageState extends State<PuntoLimpioSecondPage> {
   // Lista de objetos del Punto Limpio
   final List<Map<String, String>> objetos = [
     {
-      'nombre': 'telefono',
-      'imagen': 'assets/icons/puntolimpio/telefono-inteligente.png',
-      'contenedor': 'informatica',
+      'nombre': 'aceite-motor',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
+      'contenedor': 'motor',
     },
     {
-      'nombre': 'microondas',
-      'imagen': 'assets/icons/puntolimpio/horno-microondas.png',
-      'contenedor': 'electrodomesticos',
+      'nombre': 'tambor',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/tambor.png',
+      'contenedor': 'juguetes',
     },
     {
-      'nombre': 'cd',
-      'imagen': 'assets/icons/puntolimpio/cd.png',
-      'contenedor': 'dvd',
+      'nombre': 'sarten',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/sarten.png',
+      'contenedor': 'metal',
     },
     {
-      'nombre': 'bombilla',
-      'imagen': 'assets/icons/puntolimpio/bombilla.png',
-      'contenedor': 'iluminacion',
+      'nombre': 'aceite-vegetal',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-vegetal.png',
+      'contenedor': 'vegetales',
     },
     {
-      'nombre': 'bateria',
-      'imagen': 'assets/icons/puntolimpio/bateria.png',
-      'contenedor': 'pilas',
+      'nombre': 'capsula-de-cafe',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/capsula-de-cafe.png',
+      'contenedor': 'capsulas',
     },
     {
-      'nombre': 'cartucho',
-      'imagen': 'assets/icons/puntolimpio/cartucho-de-tinta.png',
-      'contenedor': 'toner',
+      'nombre': 'pintura',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
+      'contenedor': 'toxico',
     },
   ];
 
@@ -265,10 +265,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // CONTENEDOR ILUMINACIÓN
+                // CONTENEDOR ACEITE DE MOTOR
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('iluminacion');
+                    comprobarRespuesta('motor');
                   },
 
                   builder:
@@ -289,7 +289,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'ILUMINACIÓN',
+                                'ACEITE DE MOTOR',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -305,10 +305,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
 
                 const SizedBox(width: 20),
 
-                // CONTENEDOR ELECTRODOMÉSTICOS
+                // CONTENEDOR JUGUETES
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('electrodomesticos');
+                    comprobarRespuesta('juguetes');
                   },
 
                   builder:
@@ -329,7 +329,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'ELECTRODOMÉSTICOS',
+                                'JUGUETES',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -345,10 +345,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
 
                 const SizedBox(width: 20),
 
-                // CONTENEDOR INFORMATICA
+                // METAL HOGAR
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('informatica');
+                    comprobarRespuesta('metal');
                   },
 
                   builder:
@@ -369,7 +369,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'INFORMÁTICA',
+                                'METAL HOGAR',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -383,10 +383,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                       },
                 ),
 
-                // CONTENEDOR TÓNER Y CARTUCHOS
+                // CONTENEDOR ACEITES VEGETALES
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('toner');
+                    comprobarRespuesta('vegetales');
                   },
 
                   builder:
@@ -407,7 +407,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'TÓNER Y CARTUCHOS',
+                                'ACEITES VEGETALES',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -421,10 +421,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                       },
                 ),
 
-                // CONTENEDOR DVD-CD Y RADIOGRAFÍAS
+                // CÁPSULAS CAFÉ Y TÉ
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('dvd');
+                    comprobarRespuesta('capsulas');
                   },
 
                   builder:
@@ -445,7 +445,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'DVD-CD Y RADIOGRAFÍAS',
+                                'CÁPSULAS CAFÉ Y TÉ',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,
@@ -459,10 +459,10 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                       },
                 ),
 
-                // CONTENEDOR PILAS Y BATERÍAS
+                // CONTENEDOR TÓXICO HOGAR
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('pilas');
+                    comprobarRespuesta('toxico');
                   },
 
                   builder:
@@ -483,7 +483,7 @@ class _FirstPageState extends State<PuntoLimpioPage> {
                             SizedBox(
                               width: 130,
                               child: Text(
-                                'PILAS Y BATERÍAS',
+                                'TÓXICO HOGAR',
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   color: Colors.white,

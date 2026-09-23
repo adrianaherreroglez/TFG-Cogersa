@@ -228,7 +228,7 @@ class _ListGameState extends State<ListGame> {
 
                               child: GestureDetector(
                                 onTap: () {
-                                  context.go('/puntolimpio');
+                                  context.go('/puntolimpio/firstlevel');
                                 },
 
                                 child: AnimatedContainer(
