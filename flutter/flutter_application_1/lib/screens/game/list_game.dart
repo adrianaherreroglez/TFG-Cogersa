@@ -242,7 +242,7 @@ class _ListGameState extends State<ListGame> {
 
                               child: GestureDetector(
                                 onTap: () {
-                                  context.go('/first');
+                                  context.go('/fillGaps/first');
                                 },
 
                                 child: AnimatedContainer(

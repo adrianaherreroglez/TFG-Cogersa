@@ -10,6 +10,8 @@ import 'screens/results/mygame.dart';
 import 'screens/game/list_game.dart';
 import 'screens/punto_limpio_game/punto_limpio_first_level.dart';
 import 'screens/punto_limpio_game/punto_limpio_second_level.dart';
+import 'screens/game/fillGaps/first_fill_gaps.dart';
+import 'screens/game/fillGaps/second_fill_gaps.dart';
 
 
 final GoRouter router = GoRouter(
@@ -53,6 +55,10 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/puntolimpio/firstlevel', builder: (context, state) => const PuntoLimpioFirstPage()),
 
     GoRoute(path: '/puntolimpio/secondlevel', builder: (context, state) => const PuntoLimpioSecondPage()),
+
+    GoRoute(path: '/fillGaps/first', builder: (context, state) => const FirstFillPage()),
+
+    GoRoute(path: '/fillGaps/second', builder: (context, state) => const SecondFillPage()),
 
   ],
 );
