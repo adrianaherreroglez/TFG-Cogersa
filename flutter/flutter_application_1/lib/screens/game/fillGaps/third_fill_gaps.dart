@@ -5,40 +5,50 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../../widgets/nav_bar.dart';
 
-class SecondFillPage extends StatefulWidget {
-  const SecondFillPage({super.key});
+class ThirdFillPage extends StatefulWidget {
+  const ThirdFillPage({super.key});
 
   @override
-  State<SecondFillPage> createState() => _SecondFillPageState();
+  State<ThirdFillPage> createState() => _ThirdFillPageState();
 }
 
-class _SecondFillPageState extends State<SecondFillPage> {
-  // Lista de objetos del segundo nivel
+class _ThirdFillPageState extends State<ThirdFillPage> {
+   // Lista de objetos del Tercer Nivel
   final List<Map<String, String>> objetos = [
     {
-      'nombre': 'El plátano',
-      'imagen': 'assets/icons/objetos/marron/platano.png',
-      'contenedor': 'marron',
+      'nombre': 'toallitas',
+      'imagen': 'assets/icons/objetos/gris/toallitas.png',
+      'contenedor': 'gris',
     },
     {
-      'nombre': 'La espina',
-      'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
-      'contenedor': 'marron',
+      'nombre': 'ceramica',
+      'imagen': 'assets/icons/objetos/gris/ceramica.png',
+      'contenedor': 'gris',
     },
     {
-      'nombre': 'El tarro',
-      'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
-      'contenedor': 'verde',
+      'nombre': 'tirita',
+      'imagen': 'assets/icons/objetos/gris/tirita.png',
+      'contenedor': 'gris',
     },
     {
-      'nombre': 'La caja',
-      'imagen': 'assets/icons/objetos/azul/caja.png',
+      'nombre': 'periodico',
+      'imagen': 'assets/icons/objetos/azul/periodico.png',
       'contenedor': 'azul',
     },
     {
-      'nombre': 'La lata',
-      'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
+      'nombre': 'leche',
+      'imagen': 'assets/icons/objetos/amarillo/leche.png',
       'contenedor': 'amarillo',
+    },
+    {
+      'nombre': 'perfume',
+      'imagen': 'assets/icons/objetos/verde/perfume.png',
+      'contenedor': 'verde',
+    },
+    {
+      'nombre': 'manzana',
+      'imagen': 'assets/icons/objetos/marron/manzana.png',
+      'contenedor': 'marron',
     },
   ];
 
@@ -71,11 +81,9 @@ class _SecondFillPageState extends State<SecondFillPage> {
     super.dispose();
   }
 
-
   Map<String, String> get objetoActual {
     return objetosMezclados[indiceObjetoActual];
   }
-
 
   String imagenContenedor(String contenedor) {
     switch (contenedor) {
@@ -90,6 +98,9 @@ class _SecondFillPageState extends State<SecondFillPage> {
 
       case 'marron':
         return 'assets/icons/contenedores/basura-marron.png';
+
+      case 'gris':
+        return 'assets/icons/contenedores/basura-gris.png';
 
       default:
         return '';
@@ -111,11 +122,15 @@ class _SecondFillPageState extends State<SecondFillPage> {
       case 'marron':
         return 'marron';
 
+      case 'gris':
+        return 'gris';
+
       default:
         return contenedor;
     }
   }
 
+ // COMPROBAR RESPUESTA
   void comprobarRespuesta(String contenedor) {
     intentos++;
 
@@ -125,12 +140,14 @@ class _SecondFillPageState extends State<SecondFillPage> {
       int puntosGanados = 0;
 
       if (intentos == 1) {
-        puntosGanados = 40;
+        puntosGanados = 50;
       } else if (intentos == 2) {
-        puntosGanados = 30;
+        puntosGanados = 40;
       } else if (intentos == 3) {
+        puntosGanados = 30;
+      } else if (intentos == 4) {
         puntosGanados = 20;
-      } else if (intentos >= 4) {
+      } else if (intentos == 5) {
         puntosGanados = 10;
       }
 
@@ -154,7 +171,7 @@ class _SecondFillPageState extends State<SecondFillPage> {
           if (siguienteIndice >=
               objetosMezclados.length) {
             context.go(
-              '/fillGaps/third',
+              '/mygame',
               extra: puntos,
             );
 
@@ -178,7 +195,7 @@ class _SecondFillPageState extends State<SecondFillPage> {
     }
   }
 
-
+  // FRASE
   Widget construirFrase(
     int indice,
     Map<String, String> objeto,
@@ -234,7 +251,6 @@ class _SecondFillPageState extends State<SecondFillPage> {
 
           const SizedBox(width: 15),
 
-          // TEXTO
           Expanded(
             child: Wrap(
               crossAxisAlignment:
@@ -344,6 +360,7 @@ class _SecondFillPageState extends State<SecondFillPage> {
       ),
     );
   }
+
 
   Widget construirContenedor(
     String contenedor,
@@ -459,7 +476,6 @@ class _SecondFillPageState extends State<SecondFillPage> {
                       CrossAxisAlignment.stretch,
 
                   children: [
-
                     // COLUMNA IZQUIERDA
                     Expanded(
                       flex: 7,
@@ -522,6 +538,7 @@ class _SecondFillPageState extends State<SecondFillPage> {
                             height: 20,
                           ),
 
+                          // SCROLL DE LAS FRASES
                           Expanded(
                             child: Scrollbar(
                               controller:
@@ -657,6 +674,14 @@ class _SecondFillPageState extends State<SecondFillPage> {
 
                                     construirContenedor(
                                       'marron',
+                                    ),
+
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+
+                                    construirContenedor(
+                                      'gris',
                                     ),
 
                                     const SizedBox(

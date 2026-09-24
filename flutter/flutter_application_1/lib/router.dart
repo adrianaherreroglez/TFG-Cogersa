@@ -12,6 +12,7 @@ import 'screens/punto_limpio_game/punto_limpio_first_level.dart';
 import 'screens/punto_limpio_game/punto_limpio_second_level.dart';
 import 'screens/game/fillGaps/first_fill_gaps.dart';
 import 'screens/game/fillGaps/second_fill_gaps.dart';
+import 'screens/game/fillGaps/third_fill_gaps.dart';
 
 
 final GoRouter router = GoRouter(
@@ -59,6 +60,8 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/fillGaps/first', builder: (context, state) => const FirstFillPage()),
 
     GoRoute(path: '/fillGaps/second', builder: (context, state) => const SecondFillPage()),
+
+    GoRoute(path: '/fillGaps/third', builder: (context, state) => const ThirdFillPage()),
 
   ],
 );
