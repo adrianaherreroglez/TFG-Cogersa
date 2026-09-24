@@ -3,63 +3,54 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/nav_bar.dart' ;
 
+import '../../widgets/nav_bar.dart';
 
 class ThirdPage extends StatefulWidget {
-    final int puntosPrevios;
+  final int puntosPrevios;
 
-    const ThirdPage({super.key, required this.puntosPrevios});
-
+  const ThirdPage({super.key, required this.puntosPrevios});
 
   @override
   State<ThirdPage> createState() => _ThirdPageState();
 }
 
 class _ThirdPageState extends State<ThirdPage> {
-
   // Lista de objetos del Tercer Nivel
   final List<Map<String, String>> objetos = [
     {
       'nombre': 'toallitas',
-      'imagen':
-          'assets/icons/objetos/gris/toallitas.png',
+      'imagen': 'assets/icons/objetos/gris/toallitas.png',
       'contenedor': 'gris',
     },
     {
       'nombre': 'ceramica',
-      'imagen':
-          'assets/icons/objetos/gris/ceramica.png',
+      'imagen': 'assets/icons/objetos/gris/ceramica.png',
       'contenedor': 'gris',
     },
     {
       'nombre': 'tirita',
-      'imagen':
-          'assets/icons/objetos/gris/tirita.png',
+      'imagen': 'assets/icons/objetos/gris/tirita.png',
       'contenedor': 'gris',
     },
     {
       'nombre': 'periodico',
-      'imagen':
-          'assets/icons/objetos/azul/periodico.png',
+      'imagen': 'assets/icons/objetos/azul/periodico.png',
       'contenedor': 'azul',
     },
     {
       'nombre': 'leche',
-      'imagen':
-          'assets/icons/objetos/amarillo/leche.png',
+      'imagen': 'assets/icons/objetos/amarillo/leche.png',
       'contenedor': 'amarillo',
     },
     {
       'nombre': 'perfume',
-      'imagen':
-          'assets/icons/objetos/verde/perfume.png',
+      'imagen': 'assets/icons/objetos/verde/perfume.png',
       'contenedor': 'verde',
     },
     {
       'nombre': 'manzana',
-      'imagen':
-          'assets/icons/objetos/marron/manzana.png',
+      'imagen': 'assets/icons/objetos/marron/manzana.png',
       'contenedor': 'marron',
     },
   ];
@@ -78,6 +69,12 @@ class _ThirdPageState extends State<ThirdPage> {
   // INTENTOS DEL OBJETO ACTUAL
   int intentos = 0;
 
+  // Objetos que están actualmente en cada contenedor
+  String? objetoEnAmarillo;
+  String? objetoEnAzul;
+  String? objetoEnVerde;
+  String? objetoEnMarron;
+  String? objetoEnGris;
 
   // Inicializar juego
   @override
@@ -92,10 +89,28 @@ class _ThirdPageState extends State<ThirdPage> {
     return objetosMezclados[indiceObjetoActual];
   }
 
+  // Buscar imagen de un objeto
+  String? imagenDelObjeto(String? nombre) {
+    if (nombre == null) {
+      return null;
+    }
+
+    for (final objeto in objetos) {
+      if (objeto['nombre'] == nombre) {
+        return objeto['imagen'];
+      }
+    }
+
+    return null;
+  }
+
   void comprobarRespuesta(String contenedor) {
     // Cada vez que se intenta colocar el objeto,
     // aumentamos el número de intentos.
     intentos++;
+
+    // Guardamos el objeto actual antes de pasar al siguiente.
+    final objeto = objetoActual;
 
     // Contenedor correcto del objeto actual
     final contenedorCorrecto = objetoActual['contenedor'];
@@ -113,7 +128,7 @@ class _ThirdPageState extends State<ThirdPage> {
         puntosGanados = 30;
       } else if (intentos == 4) {
         puntosGanados = 20;
-      } else if (intentos == 5){
+      } else if (intentos == 5) {
         puntosGanados = 10;
       }
 
@@ -121,35 +136,46 @@ class _ThirdPageState extends State<ThirdPage> {
         // Los puntos SE ACUMULAN.
         puntos += puntosGanados;
 
+        // Guardamos el objeto en el contenedor
+        if (contenedor == 'amarillo') {
+          objetoEnAmarillo = objeto['nombre'];
+        } else if (contenedor == 'azul') {
+          objetoEnAzul = objeto['nombre'];
+        } else if (contenedor == 'verde') {
+          objetoEnVerde = objeto['nombre'];
+        } else if (contenedor == 'marron') {
+          objetoEnMarron = objeto['nombre'];
+        } else if (contenedor == 'gris') {
+          objetoEnGris = objeto['nombre'];
+        }
+
         indiceObjetoActual++;
 
         // El contador de intentos empieza de nuevo
         // para el nuevo objeto.
         intentos = 0;
 
-        // Comprobamos si todavía quedan objetos
+        // Comprobamos si quedan objetos
         if (indiceObjetoActual < objetosMezclados.length) {
           objetoVisible = true;
         } else {
-          // Ya se han completado todos los objetos
           objetoVisible = false;
-          // Si se acaban pasamos al siguiente nivel
-          context.go('/mygame', extra: puntos);
-
         }
       });
-    } else {
-      // Respuesta incorrecta
-      // No cambiamos el índice.
-      // Por tanto, el mismo objeto sigue apareciendo.
+
+      // Fin de nivel
+      if (indiceObjetoActual >= objetosMezclados.length) {
+        context.go('/mygame', extra: puntos);
+      }
+    }
+    // Respuesta incorrecta
+    else {
       setState(() {
+        // El objeto continúa visible
         objetoVisible = true;
       });
     }
   }
-
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +226,6 @@ class _ThirdPageState extends State<ThirdPage> {
               ),
             ),
 
-
             const SizedBox(height: 10),
 
             // Objeto arrastable
@@ -240,85 +265,139 @@ class _ThirdPageState extends State<ThirdPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-                // Contenedor amarillo
+                
+                // CONTENEDOR AMARILLO
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('amarillo');
                   },
-
                   builder: (
                     BuildContext context,
                     List<String?> candidateData,
                     List<dynamic> rejectedData,
                   ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-amarilla.png',
-                      width: 180,
-                      height: 180,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Contenedor
+                        Image.asset(
+                          'assets/icons/contenedores/basura-amarilla.png',
+                          width: 180,
+                          height: 180,
+                        ),
+
+                        // Objeto que quedó dentro
+                        if (objetoEnAmarillo != null)
+                          Image.asset(
+                            imagenDelObjeto(objetoEnAmarillo!)!,
+                            width: 70,
+                            height: 70,
+                          ),
+                      ],
                     );
                   },
                 ),
 
                 const SizedBox(width: 20),
 
-                // Contenedor azul
+                // Contenedor AZUL
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('azul');
                   },
-
                   builder: (
                     BuildContext context,
                     List<String?> candidateData,
                     List<dynamic> rejectedData,
                   ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-azul.png',
-                      width: 180,
-                      height: 180,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Contenedor
+                        Image.asset(
+                          'assets/icons/contenedores/basura-azul.png',
+                          width: 180,
+                          height: 180,
+                        ),
+
+                        // Objeto que quedó dentro
+                        if (objetoEnAzul != null)
+                          Image.asset(
+                            imagenDelObjeto(objetoEnAzul!)!,
+                            width: 70,
+                            height: 70,
+                          ),
+                      ],
                     );
                   },
                 ),
 
+
                 const SizedBox(width: 20),
 
-                // Contenedor verde
+
+                // CONTENEDOR VERDE
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('verde');
                   },
-
                   builder: (
                     BuildContext context,
                     List<String?> candidateData,
                     List<dynamic> rejectedData,
                   ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-verde.png',
-                      width: 180,
-                      height: 180,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Contenedor
+                        Image.asset(
+                          'assets/icons/contenedores/basura-verde.png',
+                          width: 180,
+                          height: 180,
+                        ),
+
+                        // Objeto que quedó dentro
+                        if (objetoEnVerde != null)
+                          Image.asset(
+                            imagenDelObjeto(objetoEnVerde!)!,
+                            width: 70,
+                            height: 70,
+                          ),
+                      ],
                     );
                   },
                 ),
 
                 const SizedBox(width: 20),
-                
+
                 // Contenedor marron
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('marron');
                   },
-
                   builder: (
                     BuildContext context,
                     List<String?> candidateData,
                     List<dynamic> rejectedData,
                   ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-marron.png',
-                      width: 180,
-                      height: 180,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Contenedor
+                        Image.asset(
+                          'assets/icons/contenedores/basura-marron.png',
+                          width: 180,
+                          height: 180,
+                        ),
+
+                        // Objeto que quedó dentro
+                        if (objetoEnMarron != null)
+                          Image.asset(
+                            imagenDelObjeto(objetoEnMarron!)!,
+                            width: 70,
+                            height: 70,
+                          ),
+                      ],
                     );
                   },
                 ),
@@ -330,23 +409,35 @@ class _ThirdPageState extends State<ThirdPage> {
                   onAcceptWithDetails: (details) {
                     comprobarRespuesta('gris');
                   },
-
                   builder: (
                     BuildContext context,
                     List<String?> candidateData,
                     List<dynamic> rejectedData,
                   ) {
-                    return Image.asset(
-                      'assets/icons/contenedores/basura-gris.png',
-                      width: 180,
-                      height: 180,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Contenedor
+                        Image.asset(
+                          'assets/icons/contenedores/basura-gris.png',
+                          width: 180,
+                          height: 180,
+                        ),
+
+                        // Objeto que quedó dentro
+                        if (objetoEnGris != null)
+                          Image.asset(
+                            imagenDelObjeto(objetoEnGris!)!,
+                            width: 70,
+                            height: 70,
+                          ),
+                      ],
                     );
                   },
                 ),
 
               ],
             ),
-
           ],
         ),
       ),
