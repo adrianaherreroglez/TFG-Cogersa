@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'service/game_service.dart';
+import 'service/Nivel.dart';
+import 'service/TercerNivel.dart';
 
 import '../../widgets/nav_bar.dart';
 
@@ -16,47 +19,12 @@ class ThirdPage extends StatefulWidget {
 }
 
 class _ThirdPageState extends State<ThirdPage> {
-  // Lista de objetos del Tercer Nivel
-  final List<Map<String, String>> objetos = [
-    {
-      'nombre': 'toallitas',
-      'imagen': 'assets/icons/objetos/gris/toallitas.png',
-      'contenedor': 'gris',
-    },
-    {
-      'nombre': 'ceramica',
-      'imagen': 'assets/icons/objetos/gris/ceramica.png',
-      'contenedor': 'gris',
-    },
-    {
-      'nombre': 'tirita',
-      'imagen': 'assets/icons/objetos/gris/tirita.png',
-      'contenedor': 'gris',
-    },
-    {
-      'nombre': 'periodico',
-      'imagen': 'assets/icons/objetos/azul/periodico.png',
-      'contenedor': 'azul',
-    },
-    {
-      'nombre': 'leche',
-      'imagen': 'assets/icons/objetos/amarillo/leche.png',
-      'contenedor': 'amarillo',
-    },
-    {
-      'nombre': 'perfume',
-      'imagen': 'assets/icons/objetos/verde/perfume.png',
-      'contenedor': 'verde',
-    },
-    {
-      'nombre': 'manzana',
-      'imagen': 'assets/icons/objetos/marron/manzana.png',
-      'contenedor': 'marron',
-    },
-  ];
+  // Servicio del juego
+  final GameService gameService = GameService();
 
-  // Lista de objetos mezclada aleatoriamente
-  late List<Map<String, String>> objetosMezclados;
+  late List<Map<String, String>> objetos;
+  final Nivel nivel = TercerNivel();
+
 
   // Índice del objeto que estamos mostrando
   int indiceObjetoActual = 0;
@@ -81,28 +49,14 @@ class _ThirdPageState extends State<ThirdPage> {
   void initState() {
     super.initState();
     puntos = widget.puntosPrevios;
-    objetosMezclados = List.from(objetos);
-    objetosMezclados.shuffle(Random());
+    objetos = gameService.getObjetosTercerNivel();
+    objetos.shuffle(Random());
   }
 
   Map<String, String> get objetoActual {
-    return objetosMezclados[indiceObjetoActual];
+    return objetos[indiceObjetoActual];
   }
 
-  // Buscar imagen de un objeto
-  String? imagenDelObjeto(String? nombre) {
-    if (nombre == null) {
-      return null;
-    }
-
-    for (final objeto in objetos) {
-      if (objeto['nombre'] == nombre) {
-        return objeto['imagen'];
-      }
-    }
-
-    return null;
-  }
 
   void comprobarRespuesta(String contenedor) {
     // Cada vez que se intenta colocar el objeto,
@@ -117,24 +71,10 @@ class _ThirdPageState extends State<ThirdPage> {
 
     if (contenedor == contenedorCorrecto) {
       // Respuesta correcta
-      // Puntos que gana según el intento
-      int puntosGanados = 0;
 
-      if (intentos == 1) {
-        puntosGanados = 50;
-      } else if (intentos == 2) {
-        puntosGanados = 40;
-      } else if (intentos == 3) {
-        puntosGanados = 30;
-      } else if (intentos == 4) {
-        puntosGanados = 20;
-      } else if (intentos == 5) {
-        puntosGanados = 10;
-      }
+      puntos = puntos + nivel.sumarPuntosRespuestaCorrecta();
 
       setState(() {
-        // Los puntos SE ACUMULAN.
-        puntos += puntosGanados;
 
         // Guardamos el objeto en el contenedor
         if (contenedor == 'amarillo') {
@@ -156,7 +96,7 @@ class _ThirdPageState extends State<ThirdPage> {
         intentos = 0;
 
         // Comprobamos si quedan objetos
-        if (indiceObjetoActual < objetosMezclados.length) {
+        if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
           objetoVisible = false;
@@ -164,12 +104,13 @@ class _ThirdPageState extends State<ThirdPage> {
       });
 
       // Fin de nivel
-      if (indiceObjetoActual >= objetosMezclados.length) {
+      if (indiceObjetoActual >= objetos.length) {
         context.go('/mygame', extra: puntos);
       }
     }
     // Respuesta incorrecta
     else {
+      puntos = puntos - nivel.restarPuntosRespuestaIncorrecta();
       setState(() {
         // El objeto continúa visible
         objetoVisible = true;
@@ -229,7 +170,7 @@ class _ThirdPageState extends State<ThirdPage> {
             const SizedBox(height: 10),
 
             // Objeto arrastable
-            if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
+            if (objetoVisible && indiceObjetoActual < objetos.length)
               Draggable<String>(
                 // Nombre del objeto
                 data: objetoActual['nombre']!,
@@ -289,7 +230,7 @@ class _ThirdPageState extends State<ThirdPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAmarillo != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAmarillo!)!,
+                            gameService.imagenDelObjeto(objetoEnAmarillo!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -323,7 +264,7 @@ class _ThirdPageState extends State<ThirdPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAzul != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAzul!)!,
+                            gameService.imagenDelObjeto(objetoEnAzul!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -359,7 +300,7 @@ class _ThirdPageState extends State<ThirdPage> {
                         // Objeto que quedó dentro
                         if (objetoEnVerde != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnVerde!)!,
+                            gameService.imagenDelObjeto(objetoEnVerde!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -393,7 +334,7 @@ class _ThirdPageState extends State<ThirdPage> {
                         // Objeto que quedó dentro
                         if (objetoEnMarron != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnMarron!)!,
+                            gameService.imagenDelObjeto(objetoEnMarron!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -427,7 +368,7 @@ class _ThirdPageState extends State<ThirdPage> {
                         // Objeto que quedó dentro
                         if (objetoEnGris != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnGris!)!,
+                            gameService.imagenDelObjeto(objetoEnGris!,objetos)!,
                             width: 70,
                             height: 70,
                           ),

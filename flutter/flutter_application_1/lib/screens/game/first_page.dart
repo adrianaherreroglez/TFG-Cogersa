@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../widgets/nav_bar.dart';
+import 'service/game_service.dart';
+import 'service/Nivel.dart';
+import 'service/PrimerNivel.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -13,32 +16,14 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  // Lista de objetos del Primer Nivel
-  final List<Map<String, String>> objetos = [
-    {
-      'nombre': 'botella',
-      'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
-      'contenedor': 'amarillo',
-    },
-    {
-      'nombre': 'avion',
-      'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
-      'contenedor': 'azul',
-    },
-    {
-      'nombre': 'botella de vidrio',
-      'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
-      'contenedor': 'verde',
-    },
-    {
-      'nombre': 'papel-regalo',
-      'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
-      'contenedor': 'azul',
-    },
-  ];
 
-  // Lista de objetos mezclada aleatoriamente
-  late List<Map<String, String>> objetosMezclados;
+  // Servicio del juego
+  final GameService gameService = GameService();
+
+  // Nivel del juego
+  final Nivel primerNivel = PrimerNivel();
+
+  late List<Map<String, String>> objetos;
 
   // Índice del objeto actual
   int indiceObjetoActual = 0;
@@ -61,39 +46,26 @@ class _FirstPageState extends State<FirstPage> {
   void initState() {
     super.initState();
 
-    objetosMezclados = List.from(objetos);
-    objetosMezclados.shuffle(Random());
+    objetos = gameService.getObjetosPrimerNivel();
+    objetos.shuffle(Random());
   }
 
 
   // Objeto actual
   Map<String, String> get objetoActual {
-    return objetosMezclados[indiceObjetoActual];
-  }
-
-  // Buscar imagen de un objeto
-  String? imagenDelObjeto(String? nombre) {
-    if (nombre == null) {
-      return null;
-    }
-
-    for (final objeto in objetos) {
-      if (objeto['nombre'] == nombre) {
-        return objeto['imagen'];
-      }
-    }
-
-    return null;
+    return objetos[indiceObjetoActual];
   }
 
 
   // Comprobar respuesta
   void comprobarRespuesta(String contenedor) {
+
     // Cada vez que se intenta colocar el objeto,
     // aumentamos el número de intentos.
     intentos++;
 
-    // Guardamos el objeto actual antes de pasar al siguiente.
+
+    // Guardamos el objeto actual antes de pasar al siguiente
     final objeto = objetoActual;
 
     // Contenedor correcto
@@ -101,21 +73,10 @@ class _FirstPageState extends State<FirstPage> {
 
     // Respuesta correcta
     if (contenedor == contenedorCorrecto) {
-      int puntosGanados = 0;
 
-      // Puntos según el número de intentos
-      if (intentos == 1) {
-        puntosGanados = 30;
-      } else if (intentos == 2) {
-        puntosGanados = 20;
-      } else if (intentos == 3) {
-        puntosGanados = 10;
-      }
+      puntos = puntos + primerNivel.sumarPuntosRespuestaCorrecta();
 
       setState(() {
-        // Los puntos se acumulan
-        puntos += puntosGanados;
-
         // Guardamos el objeto en el contenedor
         if (contenedor == 'amarillo') {
           objetoEnAmarillo = objeto['nombre'];
@@ -132,7 +93,7 @@ class _FirstPageState extends State<FirstPage> {
         intentos = 0;
 
         // Comprobamos si quedan objetos
-        if (indiceObjetoActual < objetosMezclados.length) {
+        if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
           objetoVisible = false;
@@ -141,7 +102,7 @@ class _FirstPageState extends State<FirstPage> {
 
 
       // Fin de nivel
-      if (indiceObjetoActual >= objetosMezclados.length) {
+      if (indiceObjetoActual >= objetos.length) {
         context.go(
           '/second',
           extra: puntos,
@@ -151,6 +112,7 @@ class _FirstPageState extends State<FirstPage> {
 
     // Respuesta incorrecta
     else {
+      puntos = puntos - primerNivel.restarPuntosRespuestaIncorrecta();
       setState(() {
         // El objeto continúa visible
         objetoVisible = true;
@@ -210,7 +172,7 @@ class _FirstPageState extends State<FirstPage> {
 
             // Objeto arrastrable
             if (objetoVisible &&
-                indiceObjetoActual < objetosMezclados.length)
+                indiceObjetoActual < objetos.length)
               Draggable<String>(
                 data: objetoActual['nombre']!,
 
@@ -270,7 +232,7 @@ class _FirstPageState extends State<FirstPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAmarillo != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAmarillo!)!,
+                            gameService.imagenDelObjeto(objetoEnAmarillo!, objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -304,7 +266,7 @@ class _FirstPageState extends State<FirstPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAzul != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAzul!)!,
+                            gameService.imagenDelObjeto(objetoEnAzul!, objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -338,7 +300,7 @@ class _FirstPageState extends State<FirstPage> {
                         // Objeto que quedó dentro
                         if (objetoEnVerde != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnVerde!)!,
+                            gameService.imagenDelObjeto(objetoEnVerde!,objetos)!,
                             width: 70,
                             height: 70,
                           ),

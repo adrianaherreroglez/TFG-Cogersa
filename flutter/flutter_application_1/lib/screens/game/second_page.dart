@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'service/game_service.dart';
+import 'service/Nivel.dart';
+import 'service/SegundoNivel.dart';
 
 import '../../widgets/nav_bar.dart';
 
@@ -16,37 +19,14 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
-  // Lista de objetos del Segundo Nivel
-  final List<Map<String, String>> objetos = [
-    {
-      'nombre': 'platano',
-      'imagen': 'assets/icons/objetos/marron/platano.png',
-      'contenedor': 'marron',
-    },
-    {
-      'nombre': 'espina',
-      'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
-      'contenedor': 'marron',
-    },
-    {
-      'nombre': 'tarro',
-      'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
-      'contenedor': 'verde',
-    },
-    {
-      'nombre': 'caja',
-      'imagen': 'assets/icons/objetos/azul/caja.png',
-      'contenedor': 'azul',
-    },
-    {
-      'nombre': 'lata',
-      'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
-      'contenedor': 'amarillo',
-    },
-  ];
+  // Servicio del juego
+  final GameService gameService = GameService();
 
-  // Lista de objetos mezclada aleatoriamente
-  late List<Map<String, String>> objetosMezclados;
+  // Instancia del nivel
+  final Nivel nivel = SegundoNivel();
+
+  late List<Map<String, String>> objetos;
+
 
   // Índice del objeto que estamos mostrando
   int indiceObjetoActual = 0;
@@ -70,28 +50,14 @@ class _SecondPageState extends State<SecondPage> {
   void initState() {
     super.initState();
     puntos = widget.puntosPrevios;
-    objetosMezclados = List.from(objetos);
-    objetosMezclados.shuffle(Random());
+    objetos = gameService.getObjetosSegundoNivel();
+    objetos.shuffle(Random());
   }
 
   Map<String, String> get objetoActual {
-    return objetosMezclados[indiceObjetoActual];
+    return objetos[indiceObjetoActual];
   }
 
-  // Buscar imagen de un objeto
-  String? imagenDelObjeto(String? nombre) {
-    if (nombre == null) {
-      return null;
-    }
-
-    for (final objeto in objetos) {
-      if (objeto['nombre'] == nombre) {
-        return objeto['imagen'];
-      }
-    }
-
-    return null;
-  }
 
   void comprobarRespuesta(String contenedor) {
     // Cada vez que se intenta colocar el objeto,
@@ -105,23 +71,11 @@ class _SecondPageState extends State<SecondPage> {
     final contenedorCorrecto = objetoActual['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      // Puntos que gana según el intento
-      int puntosGanados = 0;
-
-      if (intentos == 1) {
-        puntosGanados = 40;
-      } else if (intentos == 2) {
-        puntosGanados = 30;
-      } else if (intentos == 3) {
-        puntosGanados = 20;
-      } else if (intentos == 4) {
-        puntosGanados = 10;
-      }
+ 
+      puntos = puntos + nivel.sumarPuntosRespuestaCorrecta();
 
       // Respuesta correcta
       setState(() {
-        // Los puntos SE ACUMULAN.
-        puntos += puntosGanados;
 
         // Guardamos el objeto en el contenedor
         if (contenedor == 'amarillo') {
@@ -144,7 +98,7 @@ class _SecondPageState extends State<SecondPage> {
         intentos = 0;
 
         // Comprobamos si quedan objetos
-        if (indiceObjetoActual < objetosMezclados.length) {
+        if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
           objetoVisible = false;
@@ -152,12 +106,13 @@ class _SecondPageState extends State<SecondPage> {
       });
 
       // Fin de nivel
-      if (indiceObjetoActual >= objetosMezclados.length) {
+      if (indiceObjetoActual >= objetos.length) {
         context.go('/third', extra: puntos);
       }
     }
     // Respuesta incorrecta
     else {
+      puntos = puntos - nivel.restarPuntosRespuestaIncorrecta();
       setState(() {
         // El objeto continúa visible
         objetoVisible = true;
@@ -217,7 +172,7 @@ class _SecondPageState extends State<SecondPage> {
             const SizedBox(height: 10),
 
             // Objeto arrastable
-            if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
+            if (objetoVisible && indiceObjetoActual < objetos.length)
               Draggable<String>(
                 // Nombre del objeto
                 data: objetoActual['nombre']!,
@@ -277,7 +232,7 @@ class _SecondPageState extends State<SecondPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAmarillo != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAmarillo!)!,
+                            gameService.imagenDelObjeto(objetoEnAmarillo!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -311,7 +266,7 @@ class _SecondPageState extends State<SecondPage> {
                         // Objeto que quedó dentro
                         if (objetoEnAzul != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnAzul!)!,
+                            gameService.imagenDelObjeto(objetoEnAzul!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -345,7 +300,7 @@ class _SecondPageState extends State<SecondPage> {
                         // Objeto que quedó dentro
                         if (objetoEnVerde != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnVerde!)!,
+                            gameService.imagenDelObjeto(objetoEnVerde!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
@@ -380,7 +335,7 @@ class _SecondPageState extends State<SecondPage> {
                         // Objeto que quedó dentro
                         if (objetoEnMarron != null)
                           Image.asset(
-                            imagenDelObjeto(objetoEnMarron!)!,
+                            gameService.imagenDelObjeto(objetoEnMarron!,objetos)!,
                             width: 70,
                             height: 70,
                           ),
