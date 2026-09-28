@@ -13,6 +13,7 @@ import 'screens/punto_limpio_game/punto_limpio_second_level.dart';
 import 'screens/game/fillGaps/first_fill_gaps.dart';
 import 'screens/game/fillGaps/second_fill_gaps.dart';
 import 'screens/game/fillGaps/third_fill_gaps.dart';
+import 'screens/users/log_in.dart';
 
 
 final GoRouter router = GoRouter(
@@ -21,6 +22,8 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (context, state) => const MyHomePage(title: 'EcoKids'),
     ),
+
+    GoRoute(path: '/login', builder: (context, state) => const LogInPage()),
 
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 
