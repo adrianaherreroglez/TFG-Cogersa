@@ -19,12 +19,12 @@ class GameService {
     return
     [
     {
-      'nombre': 'botella',
+      'nombre': 'botella de plástico',
       'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
       'contenedor': 'amarillo',
     },
     {
-      'nombre': 'avion',
+      'nombre': 'avión de papel',
       'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
       'contenedor': 'azul',
     },
@@ -34,7 +34,7 @@ class GameService {
       'contenedor': 'verde',
     },
     {
-      'nombre': 'papel-regalo',
+      'nombre': 'papel de regalo',
       'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
       'contenedor': 'azul',
     },

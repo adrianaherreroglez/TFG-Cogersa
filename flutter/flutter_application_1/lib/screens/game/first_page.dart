@@ -542,15 +542,6 @@ class _ContenedorReciclajeState
                 ),
               ),
 
-              if (widget.objetos.isNotEmpty)
-                Text(
-                  '${widget.objetos.length} objeto${widget.objetos.length == 1 ? '' : 's'}',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF5D7A61),
-                  ),
-                ),
             ],
           ),
         );

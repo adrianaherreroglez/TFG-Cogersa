@@ -589,7 +589,7 @@ class _SecondFillPageState extends State<SecondFillPage> {
 
                             style:
                                 GoogleFonts.quicksand(
-                              fontSize: 20,
+                              fontSize: 15,
                               fontWeight:
                                   FontWeight.bold,
                               color:
