@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -17,10 +16,8 @@ class _ListGameState extends State<ListGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFDF4),
-
       body: Column(
         children: [
-          // BARRA DE NAVEGACIÓN
           const NavBar(),
 
           Expanded(
@@ -30,30 +27,36 @@ class _ListGameState extends State<ListGame> {
                   horizontal: 50,
                   vertical: 45,
                 ),
-
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    // TÍTULO
                     Text(
-                      '¿A QUÉ CONTENEDOR TIRARÍAS...?',
+                      '¿A qué contenedor lo tirarías?',
                       style: GoogleFonts.quicksand(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 38,
+                        fontWeight: FontWeight.w800,
                         color: const Color(0xFF298133),
                         height: 1.1,
                       ),
                     ),
 
-                    const SizedBox(height: 45),
+                    const SizedBox(height: 8),
 
-                    // JUEGOS
+                    Text(
+                      '¡Elige un juego y demuestra cuánto sabes reciclar!',
+                      style: GoogleFonts.quicksand(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF5D7A61),
+                      ),
+                    ),
+
+                    const SizedBox(height: 35),
+
                     Wrap(
                       spacing: 30,
                       runSpacing: 30,
                       children: [
-                        // RECICLAJE - DRAG & DROP
                         GameCard(
                           image: 'assets/icons/app/reciclaje.png',
                           title: 'RECICLAJE',
@@ -63,7 +66,6 @@ class _ListGameState extends State<ListGame> {
                           },
                         ),
 
-                        // RECICLAJE - FILL IN THE GAPS
                         GameCard(
                           image: 'assets/icons/app/reciclaje.png',
                           title: 'RECICLAJE',
@@ -73,7 +75,6 @@ class _ListGameState extends State<ListGame> {
                           },
                         ),
 
-                        // PUNTO LIMPIO - DRAG & DROP
                         GameCard(
                           image: 'assets/icons/app/punto-limpio.png',
                           title: 'PUNTO LIMPIO',
@@ -83,7 +84,6 @@ class _ListGameState extends State<ListGame> {
                           },
                         ),
 
-                        // PUNTO LIMPIO - FILL IN THE GAPS
                         GameCard(
                           image: 'assets/icons/app/punto-limpio.png',
                           title: 'PUNTO LIMPIO',
@@ -104,10 +104,6 @@ class _ListGameState extends State<ListGame> {
     );
   }
 }
-
-
-// TARJETA DE JUEGO
-// Plantilla para crear juegos sin repetir código
 
 class GameCard extends StatefulWidget {
   final String image;
@@ -134,39 +130,34 @@ class _GameCardState extends State<GameCard> {
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-
       onEnter: (_) {
         setState(() {
           isHovered = true;
         });
       },
-
       onExit: (_) {
         setState(() {
           isHovered = false;
         });
       },
-
       child: GestureDetector(
         onTap: widget.onTap,
-
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-
           width: 230,
           height: 260,
-
           transform: Matrix4.translationValues(
             0,
             isHovered ? -6 : 0,
             0,
           ),
-
           decoration: BoxDecoration(
-            color: const Color(0xFFD8EDD5),
-
+            color: const Color(0xFFE8F5E9),
             borderRadius: BorderRadius.circular(24),
-
+            border: Border.all(
+              color: const Color(0xFFD8EDD5),
+              width: 1.5,
+            ),
             boxShadow: isHovered
                 ? [
                     BoxShadow(
@@ -177,23 +168,20 @@ class _GameCardState extends State<GameCard> {
                   ]
                 : [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha:0.06),
+                      color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
           ),
-
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 15,
               vertical: 18,
             ),
-
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Imagen de cada juego
                 Image.asset(
                   widget.image,
                   width: 120,
@@ -203,7 +191,6 @@ class _GameCardState extends State<GameCard> {
 
                 const SizedBox(height: 15),
 
-                // Nombre del juego
                 Text(
                   widget.title,
                   textAlign: TextAlign.center,
@@ -214,16 +201,25 @@ class _GameCardState extends State<GameCard> {
                   ),
                 ),
 
-                const SizedBox(height: 5),
+                const SizedBox(height: 8),
 
-                // Tipo de juego
-                Text(
-                  widget.gameType,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF5D7A61),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD8EDD5),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    widget.gameType,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF298133),
+                    ),
                   ),
                 ),
               ],
