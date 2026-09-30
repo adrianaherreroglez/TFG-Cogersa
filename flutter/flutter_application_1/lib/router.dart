@@ -14,6 +14,7 @@ import 'screens/game/fillGaps/first_fill_gaps.dart';
 import 'screens/game/fillGaps/second_fill_gaps.dart';
 import 'screens/game/fillGaps/third_fill_gaps.dart';
 import 'screens/users/log_in.dart';
+import 'screens/users/register.dart';
 
 
 final GoRouter router = GoRouter(
@@ -24,6 +25,8 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(path: '/login', builder: (context, state) => const LogInPage()),
+
+    GoRoute(path: '/register', builder: (context, state) => const RegisterPage()),
 
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 

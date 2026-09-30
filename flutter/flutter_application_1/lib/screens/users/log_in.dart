@@ -156,6 +156,7 @@ class _LoginPageState extends State<LogInPage> {
                 TextButton(
                   onPressed: () {
                     //context.go('/');
+                    context.go('/register');
                   },
                   child: Text(
                     'No tengo cuenta',
