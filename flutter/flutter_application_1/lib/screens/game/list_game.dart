@@ -62,7 +62,7 @@ class _ListGameState extends State<ListGame> {
                           title: 'RECICLAJE',
                           gameType: 'Drag & Drop',
                           onTap: () {
-                            context.go('/first');
+                            context.go('/code');
                           },
                         ),
 

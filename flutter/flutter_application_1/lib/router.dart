@@ -13,6 +13,7 @@ import 'screens/punto_limpio_game/punto_limpio_second_level.dart';
 import 'screens/game/fillGaps/first_fill_gaps.dart';
 import 'screens/game/fillGaps/second_fill_gaps.dart';
 import 'screens/game/fillGaps/third_fill_gaps.dart';
+import 'screens/game/code_page.dart';
 import 'screens/users/log_in.dart';
 import 'screens/users/register.dart';
 
@@ -29,6 +30,8 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/register', builder: (context, state) => const RegisterPage()),
 
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
+
+    GoRoute(path: '/code', builder: (context, state) => const CodePage()),
 
     GoRoute(path: '/first', builder: (context, state) => const FirstPage()),
 
