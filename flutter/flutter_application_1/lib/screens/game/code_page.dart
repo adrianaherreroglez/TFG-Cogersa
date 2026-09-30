@@ -44,9 +44,7 @@ class _CodePageState extends State<CodePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // ==========================================
                       // TÍTULO
-                      // ==========================================
                       Text(
                         'RECICLAJE',
                         textAlign: TextAlign.center,
@@ -59,9 +57,7 @@ class _CodePageState extends State<CodePage> {
 
                       const SizedBox(height: 18),
 
-                      // ==========================================
                       // TARJETA VERDE CLARO
-                      // ==========================================
                       Container(
                         width: 520,
                         padding: const EdgeInsets.symmetric(
@@ -125,9 +121,7 @@ class _CodePageState extends State<CodePage> {
 
                             const SizedBox(height: 22),
 
-                            // ==================================
                             // CÓDIGO
-                            // ==================================
                             SizedBox(
                               width: 320,
                               child: TextField(
@@ -186,9 +180,7 @@ class _CodePageState extends State<CodePage> {
 
                             const SizedBox(height: 20),
 
-                            // ==================================
                             // BOTÓN
-                            // ==================================
                             SizedBox(
                               width: 200,
                               height: 48,
