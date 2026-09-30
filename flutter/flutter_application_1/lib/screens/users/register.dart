@@ -157,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 25),
 
-                // BOTÓN INICIAR SESIÓN
+                // BOTÓN REGISTRARSE
                 SizedBox(
                   width: 180,
                   height: 48,

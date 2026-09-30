@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+
 class GameService {
+
   
-  // Buscar imagen de un objeto
+  // Buscar imagen de un objeto por nombre del objeto
   String? imagenDelObjeto(String? nombre, List<Map<String,String>> objetos) {
     if (nombre == null) {
       return null;
@@ -14,6 +17,51 @@ class GameService {
 
     return null;
   }
+
+  // Buscar imagen del contenedor
+  String imagenContenedor(String contenedor) {
+    switch (contenedor) {
+      case 'amarillo':
+        return 'assets/icons/contenedores/basura-amarilla.png';
+      case 'azul':
+        return 'assets/icons/contenedores/basura-azul.png';
+      case 'verde':
+        return 'assets/icons/contenedores/basura-verde.png';
+      default:
+        return '';
+    }
+
+    
+   
+  }
+
+  String nombreContenedor(String contenedor) {
+    switch (contenedor) {
+      case 'amarillo':
+        return 'amarillo';
+      case 'azul':
+        return 'azul';
+      case 'verde':
+        return 'verde';
+      default:
+        return contenedor;
+    }
+  }
+
+  Color colorContenedor(String contenedor) {
+    switch (contenedor) {
+      case 'amarillo':
+        return const Color(0xFFFFD740);
+      case 'azul':
+        return const Color(0xFF42A5F5);
+      case 'verde':
+        return const Color(0xFF66BB6A);
+      default:
+        return const Color(0xFF298133);
+    }
+  }
+
+
   
   List<Map<String, String>> getObjetosPrimerNivel() {
     return

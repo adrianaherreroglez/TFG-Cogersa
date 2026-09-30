@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
+import '../service/PrimerNivel.dart';
+import '../service/game_service.dart';
 import '../../../widgets/nav_bar.dart';
 
 class FirstFillPage extends StatefulWidget {
@@ -14,30 +16,14 @@ class FirstFillPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstFillPage> {
-  final List<Map<String, String>> objetos = [
-    {
-      'nombre': 'La botella de plástico',
-      'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
-      'contenedor': 'amarillo',
-    },
-    {
-      'nombre': 'El avión de papel',
-      'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
-      'contenedor': 'azul',
-    },
-    {
-      'nombre': 'La botella de vidrio',
-      'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
-      'contenedor': 'verde',
-    },
-    {
-      'nombre': 'El papel de regalo',
-      'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
-      'contenedor': 'azul',
-    },
-  ];
+  final GameService gameService = GameService();
 
-  late List<Map<String, String>> objetosMezclados;
+  final PrimerNivel primerNivel = PrimerNivel();
+
+  final ScrollController contenedoresScrollController =
+      ScrollController();
+
+  late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
   int puntos = 0;
@@ -58,77 +44,37 @@ class _FirstPageState extends State<FirstFillPage> {
   void initState() {
     super.initState();
 
-    objetosMezclados = List.from(objetos);
-    objetosMezclados.shuffle(Random());
+    objetos = gameService.getObjetosPrimerNivel();
+    objetos.shuffle(Random());
+  }
+
+  @override
+  void dispose() {
+    contenedoresScrollController.dispose();
+    super.dispose();
   }
 
   Map<String, String> get objetoActual {
-    return objetosMezclados[indiceObjetoActual];
-  }
-
-  String imagenContenedor(String contenedor) {
-    switch (contenedor) {
-      case 'amarillo':
-        return 'assets/icons/contenedores/basura-amarilla.png';
-      case 'azul':
-        return 'assets/icons/contenedores/basura-azul.png';
-      case 'verde':
-        return 'assets/icons/contenedores/basura-verde.png';
-      default:
-        return '';
-    }
-  }
-
-  String nombreContenedor(String contenedor) {
-    switch (contenedor) {
-      case 'amarillo':
-        return 'amarillo';
-      case 'azul':
-        return 'azul';
-      case 'verde':
-        return 'verde';
-      default:
-        return contenedor;
-    }
-  }
-
-  Color colorContenedor(String contenedor) {
-    switch (contenedor) {
-      case 'amarillo':
-        return const Color(0xFFFFD740);
-      case 'azul':
-        return const Color(0xFF42A5F5);
-      case 'verde':
-        return const Color(0xFF66BB6A);
-      default:
-        return themeGreen;
-    }
+    return objetos[indiceObjetoActual];
   }
 
   void comprobarRespuesta(String contenedor) {
+    if (respuestaCorrectaMostrada) {
+      return;
+    }
+
     intentos++;
 
     final contenedorCorrecto = objetoActual['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      int puntosGanados;
+      puntos = puntos + primerNivel.sumarPuntosRespuestaCorrecta();
 
-      if (intentos == 1) {
-        puntosGanados = 30;
-      } else if (intentos == 2) {
-        puntosGanados = 20;
-      } else {
-        puntosGanados = 10;
-      }
 
       setState(() {
-        puntos += puntosGanados;
-        puntosGanadosActuales = puntosGanados;
         respuestasCorrectas[indiceObjetoActual] = contenedor;
 
-        // Quitamos cualquier error anterior.
         respuestaIncorrecta = null;
-
         respuestaCorrectaMostrada = true;
       });
 
@@ -139,7 +85,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
           final siguienteIndice = indiceObjetoActual + 1;
 
-          if (siguienteIndice >= objetosMezclados.length) {
+          if (siguienteIndice >= objetos.length) {
             context.go(
               '/fillGaps/second',
               extra: puntos,
@@ -158,10 +104,8 @@ class _FirstPageState extends State<FirstFillPage> {
       );
     } else {
       setState(() {
-        // Solo guardamos qué contenedor se ha pulsado mal.
-        // Ese contenedor se pondrá rojo.
         respuestaIncorrecta = contenedor;
-
+        puntos = puntos - primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
       });
     }
@@ -174,161 +118,239 @@ class _FirstPageState extends State<FirstFillPage> {
     final bool completada =
         respuestasCorrectas.containsKey(indice);
 
+    final bool esActual =
+        indice == indiceObjetoActual && !completada;
+
+    final bool estaBloqueada =
+        indice > indiceObjetoActual;
+
     final String? contenedorSeleccionado =
         respuestasCorrectas[indice];
 
     final Color colorSeleccionado = completada
-        ? colorContenedor(contenedorSeleccionado!)
+        ? gameService.colorContenedor(
+            contenedorSeleccionado!,
+          )
         : const Color(0xFFE0E0E0);
 
-    return AnimatedContainer(
+    return AnimatedOpacity(
       duration: const Duration(milliseconds: 250),
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 12,
-      ),
-      decoration: BoxDecoration(
-        color: completada
-            ? const Color(0xFFF1F9EF)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: completada
-              ? themeGreen
-              : const Color(0xFFDDE6DC),
-          width: 2,
+      opacity: estaBloqueada ? 0.65 : 1.0,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        margin: const EdgeInsets.only(bottom: 18),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 15,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 9,
-            offset: const Offset(0, 3),
+        decoration: BoxDecoration(
+          color: esActual
+              ? const Color(0xFFF4FAF1)
+              : completada
+                  ? const Color(0xFFF8FBF6)
+                  : const Color(0xFFF5F6F3),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: esActual
+                ? themeGreen.withValues(alpha: 0.65)
+                : completada
+                    ? const Color(0xFFC5D8C1)
+                    : const Color(0xFFE1E5DF),
+            width: esActual ? 2 : 1.5,
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 68,
-            height: 68,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: lightGreen,
-              borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            if (esActual)
+              BoxShadow(
+                color: themeGreen.withValues(alpha: 0.10),
+                blurRadius: 14,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              )
+            else
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.035),
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+          ],
+        ),
+        child: Row(
+          children: [
+            // IMAGEN DEL OBJETO
+            Container(
+              width: 76,
+              height: 76,
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: esActual
+                    ? Colors.white
+                    : completada
+                        ? lightGreen
+                        : const Color(0xFFEDEFEA),
+                borderRadius: BorderRadius.circular(17),
+                border: esActual
+                    ? Border.all(
+                        color:
+                            themeGreen.withValues(alpha: 0.25),
+                        width: 1.5,
+                      )
+                    : null,
+              ),
+              child: Image.asset(
+                objeto['imagen']!,
+                fit: BoxFit.contain,
+              ),
             ),
-            child: Image.asset(
-              objeto['imagen']!,
-              fit: BoxFit.contain,
-            ),
-          ),
 
-          const SizedBox(width: 14),
+            const SizedBox(width: 17),
 
-          Expanded(
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  objeto['nombre']!,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                    color: themeGreen,
-                  ),
-                ),
-
-                Text(
-                  ' va en el contenedor ',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  width: 76,
-                  height: 58,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: completada
-                        ? colorSeleccionado.withValues(
-                            alpha: 0.14,
-                          )
-                        : const Color(0xFFF5F7F4),
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: completada
-                          ? colorSeleccionado
-                          : const Color(0xFFB8C2B8),
-                      width: 2,
+            // FRASE
+            Expanded(
+              child: Wrap(
+                crossAxisAlignment:
+                    WrapCrossAlignment.center,
+                children: [
+                  Text(
+                    objeto['nombre']!,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: esActual || completada
+                          ? themeGreen
+                          : const Color(0xFF899389),
                     ),
                   ),
-                  child: completada
-                      ? Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Image.asset(
-                            imagenContenedor(
-                              contenedorSeleccionado!,
+
+                  Text(
+                    ' va en el contenedor ',
+                    style: GoogleFonts.quicksand(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: esActual || completada
+                          ? const Color(0xFF4F5951)
+                          : const Color(0xFF9BA39B),
+                    ),
+                  ),
+
+                  // HUECO
+                  AnimatedContainer(
+                    duration:
+                        const Duration(milliseconds: 250),
+                    width: 76,
+                    height: 58,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: completada
+                          ? colorSeleccionado.withValues(
+                              alpha: 0.10,
+                            )
+                          : esActual
+                              ? Colors.white
+                              : const Color(0xFFEFF1EE),
+                      borderRadius:
+                          BorderRadius.circular(14),
+                      border: Border.all(
+                        color: completada
+                            ? colorSeleccionado
+                            : esActual
+                                ? themeGreen.withValues(
+                                    alpha: 0.55,
+                                  )
+                                : const Color(0xFFD0D5D0),
+                        width: esActual ? 2 : 1.5,
+                      ),
+                    ),
+                    child: completada
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.all(5),
+                            child: Image.asset(
+                              gameService.imagenContenedor(
+                                contenedorSeleccionado!,
+                              ),
+                              fit: BoxFit.contain,
                             ),
-                            fit: BoxFit.contain,
+                          )
+                        : Center(
+                            child: Text(
+                              '?',
+                              style:
+                                  GoogleFonts.quicksand(
+                                fontSize: esActual
+                                    ? 27
+                                    : 23,
+                                fontWeight:
+                                    FontWeight.w800,
+                                color: esActual
+                                    ? themeGreen
+                                    : const Color(
+                                        0xFF9AA39A,
+                                      ),
+                              ),
+                            ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(width: 12),
+
+            // ESTADO
+            AnimatedSwitcher(
+              duration:
+                  const Duration(milliseconds: 250),
+              child: completada
+                  ? Container(
+                      key: const ValueKey('correcto'),
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: lightGreen,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.check_rounded,
+                        color: themeGreen,
+                        size: 21,
+                      ),
+                    )
+                  : esActual
+                      ? Container(
+                          key: const ValueKey('actual'),
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            color: themeGreen,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 19,
                           ),
                         )
-                      : Center(
-                          child: Text(
-                            '?',
-                            style: GoogleFonts.quicksand(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF8A978A),
-                            ),
+                      : Container(
+                          key: const ValueKey('pendiente'),
+                          width: 32,
+                          height: 32,
+                          decoration:
+                              const BoxDecoration(
+                            color: Color(0xFFE8EBE7),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.lock_outline_rounded,
+                            color: Color(0xFF9AA39A),
+                            size: 17,
                           ),
                         ),
-                ),
-              ],
             ),
-          ),
-
-          const SizedBox(width: 8),
-
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            child: completada
-                ? Container(
-                    key: const ValueKey('correcto'),
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: lightGreen,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: themeGreen,
-                      size: 22,
-                    ),
-                  )
-                : Container(
-                    key: const ValueKey('pendiente'),
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF2F4F1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.question_mark_rounded,
-                      color: secondaryText,
-                      size: 18,
-                    ),
-                  ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -337,7 +359,8 @@ class _FirstPageState extends State<FirstFillPage> {
     final bool esRespuestaIncorrecta =
         respuestaIncorrecta == contenedor;
 
-    final Color color = colorContenedor(contenedor);
+    final Color color =
+        gameService.colorContenedor(contenedor);
 
     return GestureDetector(
       onTap: () {
@@ -347,8 +370,8 @@ class _FirstPageState extends State<FirstFillPage> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 155,
-        height: 155,
+        width: 175,
+        height: 175,
         decoration: BoxDecoration(
           color: esRespuestaIncorrecta
               ? const Color(0xFFFFEBEE)
@@ -357,50 +380,53 @@ class _FirstPageState extends State<FirstFillPage> {
           border: Border.all(
             color: esRespuestaIncorrecta
                 ? const Color(0xFFE53935)
-                : color.withValues(alpha: 0.55),
-            width: 2.5,
+                : color.withValues(alpha: 0.40),
+            width: 2,
           ),
           boxShadow: [
             BoxShadow(
               color: esRespuestaIncorrecta
-                  ? Colors.red.withValues(alpha: 0.15)
-                  : color.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
+                  ? Colors.red.withValues(alpha: 0.12)
+                  : Colors.black.withValues(alpha: 0.045),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment:
+              MainAxisAlignment.center,
           children: [
             Container(
-              width: 95,
-              height: 95,
+              width: 105,
+              height: 105,
               decoration: BoxDecoration(
-                color: esRespuestaIncorrecta
-                    ? const Color(0xFFFFCDD2)
-                    : color.withValues(alpha: 0.10),
+                color: color.withValues(alpha: 0.07),
                 shape: BoxShape.circle,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(9),
                 child: Image.asset(
-                  imagenContenedor(contenedor),
+                  gameService.imagenContenedor(
+                    contenedor,
+                  ),
                   fit: BoxFit.contain,
                 ),
               ),
             ),
 
-            const SizedBox(height: 5),
+            const SizedBox(height: 7),
 
             Text(
-              nombreContenedor(contenedor).toUpperCase(),
+              gameService
+                  .nombreContenedor(contenedor)
+                  .toUpperCase(),
               style: GoogleFonts.quicksand(
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: FontWeight.w800,
                 color: esRespuestaIncorrecta
                     ? const Color(0xFFE53935)
-                    : themeGreen,
+                    : const Color(0xFF5D7A61),
               ),
             ),
           ],
@@ -410,11 +436,12 @@ class _FirstPageState extends State<FirstFillPage> {
   }
 
   Widget construirIndicadorProgreso() {
-    final int total = objetosMezclados.length;
+    final int total = objetos.length;
     final int completados = respuestasCorrectas.length;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment:
+          CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -444,15 +471,19 @@ class _FirstPageState extends State<FirstFillPage> {
         SizedBox(
           width: 150,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius:
+                BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: total == 0
                   ? 0
                   : completados / total,
               minHeight: 7,
-              backgroundColor: const Color(0xFFDDE8DA),
+              backgroundColor:
+                  const Color(0xFFDDE8DA),
               valueColor:
-                  AlwaysStoppedAnimation<Color>(themeGreen),
+                  AlwaysStoppedAnimation<Color>(
+                themeGreen,
+              ),
             ),
           ),
         ),
@@ -463,7 +494,8 @@ class _FirstPageState extends State<FirstFillPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor:
+          const Color(0xFFF7F8F6),
       body: SafeArea(
         child: Column(
           children: [
@@ -472,16 +504,18 @@ class _FirstPageState extends State<FirstFillPage> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  40,
-                  20,
-                  40,
+                  45,
                   25,
+                  45,
+                  30,
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.stretch,
                   children: [
-                    // COLUMNA IZQUIERDA
+                    // COLUMNA IZQUIERDA (frases)
                     Expanded(
+                      flex: 7,
                       child: Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start,
@@ -495,24 +529,29 @@ class _FirstPageState extends State<FirstFillPage> {
                                   vertical: 9,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: secondaryGreen,
+                                  color: const Color(
+                                    0xFFF0F5EE,
+                                  ),
                                   borderRadius:
-                                      BorderRadius.circular(18),
+                                      BorderRadius.circular(
+                                    18,
+                                  ),
                                 ),
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisSize:
+                                      MainAxisSize.min,
                                   children: [
                                     Icon(
                                       Icons.flag_rounded,
                                       color: themeGreen,
-                                      size: 21,
+                                      size: 20,
                                     ),
                                     const SizedBox(width: 7),
                                     Text(
                                       'NIVEL 1',
                                       style:
                                           GoogleFonts.quicksand(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight:
                                             FontWeight.w800,
                                         color: themeGreen,
@@ -533,24 +572,24 @@ class _FirstPageState extends State<FirstFillPage> {
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius:
-                                      BorderRadius.circular(18),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black
-                                          .withValues(alpha: 0.06),
-                                      blurRadius: 8,
-                                      offset:
-                                          const Offset(0, 3),
+                                      BorderRadius.circular(
+                                    18,
+                                  ),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFFE2E7E0,
                                     ),
-                                  ],
+                                  ),
                                 ),
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisSize:
+                                      MainAxisSize.min,
                                   children: [
                                     const Icon(
                                       Icons.star_rounded,
-                                      color: Color(0xFFFFB300),
-                                      size: 23,
+                                      color:
+                                          Color(0xFFFFB300),
+                                      size: 22,
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
@@ -560,7 +599,8 @@ class _FirstPageState extends State<FirstFillPage> {
                                         fontSize: 15,
                                         fontWeight:
                                             FontWeight.w800,
-                                        color: secondaryText,
+                                        color:
+                                            secondaryText,
                                       ),
                                     ),
                                   ],
@@ -569,7 +609,7 @@ class _FirstPageState extends State<FirstFillPage> {
                             ],
                           ),
 
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 18),
 
                           Text(
                             '¡RELLENA LOS HUECOS!',
@@ -581,31 +621,33 @@ class _FirstPageState extends State<FirstFillPage> {
                             ),
                           ),
 
-                          const SizedBox(height: 7),
+                          const SizedBox(height: 8),
 
                           Text(
                             'Completa cada frase eligiendo el contenedor correcto',
                             style: GoogleFonts.quicksand(
                               fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                              fontWeight:
+                                  FontWeight.w500,
                               color: secondaryText,
                             ),
                           ),
 
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 13),
 
                           construirIndicadorProgreso(),
 
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 20),
 
                           Expanded(
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              itemCount: objetosMezclados.length,
-                              itemBuilder: (context, index) {
+                              itemCount: objetos.length,
+                              itemBuilder:
+                                  (context, index) {
                                 return construirFrase(
                                   index,
-                                  objetosMezclados[index],
+                                  objetos[index],
                                 );
                               },
                             ),
@@ -614,18 +656,39 @@ class _FirstPageState extends State<FirstFillPage> {
                       ),
                     ),
 
+                    // SEPARACIÓN CENTRAL
+                    const SizedBox(width: 55),
+
+                    Container(
+                      width: 1,
+                      margin:
+                          const EdgeInsets.symmetric(
+                        vertical: 20,
+                      ),
+                      color:
+                          const Color(0xFFE2E7E0),
+                    ),
+
                     const SizedBox(width: 40),
 
-                    // COLUMNA DERECHA
+
+                    // COLUMNA DERECHA (contenedores)
                     SizedBox(
-                      width: 190,
+                      width: 210,
                       child: Scrollbar(
+                        controller:
+                            contenedoresScrollController,
                         thumbVisibility: true,
-                        radius: const Radius.circular(10),
+                        interactive: true,
+                        radius:
+                            const Radius.circular(10),
                         child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(
-                            right: 8,
-                            bottom: 10,
+                          controller:
+                              contenedoresScrollController,
+                          padding:
+                              const EdgeInsets.only(
+                            right: 10,
+                            bottom: 15,
                           ),
                           child: Column(
                             children: [
@@ -636,34 +699,47 @@ class _FirstPageState extends State<FirstFillPage> {
                                   vertical: 9,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: lightGreen,
+                                  color: const Color(
+                                    0xFFF0F5EE,
+                                  ),
                                   borderRadius:
-                                      BorderRadius.circular(18),
+                                      BorderRadius.circular(
+                                    18,
+                                  ),
                                 ),
                                 child: Text(
                                   'CONTENEDORES',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
+                                  textAlign:
+                                      TextAlign.center,
+                                  style:
+                                      GoogleFonts.quicksand(
+                                    fontSize: 14,
+                                    fontWeight:
+                                        FontWeight.w800,
+                                    color: secondaryText,
                                   ),
                                 ),
                               ),
 
+                              const SizedBox(height: 22),
+
+                              construirContenedor(
+                                'amarillo',
+                              ),
+
                               const SizedBox(height: 18),
 
-                              construirContenedor('amarillo'),
+                              construirContenedor(
+                                'azul',
+                              ),
 
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 18),
 
-                              construirContenedor('azul'),
+                              construirContenedor(
+                                'verde',
+                              ),
 
-                              const SizedBox(height: 12),
-
-                              construirContenedor('verde'),
-
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
                             ],
                           ),
                         ),
