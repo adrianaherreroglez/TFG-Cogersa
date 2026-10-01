@@ -83,7 +83,7 @@ class _ThirdPageState extends State<ThirdPage> {
           objetoEnAzul = objeto['nombre'];
         } else if (contenedor == 'verde') {
           objetoEnVerde = objeto['nombre'];
-        } else if (contenedor == 'marron') {
+        } else if (contenedor == 'marrón') {
           objetoEnMarron = objeto['nombre'];
         } else if (contenedor == 'gris') {
           objetoEnGris = objeto['nombre'];
@@ -314,7 +314,7 @@ class _ThirdPageState extends State<ThirdPage> {
                 // Contenedor marron
                 DragTarget<String>(
                   onAcceptWithDetails: (details) {
-                    comprobarRespuesta('marron');
+                    comprobarRespuesta('marrón');
                   },
                   builder: (
                     BuildContext context,

@@ -97,12 +97,10 @@ class _FirstPageState extends State<FirstFillPage> {
     }
   }
 
-  // ============================================================
   // TARJETA DEL OBJETO Y FRASE ACTUAL
-  // ============================================================
-
   Widget construirTarjetaFrase() {
     final String nombre = objetoActual['nombre']!;
+    final String articulo = objetoActual['articulo']!;
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     final bool completada = respuestaCorrectaMostrada;
@@ -149,10 +147,7 @@ class _FirstPageState extends State<FirstFillPage> {
         ),
         child: Row(
           children: [
-            // ========================================================
             // IMAGEN DEL OBJETO
-            // ========================================================
-
             Container(
               width: 125,
               height: 125,
@@ -167,9 +162,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
             const SizedBox(width: 28),
 
-            // ========================================================
             // FRASE
-            // ========================================================
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -190,6 +183,17 @@ class _FirstPageState extends State<FirstFillPage> {
                   Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
+                      // Artículo
+                      Text(
+                        '$articulo ',
+                        style: GoogleFonts.quicksand(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF4F5951),
+                        ),
+                      ),
+
+                      //Nombre
                       Text(
                         nombre,
                         style: GoogleFonts.quicksand(
@@ -199,6 +203,7 @@ class _FirstPageState extends State<FirstFillPage> {
                         ),
                       ),
 
+                      // va en el contenedor
                       Text(
                         ' va en el contenedor ',
                         style: GoogleFonts.quicksand(
@@ -208,9 +213,7 @@ class _FirstPageState extends State<FirstFillPage> {
                         ),
                       ),
 
-                      // ==================================================
                       // HUECO
-                      // ==================================================
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         width: 85,
@@ -258,9 +261,8 @@ class _FirstPageState extends State<FirstFillPage> {
 
                   const SizedBox(height: 8),
 
-                  // ==================================================
+
                   // MENSAJE DE ESTADO
-                  // ==================================================
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
                     child: respuestaIncorrecta != null
@@ -330,10 +332,7 @@ class _FirstPageState extends State<FirstFillPage> {
     );
   }
 
-  // ============================================================
   // CONTENEDOR
-  // ============================================================
-
   Widget construirContenedor(String contenedor) {
     final bool esRespuestaIncorrecta = respuestaIncorrecta == contenedor;
 
@@ -416,54 +415,6 @@ class _FirstPageState extends State<FirstFillPage> {
     );
   }
 
-
-  // PROGRESO
-
-  // Widget construirIndicadorProgreso() {
-  //   final int total = objetos.length;
-  //   final int completados = respuestasCorrectas.length;
-
-  //   return Row(
-  //     children: [
-  //       Text(
-  //         'Progreso',
-  //         style: GoogleFonts.quicksand(
-  //           fontSize: 14,
-  //           fontWeight: FontWeight.bold,
-  //           color: secondaryText,
-  //         ),
-  //       ),
-
-  //       const SizedBox(width: 8),
-
-  //       Text(
-  //         '$completados/$total',
-  //         style: GoogleFonts.quicksand(
-  //           fontSize: 14,
-  //           fontWeight: FontWeight.w800,
-  //           color: themeGreen,
-  //         ),
-  //       ),
-
-  //       const SizedBox(width: 12),
-
-  //       SizedBox(
-  //         width: 170,
-  //         child: ClipRRect(
-  //           borderRadius: BorderRadius.circular(10),
-  //           child: LinearProgressIndicator(
-  //             value: total == 0 ? 0 : completados / total,
-  //             minHeight: 7,
-  //             backgroundColor: const Color(0xFFDDE8DA),
-  //             valueColor: AlwaysStoppedAnimation<Color>(themeGreen),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -485,7 +436,7 @@ class _FirstPageState extends State<FirstFillPage> {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
-                          // NIVEL 1 A LA IZQUIERDA
+                          // NIVEL 1
                           Align(
                             alignment: Alignment.topLeft,
                             child: Container(
@@ -519,9 +470,7 @@ class _FirstPageState extends State<FirstFillPage> {
                             ),
                           ),
 
-
-                          // TÍTULO + SUBTÍTULO 
-                          
+                          // TÍTULO + SUBTÍTULO
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -550,8 +499,7 @@ class _FirstPageState extends State<FirstFillPage> {
                             ],
                           ),
 
- 
-                          // PUNTOS 
+                          // PUNTOS
                           Align(
                             alignment: Alignment.topRight,
                             child: Container(
@@ -593,12 +541,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
                     const SizedBox(height: 14),
 
-                    // PROGRESO
-                    //Center(child: construirIndicadorProgreso()),
 
-                    const SizedBox(height: 20),
-
-  
                     Expanded(
                       child: Column(
                         children: [
@@ -607,7 +550,6 @@ class _FirstPageState extends State<FirstFillPage> {
 
                           const SizedBox(height: 24),
 
-          
                           // CONTENEDORES
                           Expanded(
                             child: Center(

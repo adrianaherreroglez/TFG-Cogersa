@@ -27,6 +27,10 @@ class GameService {
         return 'assets/icons/contenedores/basura-azul.png';
       case 'verde':
         return 'assets/icons/contenedores/basura-verde.png';
+      case 'marrón':
+        return 'assets/icons/contenedores/basura-marron.png';
+      case 'gris':
+        return 'assets/icons/contenedores/basura-gris.png';
       default:
         return '';
     }
@@ -43,6 +47,10 @@ class GameService {
         return 'azul';
       case 'verde':
         return 'verde';
+      case 'marrón':
+        return 'marrón';
+      case 'gris':
+        return 'gris';
       default:
         return contenedor;
     }
@@ -56,6 +64,10 @@ class GameService {
         return const Color(0xFF42A5F5);
       case 'verde':
         return const Color(0xFF66BB6A);
+      case 'marrón':
+        return const Color.fromARGB(255, 170, 119, 77);
+      case 'gris':
+        return const Color.fromARGB(255, 188, 185, 182);
       default:
         return const Color(0xFF298133);
     }
@@ -67,21 +79,25 @@ class GameService {
     return
     [
     {
+      'articulo': 'La',
       'nombre': 'botella de plástico',
       'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
       'contenedor': 'amarillo',
     },
     {
+      'articulo': 'El',
       'nombre': 'avión de papel',
       'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
       'contenedor': 'azul',
     },
     {
+      'articulo': 'La',
       'nombre': 'botella de vidrio',
       'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
       'contenedor': 'verde',
     },
     {
+      'articulo': 'El',
       'nombre': 'papel de regalo',
       'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
       'contenedor': 'azul',
@@ -92,27 +108,32 @@ class GameService {
   List<Map<String, String>> getObjetosSegundoNivel() {
     return
     [
-      {
-      'nombre': 'platano',
+    {
+      'articulo': 'El',
+      'nombre': 'plátano',
       'imagen': 'assets/icons/objetos/marron/platano.png',
-      'contenedor': 'marron',
+      'contenedor': 'marrón',
     },
     {
+      'articulo': 'La',
       'nombre': 'espina',
       'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
-      'contenedor': 'marron',
+      'contenedor': 'marrón',
     },
     {
+      'articulo': 'El',
       'nombre': 'tarro',
       'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
       'contenedor': 'verde',
     },
     {
+      'articulo': 'La',
       'nombre': 'caja',
       'imagen': 'assets/icons/objetos/azul/caja.png',
       'contenedor': 'azul',
     },
     {
+      'articulo': 'La',
       'nombre': 'lata',
       'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
       'contenedor': 'amarillo',
@@ -123,40 +144,47 @@ class GameService {
   List<Map<String, String>> getObjetosTercerNivel() {
     return
     [
-    {
-      'nombre': 'toallitas',
-      'imagen': 'assets/icons/objetos/gris/toallitas.png',
+      {
+      'articulo': 'La',
+      'nombre': 'mascarilla',
+      'imagen': 'assets/icons/objetos/gris/mascara-medica.png',
       'contenedor': 'gris',
     },
     {
-      'nombre': 'ceramica',
+      'articulo': 'La',
+      'nombre': 'cerámica',
       'imagen': 'assets/icons/objetos/gris/ceramica.png',
       'contenedor': 'gris',
     },
     {
+      'articulo': 'La',
       'nombre': 'tirita',
       'imagen': 'assets/icons/objetos/gris/tirita.png',
       'contenedor': 'gris',
     },
     {
-      'nombre': 'periodico',
+      'articulo': 'El',
+      'nombre': 'periódico',
       'imagen': 'assets/icons/objetos/azul/periodico.png',
       'contenedor': 'azul',
     },
     {
-      'nombre': 'leche',
+      'articulo': 'El',
+      'nombre': 'brick de leche',
       'imagen': 'assets/icons/objetos/amarillo/leche.png',
       'contenedor': 'amarillo',
     },
     {
+      'articulo': 'El',
       'nombre': 'perfume',
       'imagen': 'assets/icons/objetos/verde/perfume.png',
       'contenedor': 'verde',
     },
     {
+      'articulo': 'La',
       'nombre': 'manzana',
       'imagen': 'assets/icons/objetos/marron/manzana.png',
-      'contenedor': 'marron',
+      'contenedor': 'marrón',
     },
   ];
   }

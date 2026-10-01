@@ -64,7 +64,7 @@ class _SecondPageState extends State<SecondPage> {
           objetosAzules.add(objeto['nombre']!);
         } else if (contenedor == 'verde') {
           objetosVerdes.add(objeto['nombre']!);
-        } else if (contenedor == 'marron') {
+        } else if (contenedor == 'marrón') {
           objetosMarrones.add(objeto['nombre']!);
         }
 
@@ -297,6 +297,8 @@ class _SecondPageState extends State<SecondPage> {
                         },
                       ),
 
+                      const SizedBox(width: 35),
+
                       _ContenedorReciclaje(
                         color: const Color.fromARGB(255, 146, 100, 71),
                         imagen:
@@ -306,7 +308,7 @@ class _SecondPageState extends State<SecondPage> {
                         gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('marron');
+                          comprobarRespuesta('marrón');
                         },
                       ),
 
