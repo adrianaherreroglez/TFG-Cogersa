@@ -89,7 +89,7 @@ class _ListGameState extends State<ListGame> {
                           title: 'PUNTO LIMPIO',
                           gameType: 'Fill in the Gaps',
                           onTap: () {
-                            context.go('/puntolimpio/firstlevel');
+                            context.go('/puntolimpio/fillGaps/firstlevel');
                           },
                         ),
                       ],

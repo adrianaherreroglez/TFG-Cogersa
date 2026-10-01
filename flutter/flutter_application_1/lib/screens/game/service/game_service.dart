@@ -189,4 +189,46 @@ class GameService {
   ];
   }
 
+  List<Map<String,String>> getObjetosPrimerNivelPuntoLimpio(){
+    return
+    [
+    {
+      'articulo': 'El',
+      'nombre': 'teléfono',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/telefono-inteligente.png',
+      'contenedor': 'informatica',
+    },
+    {
+      'articulo': 'El',
+      'nombre': 'microondas',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/horno-microondas.png',
+      'contenedor': 'electrodomesticos',
+    },
+    {
+      'articulo': 'El',
+      'nombre': 'cd',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/cd.png',
+      'contenedor': 'dvd',
+    },
+    {
+      'articulo': 'La',
+      'nombre': 'bombilla',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/bombilla.png',
+      'contenedor': 'iluminacion',
+    },
+    {
+      'articulo': 'La',
+      'nombre': 'batería',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/bateria.png',
+      'contenedor': 'pilas',
+    },
+    {
+      'articulo': 'El',
+      'nombre': 'cartucho',
+      'imagen': 'assets/icons/puntolimpio/primer_nivel/cartucho-de-tinta.png',
+      'contenedor': 'toner',
+    },
+    ];
+  }
+
 }
