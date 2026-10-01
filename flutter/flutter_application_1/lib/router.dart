@@ -3,9 +3,9 @@
 import 'package:go_router/go_router.dart';
 
 import 'screens/home_page.dart';
-import 'screens/game/first_page.dart';
-import 'screens/game/second_page.dart';
-import 'screens/game/third_page.dart';
+import 'screens/game/dragDrop/first_page.dart';
+import 'screens/game/dragDrop/second_page.dart';
+import 'screens/game/dragDrop/third_page.dart';
 import 'screens/results/mygame.dart';
 import 'screens/game/list_game.dart';
 import 'screens/punto_limpio_game/punto_limpio_first_level.dart';

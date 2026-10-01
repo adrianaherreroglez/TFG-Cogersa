@@ -3,11 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import 'service/game_service.dart';
-import 'service/Nivel.dart';
-import 'service/TercerNivel.dart';
+import '../service/game_service.dart';
+import '../service/tercer_nivel.dart';
 
-import '../../widgets/nav_bar.dart';
+import '../../../widgets/nav_bar.dart';
 
 class ThirdPage extends StatefulWidget {
   final int puntosPrevios;
@@ -23,7 +22,7 @@ class _ThirdPageState extends State<ThirdPage> {
   final GameService gameService = GameService();
 
   late List<Map<String, String>> objetos;
-  final Nivel nivel = TercerNivel();
+  final TercerNivel nivel = TercerNivel();
 
 
   // Índice del objeto que estamos mostrando

@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../widgets/nav_bar.dart';
-import 'service/game_service.dart';
-import 'service/Nivel.dart';
-import 'service/PrimerNivel.dart';
+import '../../../widgets/nav_bar.dart';
+import '../service/game_service.dart';
+import '../service/primer_nivel.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -19,7 +18,7 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   final GameService gameService = GameService();
-  final Nivel primerNivel = PrimerNivel();
+  final PrimerNivel primerNivel = PrimerNivel();
 
   late List<Map<String, String>> objetos;
 

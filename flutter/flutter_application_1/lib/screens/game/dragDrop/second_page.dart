@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../widgets/nav_bar.dart';
-import 'service/game_service.dart';
-import 'service/SegundoNivel.dart';
+import '../../../widgets/nav_bar.dart';
+import '../service/game_service.dart';
+import '../service/segundo_nivel.dart';
 
 class SecondPage extends StatefulWidget {
 
