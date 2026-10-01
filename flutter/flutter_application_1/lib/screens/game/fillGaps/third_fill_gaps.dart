@@ -9,10 +9,11 @@ import '../service/game_service.dart';
 import '../../../widgets/nav_bar.dart';
 
 class ThirdFillPage extends StatefulWidget {
-  const ThirdFillPage({super.key});
 
+  const ThirdFillPage({super.key, required this.puntosPrevios});
   @override
   State<ThirdFillPage> createState() => _ThirdPageState();
+  final int puntosPrevios;
 }
 
 class _ThirdPageState extends State<ThirdFillPage> {
@@ -39,6 +40,8 @@ class _ThirdPageState extends State<ThirdFillPage> {
   @override
   void initState() {
     super.initState();
+
+    puntos = widget.puntosPrevios;
 
     objetos = gameService.getObjetosTercerNivel();
     objetos.shuffle(Random());

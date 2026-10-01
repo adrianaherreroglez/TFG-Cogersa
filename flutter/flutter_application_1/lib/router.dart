@@ -68,9 +68,25 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: '/fillGaps/first', builder: (context, state) => const FirstFillPage()),
 
-    GoRoute(path: '/fillGaps/second', builder: (context, state) => const SecondFillPage()),
+    GoRoute(
+      path: '/fillGaps/second',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
 
-    GoRoute(path: '/fillGaps/third', builder: (context, state) => const ThirdFillPage()),
+        return SecondFillPage(puntosPrevios: puntos);
+      },
+    ),
+
+    GoRoute(
+      path: '/fillGaps/third',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
+
+        return ThirdFillPage(puntosPrevios: puntos);
+      },
+    ),
+
+
 
   ],
 );
