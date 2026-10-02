@@ -16,7 +16,8 @@ class PuntoLimpioFirstFillPage extends StatefulWidget {
       _PuntoLimpioFirstFillPageState();
 }
 
-class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
+class _PuntoLimpioFirstFillPageState
+    extends State<PuntoLimpioFirstFillPage> {
   final GameService gameService = GameService();
   final PrimerNivel primerNivel = PrimerNivel();
 
@@ -42,6 +43,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     super.initState();
 
     objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
+
+    // Solo se barajan los objetos.
     objetos.shuffle(Random());
   }
 
@@ -59,7 +62,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta =
+          primerNivel.sumarPuntosRespuestaCorrecta();
 
       puntos += puntosRespuesta;
 
@@ -98,10 +102,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     }
   }
 
-  // ============================================================
-  // TARJETA DEL OBJETO
-  // ============================================================
 
+  // TARJETA DEL OBJETO
   Widget construirTarjetaFrase() {
     final String nombre = objetoActual['nombre']!;
     final String articulo = objetoActual['articulo']!;
@@ -109,9 +111,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
     final bool completada = respuestaCorrectaMostrada;
 
-    final Color colorContenedor = gameService.colorContenedor(
-      contenedorCorrecto,
-    );
+    final Color colorContenedor =
+        gameService.colorContenedor(contenedorCorrecto);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
@@ -131,7 +132,10 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         key: ValueKey(indiceObjetoActual),
         width: double.infinity,
         height: 190,
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 20,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
@@ -151,6 +155,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         ),
         child: Row(
           children: [
+
             // IMAGEN DEL OBJETO
             Container(
               width: 125,
@@ -159,9 +164,14 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
               decoration: BoxDecoration(
                 color: lightGreen,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: themeGreen.withValues(alpha: 0.12)),
+                border: Border.all(
+                  color: themeGreen.withValues(alpha: 0.12),
+                ),
               ),
-              child: Image.asset(objetoActual['imagen']!, fit: BoxFit.contain),
+              child: Image.asset(
+                objetoActual['imagen']!,
+                fit: BoxFit.contain,
+              ),
             ),
 
             const SizedBox(width: 28),
@@ -184,14 +194,14 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
                   const SizedBox(height: 8),
 
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // ARTÍCULO
                       Text(
                         '$articulo ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF4F5951),
                         ),
@@ -201,7 +211,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                       Text(
                         nombre,
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w800,
                           color: themeGreen,
                         ),
@@ -211,62 +221,68 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                       Text(
                         ' va en el contenedor de ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF4F5951),
                         ),
                       ),
 
                       // HUECO
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        width: 85,
-                        height: 60,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: completada
-                              ? colorContenedor.withValues(alpha: 0.10)
-                              : const Color(0xFFF8FAF7),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
+
+                      SizedBox(
+                        width: 145,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          height: 45,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                          ),
+                          margin: const EdgeInsets.only(left: 5),
+                          decoration: BoxDecoration(
                             color: completada
-                                ? colorContenedor
-                                : themeGreen.withValues(alpha: 0.55),
-                            width: 2,
+                                ? colorContenedor.withValues(alpha: 0.10)
+                                : const Color(0xFFF8FAF7),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: completada
+                                  ? colorContenedor
+                                  : themeGreen.withValues(alpha: 0.55),
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: completada
+                                ? Text(
+                                    gameService
+                                        .nombreContenedor(
+                                          contenedorCorrecto,
+                                        )
+                                        .toUpperCase(),
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.quicksand(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w800,
+                                      color: themeGreen,
+                                    ),
+                                  )
+                                : Text(
+                                    '...',
+                                    style: GoogleFonts.quicksand(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
+                                      color: themeGreen,
+                                    ),
+                                  ),
                           ),
                         ),
-                        child: completada
-                            ? Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Text(
-                                  contenedorCorrecto.toUpperCase(),
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  '...',
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              ),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 8),
+
 
                   // MENSAJE DE ESTADO
                   AnimatedSwitcher(
@@ -292,42 +308,34 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                             ],
                           )
                         : completada
-                        ? Row(
-                            key: const ValueKey('correcto'),
-                            children: [
-                              Container(
-                                width: 22,
-                                height: 22,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFE8F5E9),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check_rounded,
-                                  color: Color(0xFF298133),
-                                  size: 15,
-                                ),
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                '+$puntosGanadosActuales puntos',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w800,
-                                  color: themeGreen,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            'Selecciona el contenedor correcto',
-                            key: const ValueKey('ayuda'),
-                            style: GoogleFonts.quicksand(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: secondaryText,
-                            ),
-                          ),
+                            ? Row(
+                                key: const ValueKey('correcto'),
+                                children: [
+                                  Container(
+                                    width: 22,
+                                    height: 22,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFE8F5E9),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.check_rounded,
+                                      color: Color(0xFF298133),
+                                      size: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 7),
+                                  Text(
+                                    '+$puntosGanadosActuales puntos',
+                                    style: GoogleFonts.quicksand(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w800,
+                                      color: themeGreen,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
                   ),
                 ],
               ),
@@ -338,17 +346,17 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     );
   }
 
-  // ============================================================
   // BOTÓN DEL CONTENEDOR
-  // ============================================================
-
   Widget construirBotonContenedor(String contenedor) {
-    final bool esRespuestaIncorrecta = respuestaIncorrecta == contenedor;
+    final bool esRespuestaIncorrecta =
+        respuestaIncorrecta == contenedor;
 
     final bool esRespuestaCorrecta =
-        respuestaCorrectaMostrada && objetoActual['contenedor'] == contenedor;
+        respuestaCorrectaMostrada &&
+        objetoActual['contenedor'] == contenedor;
 
-    final Color color = gameService.colorContenedor(contenedor);
+    final Color color =
+        gameService.colorContenedor(contenedor);
 
     return GestureDetector(
       onTap: () {
@@ -363,21 +371,23 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
           color: esRespuestaIncorrecta
               ? const Color(0xFFFFEBEE)
               : esRespuestaCorrecta
-              ? color.withValues(alpha: 0.15)
-              : Colors.black,
+                  ? color.withValues(alpha: 0.15)
+                  : Colors.black,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: esRespuestaIncorrecta
                 ? const Color(0xFFE53935)
                 : esRespuestaCorrecta
-                ? color
-                : Colors.black,
+                    ? color
+                    : Colors.black,
             width: esRespuestaCorrecta ? 3 : 1,
           ),
         ),
         child: Center(
           child: Text(
-            gameService.nombreContenedor(contenedor).toUpperCase(),
+            gameService
+                .nombreContenedor(contenedor)
+                .toUpperCase(),
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -387,8 +397,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
               color: esRespuestaIncorrecta
                   ? const Color(0xFFE53935)
                   : esRespuestaCorrecta
-                  ? color
-                  : Colors.white,
+                      ? color
+                      : Colors.white,
             ),
           ),
         ),
@@ -396,23 +406,24 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     );
   }
 
-  // ============================================================
   // TARJETA BLANCA CON LOS CONTENEDORES
-  // ============================================================
-
   Widget construirTarjetaContenedores() {
-    final List<String> contenedores = objetos
-        .map((objeto) => objeto['contenedor']!)
-        .toSet()
-        .toList();
+    final List<String> contenedoresBotones =
+        gameService.getContenedoresBotones();
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 18,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E7E0), width: 1.5),
+        border: Border.all(
+          color: const Color(0xFFE2E7E0),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -421,39 +432,18 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Text(
-            'ELIGE EL CONTENEDOR',
-            style: GoogleFonts.quicksand(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: secondaryText,
-              letterSpacing: 0.7,
+      child: Row(
+        children: contenedoresBotones.map((contenedor) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: construirBotonContenedor(contenedor),
             ),
-          ),
-
-          const SizedBox(height: 15),
-
-          // TODOS LOS BOTONES EN UNA SOLA FILA
-          Row(
-            children: contenedores.map((contenedor) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: construirBotonContenedor(contenedor),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }
-
-  // ============================================================
-  // BUILD
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
@@ -466,7 +456,12 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(55, 25, 55, 30),
+                padding: const EdgeInsets.fromLTRB(
+                  55,
+                  25,
+                  55,
+                  30,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

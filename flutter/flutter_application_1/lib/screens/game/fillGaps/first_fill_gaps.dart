@@ -313,15 +313,7 @@ class _FirstPageState extends State<FirstFillPage> {
                               ),
                             ],
                           )
-                        : Text(
-                            'Selecciona el contenedor correcto',
-                            key: const ValueKey('ayuda'),
-                            style: GoogleFonts.quicksand(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: secondaryText,
-                            ),
-                          ),
+                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

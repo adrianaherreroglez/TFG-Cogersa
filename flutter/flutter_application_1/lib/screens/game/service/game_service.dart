@@ -231,4 +231,16 @@ class GameService {
     ];
   }
 
+  List<String> getContenedoresBotones(){
+    return
+    [
+      'informatica',
+      'electrodomesticos',
+      'dvd',
+      'iluminacion',
+      'pilas',
+      'toner',
+    ];
+  }
+
 }
