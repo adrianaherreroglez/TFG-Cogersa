@@ -59,12 +59,16 @@ class _SecondPageState extends State<SecondPage> {
 
       setState(() { 
         if (contenedor == 'amarillo') {
+          objetosAmarillos.clear();
           objetosAmarillos.add(objeto['nombre']!);
         } else if (contenedor == 'azul') {
+          objetosAzules.clear();
           objetosAzules.add(objeto['nombre']!);
         } else if (contenedor == 'verde') {
+          objetosVerdes.clear();
           objetosVerdes.add(objeto['nombre']!);
         } else if (contenedor == 'marrón') {
+          objetosMarrones.clear();
           objetosMarrones.add(objeto['nombre']!);
         }
 

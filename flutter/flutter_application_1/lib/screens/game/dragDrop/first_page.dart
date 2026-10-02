@@ -54,10 +54,13 @@ class _FirstPageState extends State<FirstPage> {
 
       setState(() {
         if (contenedor == 'amarillo') {
+          objetosAmarillos.clear();
           objetosAmarillos.add(objeto['nombre']!);
         } else if (contenedor == 'azul') {
+          objetosAzules.clear();
           objetosAzules.add(objeto['nombre']!);
         } else if (contenedor == 'verde') {
+          objetosVerdes.clear();
           objetosVerdes.add(objeto['nombre']!);
         }
 
