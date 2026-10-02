@@ -39,7 +39,7 @@ class _ThirdPageState extends State<ThirdPage> {
   @override
   void initState() {
     super.initState();
-
+    puntos = widget.puntosPrevios;
     objetos = gameService.getObjetosTercerNivel();
     objetos.shuffle(Random());
   }

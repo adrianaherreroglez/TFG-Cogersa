@@ -1,115 +1,96 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/game_service.dart';
+import 'package:flutter_application_1/screens/game/service/segundo_nivel.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import '../../../widgets/nav_bar.dart' ;
+
+import '../../../widgets/nav_bar.dart';
 
 class PuntoLimpioSecondPage extends StatefulWidget {
-  const PuntoLimpioSecondPage({super.key});
+  const PuntoLimpioSecondPage({super.key, required this.puntosPrevios});
 
   @override
-  State<PuntoLimpioSecondPage> createState() => _SecondPageState();
+  State<PuntoLimpioSecondPage> createState() => _FirstPageState();
+  final int puntosPrevios;
 }
 
-class _SecondPageState extends State<PuntoLimpioSecondPage> {
-  // Lista de objetos del Punto Limpio
-  final List<Map<String, String>> objetos = [
-    {
-      'nombre': 'aceite-motor',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
-      'contenedor': 'motor',
-    },
-    {
-      'nombre': 'tambor',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/tambor.png',
-      'contenedor': 'juguetes',
-    },
-    {
-      'nombre': 'sarten',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/sarten.png',
-      'contenedor': 'metal',
-    },
-    {
-      'nombre': 'aceite-vegetal',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-vegetal.png',
-      'contenedor': 'vegetales',
-    },
-    {
-      'nombre': 'capsula-de-cafe',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/capsula-de-cafe.png',
-      'contenedor': 'capsulas',
-    },
-    {
-      'nombre': 'pintura',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
-      'contenedor': 'toxico',
-    },
-  ];
+class _FirstPageState extends State<PuntoLimpioSecondPage> {
+  
+  final GameService gameService = GameService();
+  final SegundoNivel segundoNivel = SegundoNivel();
 
-  // Lista de objetos mezclada aleatoriamente
-  late List<Map<String, String>> objetosMezclados;
+  late List<Map<String, String>> objetos;
 
-  // Índice del objeto actual
+
   int indiceObjetoActual = 0;
-
-  // Indica si el objeto está visible
+  int puntos = 0;
+  int intentos = 0;
   bool objetoVisible = true;
 
-  // PUNTOS TOTALES DE LA PARTIDA
-  int puntos = 0;
+  // Objetos que aparecen dentro de los contenedores
 
-  // INTENTOS DEL OBJETO ACTUAL
-  int intentos = 0;
+  final List<String> objetosMotor = [];
+  final List<String> objetosJuguetes = [];
+  final List<String> objetosMetal = [];
+  final List<String> objetosVegetales = [];
+  final List<String> objetosCapsulas = [];
+  final List<String> objetosToxico = [];
 
   @override
   void initState() {
     super.initState();
-
-    objetosMezclados = List.from(objetos);
-    objetosMezclados.shuffle(Random());
+    puntos = widget.puntosPrevios;
+    objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
+    objetos.shuffle(Random());
   }
 
-  // Objeto actual
+  // OBJETO ACTUAL
   Map<String, String> get objetoActual {
-    return objetosMezclados[indiceObjetoActual];
+    return objetos[indiceObjetoActual];
   }
 
-  // COMPROBAR RESPUESTA
   void comprobarRespuesta(String contenedor) {
-    // Cada vez que se intenta colocar el objeto,
-    // aumentamos el número de intentos.
     intentos++;
 
-    // Contenedor correcto
-    final contenedorCorrecto = objetoActual['contenedor'];
+    final objeto = objetoActual;
+    final contenedorCorrecto = objeto['contenedor'];
 
-    // RESPUESTA CORRECTA
     if (contenedor == contenedorCorrecto) {
-      // Puntos que gana según el intento
-      int puntosGanados = 0;
-
-      if (intentos == 1) {
-        puntosGanados = 30;
-      } else if (intentos == 2) {
-        puntosGanados = 20;
-      } else if (intentos == 3) {
-        puntosGanados = 10;
-      }
-
+      puntos += segundoNivel.sumarPuntosRespuestaCorrecta();
       setState(() {
-        // Los puntos SE ACUMULAN.
-        puntos += puntosGanados;
+        // Solo mostramos el último objeto acertado
+        // dentro de cada contenedor.
+
+        if (contenedor == 'motor') {
+          objetosMotor.clear();
+          objetosMotor.add(objeto['nombre']!);
+        } else if (contenedor == 'juguetes') {
+          objetosJuguetes.clear();
+          objetosJuguetes.add(objeto['nombre']!);
+        } else if (contenedor == 'metal') {
+          objetosMetal.clear();
+          objetosMetal.add(objeto['nombre']!);
+        } else if (contenedor == 'vegetales') {
+          objetosVegetales.clear();
+          objetosVegetales.add(objeto['nombre']!);
+        } else if (contenedor == 'capsulas') {
+          objetosCapsulas.clear();
+          objetosCapsulas.add(objeto['nombre']!);
+        } else if (contenedor == 'toxico') {
+          objetosToxico.clear();
+          objetosToxico.add(objeto['nombre']!);
+        }
 
         // Pasamos al siguiente objeto
         indiceObjetoActual++;
 
-        // El contador de intentos empieza de nuevo
-        // para el nuevo objeto.
+        // Reiniciamos los intentos
         intentos = 0;
 
         // Comprobamos si quedan objetos
-        if (indiceObjetoActual < objetosMezclados.length) {
+        if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
           objetoVisible = false;
@@ -117,336 +98,537 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
       });
 
       // FIN DEL NIVEL
-      if (indiceObjetoActual >= objetosMezclados.length) {
-        //print('PUNTOS FINALES: $puntos');
-
-        // Pasamos al siguiente nivel
-        context.go('/mygame', extra: puntos);
+      if (indiceObjetoActual >= objetos.length) {
+        context.go(
+          '/mygame',
+          extra: puntos,
+        );
       }
-    } else {
-      // RESPUESTA INCORRECTA
-      setState(() {
-        // El objeto continúa visible
-        objetoVisible = true;
-      });
+    }
 
-      //print('Respuesta incorrecta');
-      //print('Intento actual: $intentos');
-      //print('Puntos actuales: $puntos');
+    // RESPUESTA INCORRECTA
+    else {
+      setState(() {
+        // Mantiene el objeto visible
+        objetoVisible = true;
+
+        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
+      });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFFFAFDF4),
+      backgroundColor: const Color(0xFFFAFDF4),
 
-        child: Column(
-          children: [
-            // BARRA DE NAVEGACIÓN
-            const NavBar(),
+      body: Column(
+        children: [
+          const NavBar(),
 
-            const SizedBox(height: 30),
-
-            Text(
-              '¿A QUÉ CONTENEDOR TIRARÍAS...?',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.quicksand(
-                fontSize: 54,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF298133),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 45,
+                vertical: 10,
               ),
-            ),
 
-            const SizedBox(height: 10),
+              child: Column(
+                children: [
+                  // Cabecera
+                  SizedBox(
+                    height: 70,
 
-            // PUNTOS
-            Text(
-              'Puntos: $puntos',
-              style: GoogleFonts.quicksand(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: const Color.fromARGB(255, 244, 64, 9),
-              ),
-            ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // NIVEL
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 10,
+                          ),
 
-            const SizedBox(height: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD8EDD5),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
 
-            // OBJETO ARRASTRABLE
-            if (objetoVisible && indiceObjetoActual < objetosMezclados.length)
-              Draggable<String>(
-                data: objetoActual['nombre']!,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.flag_rounded,
+                                color: Color(0xFF298133),
+                                size: 22,
+                              ),
 
-                // Imagen mientras se arrastra
-                feedback: Image.asset(
-                  objetoActual['imagen']!,
-                  width: 90,
-                  height: 90,
-                ),
+                              const SizedBox(width: 8),
 
-                // Imagen que queda en la posición original
-                childWhenDragging: Opacity(
-                  opacity: 0.0,
-                  child: Image.asset(
-                    objetoActual['imagen']!,
-                    width: 90,
-                    height: 90,
+                              Text(
+                                'NIVEL 2',
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF298133),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 28),
+
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '¡RECICLA ESTE OBJETO!',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF298133),
+                                    height: 1,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 5),
+
+                                Text(
+                                  'Arrastra el objeto hasta el contenedor correcto',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF5D7A61),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 28),
+
+                        // PUNTOS
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 10,
+                          ),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.star_rounded,
+                                color: Color(0xFFFFB300),
+                                size: 25,
+                              ),
+
+                              const SizedBox(width: 7),
+
+                              Text(
+                                '$puntos puntos',
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF5D7A61),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                // Imagen normal
-                child: Image.asset(
-                  objetoActual['imagen']!,
-                  width: 90,
-                  height: 90,
-                ),
+                  // OBJETO ARRASTRABLE
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+
+                      child: objetoVisible &&
+                              indiceObjetoActual <
+                                  objetos.length
+                          ? _ObjetoArrastrable(
+                              imagen: objetoActual['imagen']!,
+                              nombre: objetoActual['nombre']!,
+                            )
+                          : const SizedBox(),
+                    ),
+                  ),
+
+  
+                  // CONTENEDORES
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // MOTOR
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: ' MOTOR',
+                        objetos: objetosMotor,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('motor');
+                        },
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      // JUGUETES
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: 'JUGUETES',
+                        objetos: objetosJuguetes,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('juguetes');
+                        },
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      // METAL
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: 'METAL',
+                        objetos: objetosMetal,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('metal');
+                        },
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      // VEGETALES
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: 'VEGETALES',
+                        objetos: objetosVegetales,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('vegetales');
+                        },
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      // CÁPSULAS
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: 'CÁPSULAS',
+                        objetos: objetosCapsulas,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('capsulas');
+                        },
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      // PILAS
+                      _ContenedorPuntoLimpio(
+                        color: const Color.fromARGB(255, 167, 164, 154),
+                        imagen:
+                            'assets/icons/contenedores/contenedor-de-basura.png',
+                        nombre: 'TÓXICO',
+                        objetos: objetosToxico,
+                        todosLosObjetos: objetos,
+                        onAccept: () {
+                          comprobarRespuesta('toxico');
+                        },
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+                ],
               ),
-
-            const Spacer(),
-
-            // CONTENEDORES
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // CONTENEDOR ACEITE DE MOTOR
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('motor');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'ACEITE DE MOTOR',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-                const SizedBox(width: 20),
-
-                // CONTENEDOR JUGUETES
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('juguetes');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'JUGUETES',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-                const SizedBox(width: 20),
-
-                // METAL HOGAR
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('metal');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'METAL HOGAR',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-                // CONTENEDOR ACEITES VEGETALES
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('vegetales');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'ACEITES VEGETALES',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-                // CÁPSULAS CAFÉ Y TÉ
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('capsulas');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'CÁPSULAS CAFÉ Y TÉ',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-                // CONTENEDOR TÓXICO HOGAR
-                DragTarget<String>(
-                  onAcceptWithDetails: (details) {
-                    comprobarRespuesta('toxico');
-                  },
-
-                  builder:
-                      (
-                        BuildContext context,
-                        List<String?> candidateData,
-                        List<dynamic> rejectedData,
-                      ) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/icons/contenedores/contenedor-de-basura.png',
-                              width: 180,
-                              height: 180,
-                            ),
-
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                'TÓXICO HOGAR',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                ),
-
-
-              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+
+// OBJETO ARRASTRABLE
+
+class _ObjetoArrastrable extends StatelessWidget {
+  final String imagen;
+  final String nombre;
+
+  const _ObjetoArrastrable({
+    required this.imagen,
+    required this.nombre,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Draggable<String>(
+      data: nombre,
+
+      feedback: Material(
+        color: Colors.transparent,
+
+        child: Image.asset(
+          imagen,
+          width: 100,
+          height: 100,
+          fit: BoxFit.contain,
+        ),
+      ),
+
+      childWhenDragging: Opacity(
+        opacity: 0.2,
+
+        child: _ObjetoVisual(
+          imagen: imagen,
+        ),
+      ),
+
+      child: _ObjetoVisual(
+        imagen: imagen,
+      ),
+    );
+  }
+}
+
+
+// VISUAL DEL OBJETO
+class _ObjetoVisual extends StatelessWidget {
+  final String imagen;
+
+  const _ObjetoVisual({
+    required this.imagen,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      height: 140,
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 18,
+            offset: const Offset(0, 7),
+          ),
+        ],
+      ),
+
+      padding: const EdgeInsets.all(32),
+
+      child: Image.asset(
+        imagen,
+        width: 115,
+        height: 115,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+
+// CONTENEDOR DEL PUNTO LIMPIO
+class _ContenedorPuntoLimpio extends StatefulWidget {
+  final Color color;
+  final String imagen;
+  final String nombre;
+
+  final List<String> objetos;
+  final List<Map<String, String>> todosLosObjetos;
+
+  final VoidCallback onAccept;
+
+  const _ContenedorPuntoLimpio({
+    required this.color,
+    required this.imagen,
+    required this.nombre,
+    required this.objetos,
+    required this.todosLosObjetos,
+    required this.onAccept,
+  });
+
+  @override
+  State<_ContenedorPuntoLimpio> createState() =>
+      _ContenedorPuntoLimpioState();
+}
+
+class _ContenedorPuntoLimpioState
+    extends State<_ContenedorPuntoLimpio> {
+  bool isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return DragTarget<String>(
+      onWillAcceptWithDetails: (details) {
+        setState(() {
+          isHovering = true;
+        });
+
+        return true;
+      },
+
+      onLeave: (_) {
+        setState(() {
+          isHovering = false;
+        });
+      },
+
+      onAcceptWithDetails: (details) {
+        setState(() {
+          isHovering = false;
+        });
+
+        widget.onAccept();
+      },
+
+      builder: (
+        BuildContext context,
+        List<String?> candidateData,
+        List<dynamic> rejectedData,
+      ) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+
+          transform: Matrix4.translationValues(
+            0,
+            isHovering ? -8 : 0,
+            0,
+          ),
+
+          width: 175,
+          height: 225,
+
+          decoration: BoxDecoration(
+            color: isHovering
+                ? widget.color.withValues(alpha: 0.18)
+                : Colors.transparent,
+
+            borderRadius: BorderRadius.circular(25),
+
+            border: Border.all(
+              color: isHovering
+                  ? widget.color
+                  : Colors.transparent,
+              width: 3,
+            ),
+
+            boxShadow: isHovering
+                ? [
+                    BoxShadow(
+                      color: widget.color.withValues(alpha: 0.35),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : [],
+          ),
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              SizedBox(
+                width: 165,
+                height: 165,
+
+                child: Stack(
+                  alignment: Alignment.center,
+
+                  children: [
+                    Image.asset(
+                      widget.imagen,
+                      width: 165,
+                      height: 165,
+                      fit: BoxFit.contain,
+                    ),
+
+                    // ÚLTIMO OBJETO CORRECTO
+                    if (widget.objetos.isNotEmpty)
+                      Image.asset(
+                        _buscarImagenObjeto(
+                          widget.objetos.last,
+                        ),
+                        width: 55,
+                        height: 55,
+                        fit: BoxFit.contain,
+                      ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 2),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+
+                child: Text(
+                  widget.nombre,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+
+                  style: GoogleFonts.quicksand(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+  // BUSCAR IMAGEN DEL OBJETO
+  String _buscarImagenObjeto(String nombre) {
+    final objeto = widget.todosLosObjetos.firstWhere(
+      (objeto) => objeto['nombre'] == nombre,
+      orElse: () => {},
+    );
+
+    return objeto['imagen'] ?? '';
   }
 }

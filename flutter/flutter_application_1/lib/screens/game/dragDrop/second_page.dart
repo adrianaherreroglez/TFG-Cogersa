@@ -39,7 +39,7 @@ class _SecondPageState extends State<SecondPage> {
   @override
   void initState() {
     super.initState();
-
+    puntos = widget.puntosPrevios;
     objetos = gameService.getObjetosSegundoNivel();
     objetos.shuffle(Random());
   }

@@ -7,7 +7,7 @@ class PrimerNivel {
     return 30;
 
   }
-
+ 
  
   int restarPuntosRespuestaIncorrecta(){
 

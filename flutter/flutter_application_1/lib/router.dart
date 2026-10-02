@@ -66,7 +66,15 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: '/puntolimpio/firstlevel', builder: (context, state) => const PuntoLimpioFirstPage()),
 
-    GoRoute(path: '/puntolimpio/secondlevel', builder: (context, state) => const PuntoLimpioSecondPage()),
+   
+    GoRoute(
+      path: '/puntolimpio/secondlevel',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
+
+        return PuntoLimpioSecondPage(puntosPrevios: puntos);
+      },
+    ),
 
     GoRoute(path: '/puntolimpio/fillGaps/firstlevel', builder: (context, state) => const PuntoLimpioFirstFillPage()),
 
