@@ -2,23 +2,24 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
-import 'package:flutter_application_1/screens/game/service/primer_nivel.dart';
+import 'package:flutter_application_1/screens/game/service/segundo_nivel.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../widgets/nav_bar.dart';
 
-class PuntoLimpioFirstFillPage extends StatefulWidget {
-  const PuntoLimpioFirstFillPage({super.key});
+class PuntoLimpioSecondFillPage extends StatefulWidget {
+  const PuntoLimpioSecondFillPage({super.key, required this.puntosPrevios});
 
   @override
-  State<PuntoLimpioFirstFillPage> createState() =>
-      _PuntoLimpioFirstFillPageState();
+  State<PuntoLimpioSecondFillPage> createState() =>
+      _PuntoLimpioSecondFillPageState();
+  final int puntosPrevios;
 }
 
-class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
+class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   final GameService gameService = GameService();
-  final PrimerNivel primerNivel = PrimerNivel();
+  final SegundoNivel segundoNivel = SegundoNivel();
 
   late List<Map<String, String>> objetos;
 
@@ -40,10 +41,11 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
   @override
   void initState() {
     super.initState();
+    puntos = widget.puntosPrevios;
 
-    objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
+    objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
 
-    // Solo se barajan los objetos.
+
     objetos.shuffle(Random());
   }
 
@@ -61,7 +63,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta = segundoNivel.sumarPuntosRespuestaCorrecta();
 
       puntos += puntosRespuesta;
 
@@ -78,7 +80,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/puntolimpio/fillGaps/secondLevel', extra: puntos);
+          context.go('/mygame', extra: puntos);
           return;
         }
 
@@ -93,7 +95,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
       });
@@ -387,7 +389,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
   // TARJETA BLANCA CON LOS CONTENEDORES
   Widget construirTarjetaContenedores() {
     final List<String> contenedoresBotones = gameService
-        .getContenedoresBotonesPrimerNivel();
+        .getContenedoresBotonesSegundoNivel();
 
     return Container(
       width: double.infinity,
@@ -438,7 +440,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
-                          // NIVEL 1
+                          // NIVEL 2
                           Align(
                             alignment: Alignment.topLeft,
                             child: Container(
@@ -460,7 +462,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                                   ),
                                   const SizedBox(width: 7),
                                   Text(
-                                    'NIVEL 1',
+                                    'NIVEL 2',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,

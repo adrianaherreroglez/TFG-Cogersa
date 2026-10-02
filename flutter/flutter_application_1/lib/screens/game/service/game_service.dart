@@ -231,7 +231,49 @@ class GameService {
     ];
   }
 
-  List<String> getContenedoresBotones(){
+  List<Map<String,String>> getObjetosSegundoNivelPuntoLimpio(){
+    return 
+    [
+    {
+      'articulo': 'La',
+      'nombre': 'aceite de motor',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
+      'contenedor': 'motor',
+    },
+    {
+      'articulo': 'El',
+      'nombre': 'tambor',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/tambor.png',
+      'contenedor': 'juguetes',
+    },
+    {
+      'articulo': 'La',
+      'nombre': 'sartén',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/sarten.png',
+      'contenedor': 'metal',
+    },
+    {
+      'articulo': 'El',
+      'nombre': 'aceite vegetal',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-vegetal.png',
+      'contenedor': 'vegetales',
+    },
+    {
+      'articulo': 'La',
+      'nombre': 'cápsula de café',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/capsula-de-cafe.png',
+      'contenedor': 'capsulas',
+    },
+    {
+      'articulo': 'La',
+      'nombre': 'pintura',
+      'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
+      'contenedor': 'toxico',
+    },
+    ];
+  }
+
+  List<String> getContenedoresBotonesPrimerNivel(){
     return
     [
       'informatica',
@@ -240,6 +282,18 @@ class GameService {
       'iluminacion',
       'pilas',
       'toner',
+    ];
+  }
+
+  List<String> getContenedoresBotonesSegundoNivel(){
+    return
+    [
+      'motor',
+      'juguetes',
+      'metal',
+      'vegetales',
+      'capsulas',
+      'toxico',
     ];
   }
 

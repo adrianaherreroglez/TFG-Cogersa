@@ -1,6 +1,5 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
-import 'package:flutter_application_1/screens/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/home_page.dart';
@@ -11,6 +10,8 @@ import 'screens/results/mygame.dart';
 import 'screens/game/list_game.dart';
 import 'screens/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
 import 'screens/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
+import 'screens/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
+import 'screens/punto_limpio_game/fillGaps/punto_limpio_fill_second_level.dart';
 import 'screens/game/fillGaps/first_fill_gaps.dart';
 import 'screens/game/fillGaps/second_fill_gaps.dart';
 import 'screens/game/fillGaps/third_fill_gaps.dart';
@@ -69,6 +70,15 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: '/puntolimpio/fillGaps/firstlevel', builder: (context, state) => const PuntoLimpioFirstFillPage()),
 
+
+  GoRoute(
+      path: '/puntolimpio/fillGaps/secondLevel',
+      builder: (context, state) {
+        final puntos = state.extra as int? ?? 0;
+
+        return PuntoLimpioSecondFillPage(puntosPrevios: puntos);
+      },
+    ),
 
     GoRoute(path: '/fillGaps/first', builder: (context, state) => const FirstFillPage()),
 
