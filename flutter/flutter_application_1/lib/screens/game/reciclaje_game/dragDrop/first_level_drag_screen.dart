@@ -1,52 +1,46 @@
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
-import 'package:flutter_application_1/screens/game/service/segundo_nivel.dart';
+import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../widgets/nav_bar.dart';
 
-class PuntoLimpioSecondPage extends StatefulWidget {
-  const PuntoLimpioSecondPage({super.key, required this.puntosPrevios});
+
+
+class FirstPage extends StatefulWidget {
+  const FirstPage({super.key});
 
   @override
-  State<PuntoLimpioSecondPage> createState() => _FirstPageState();
-  final int puntosPrevios;
+  State<FirstPage> createState() => _FirstPageState();
 }
 
-class _FirstPageState extends State<PuntoLimpioSecondPage> {
-  
+class _FirstPageState extends State<FirstPage> {
   final GameService gameService = GameService();
-  final SegundoNivel segundoNivel = SegundoNivel();
+  final PrimerNivel primerNivel = PrimerNivel();
 
   late List<Map<String, String>> objetos;
-
 
   int indiceObjetoActual = 0;
   int puntos = 0;
   int intentos = 0;
   bool objetoVisible = true;
 
-  // Objetos que aparecen dentro de los contenedores
-
-  final List<String> objetosMotor = [];
-  final List<String> objetosJuguetes = [];
-  final List<String> objetosMetal = [];
-  final List<String> objetosVegetales = [];
-  final List<String> objetosCapsulas = [];
-  final List<String> objetosToxico = [];
+  final List<String> objetosAmarillos = [];
+  final List<String> objetosAzules = [];
+  final List<String> objetosVerdes = [];
 
   @override
   void initState() {
     super.initState();
-    puntos = widget.puntosPrevios;
-    objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
+
+    objetos = gameService.getObjetosPrimerNivel();
     objetos.shuffle(Random());
   }
 
-  // OBJETO ACTUAL
   Map<String, String> get objetoActual {
     return objetos[indiceObjetoActual];
   }
@@ -58,38 +52,23 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      puntos += segundoNivel.sumarPuntosRespuestaCorrecta();
-      setState(() {
-        // Solo mostramos el último objeto acertado
-        // dentro de cada contenedor.
+      puntos += primerNivel.sumarPuntosRespuestaCorrecta();
 
-        if (contenedor == 'motor') {
-          objetosMotor.clear();
-          objetosMotor.add(objeto['nombre']!);
-        } else if (contenedor == 'juguetes') {
-          objetosJuguetes.clear();
-          objetosJuguetes.add(objeto['nombre']!);
-        } else if (contenedor == 'metal') {
-          objetosMetal.clear();
-          objetosMetal.add(objeto['nombre']!);
-        } else if (contenedor == 'vegetales') {
-          objetosVegetales.clear();
-          objetosVegetales.add(objeto['nombre']!);
-        } else if (contenedor == 'capsulas') {
-          objetosCapsulas.clear();
-          objetosCapsulas.add(objeto['nombre']!);
-        } else if (contenedor == 'toxico') {
-          objetosToxico.clear();
-          objetosToxico.add(objeto['nombre']!);
+      setState(() {
+        if (contenedor == 'amarillo') {
+          objetosAmarillos.clear();
+          objetosAmarillos.add(objeto['nombre']!);
+        } else if (contenedor == 'azul') {
+          objetosAzules.clear();
+          objetosAzules.add(objeto['nombre']!);
+        } else if (contenedor == 'verde') {
+          objetosVerdes.clear();
+          objetosVerdes.add(objeto['nombre']!);
         }
 
-        // Pasamos al siguiente objeto
         indiceObjetoActual++;
-
-        // Reiniciamos los intentos
         intentos = 0;
 
-        // Comprobamos si quedan objetos
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
@@ -97,26 +76,20 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
         }
       });
 
-      // FIN DEL NIVEL
       if (indiceObjetoActual >= objetos.length) {
         context.go(
-          '/mygame',
+          '/second',
           extra: puntos,
         );
       }
-    }
+    } else {
+      puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
 
-    // RESPUESTA INCORRECTA
-    else {
       setState(() {
-        // Mantiene el objeto visible
         objetoVisible = true;
-
-        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +109,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
 
               child: Column(
                 children: [
-                  // Cabecera
+                  // CABECERA
                   SizedBox(
                     height: 70,
 
@@ -167,7 +140,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                               const SizedBox(width: 8),
 
                               Text(
-                                'NIVEL 2',
+                                'NIVEL 1',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -180,6 +153,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
 
                         const SizedBox(width: 28),
 
+                        // TÍTULO Y SUBTÍTULO
                         Expanded(
                           child: Center(
                             child: Column(
@@ -261,112 +235,63 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                     ),
                   ),
 
-                  // OBJETO ARRASTRABLE
+                  // OBJETO
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
-
                       child: objetoVisible &&
-                              indiceObjetoActual <
-                                  objetos.length
+                              indiceObjetoActual < objetos.length
                           ? _ObjetoArrastrable(
                               imagen: objetoActual['imagen']!,
-                              nombre: objetoActual['nombre']!,
                             )
                           : const SizedBox(),
                     ),
                   ),
 
-  
                   // CONTENEDORES
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // MOTOR
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFFFFD740),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: ' MOTOR',
-                        objetos: objetosMotor,
+                            'assets/icons/contenedores/basura-amarilla.png',
+                        nombre: 'AMARILLO',
+                        objetos: objetosAmarillos,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('motor');
+                          comprobarRespuesta('amarillo');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // JUGUETES
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFF42A5F5),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'JUGUETES',
-                        objetos: objetosJuguetes,
+                            'assets/icons/contenedores/basura-azul.png',
+                        nombre: 'AZUL',
+                        objetos: objetosAzules,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('juguetes');
+                          comprobarRespuesta('azul');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // METAL
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFF66BB6A),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'METAL',
-                        objetos: objetosMetal,
+                            'assets/icons/contenedores/basura-verde.png',
+                        nombre: 'VERDE',
+                        objetos: objetosVerdes,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('metal');
-                        },
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // VEGETALES
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
-                        imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'VEGETALES',
-                        objetos: objetosVegetales,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('vegetales');
-                        },
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // CÁPSULAS
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
-                        imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'CÁPSULAS',
-                        objetos: objetosCapsulas,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('capsulas');
-                        },
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      // PILAS
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
-                        imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'TÓXICO',
-                        objetos: objetosToxico,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('toxico');
+                          comprobarRespuesta('verde');
                         },
                       ),
                     ],
@@ -385,21 +310,19 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
 
 
 // OBJETO ARRASTRABLE
-
 class _ObjetoArrastrable extends StatelessWidget {
   final String imagen;
-  final String nombre;
 
   const _ObjetoArrastrable({
     required this.imagen,
-    required this.nombre,
   });
 
   @override
   Widget build(BuildContext context) {
     return Draggable<String>(
-      data: nombre,
+      data: imagen,
 
+      // Tamaño del objeto cuando lo estamos arrastrando
       feedback: Material(
         color: Colors.transparent,
 
@@ -467,33 +390,38 @@ class _ObjetoVisual extends StatelessWidget {
 }
 
 
-// CONTENEDOR DEL PUNTO LIMPIO
-class _ContenedorPuntoLimpio extends StatefulWidget {
+// CONTENEDOR DE RECICLAJE
+class _ContenedorReciclaje extends StatefulWidget {
   final Color color;
   final String imagen;
   final String nombre;
 
   final List<String> objetos;
+
+  final GameService gameService;
   final List<Map<String, String>> todosLosObjetos;
 
   final VoidCallback onAccept;
 
-  const _ContenedorPuntoLimpio({
+  const _ContenedorReciclaje({
     required this.color,
     required this.imagen,
     required this.nombre,
     required this.objetos,
+    required this.gameService,
     required this.todosLosObjetos,
     required this.onAccept,
   });
 
   @override
-  State<_ContenedorPuntoLimpio> createState() =>
-      _ContenedorPuntoLimpioState();
+  State<_ContenedorReciclaje> createState() =>
+      _ContenedorReciclajeState();
 }
 
-class _ContenedorPuntoLimpioState
-    extends State<_ContenedorPuntoLimpio> {
+
+class _ContenedorReciclajeState
+    extends State<_ContenedorReciclaje> {
+
   bool isHovering = false;
 
   @override
@@ -535,8 +463,8 @@ class _ContenedorPuntoLimpioState
             0,
           ),
 
-          width: 175,
-          height: 225,
+          width: 205,
+          height: 245,
 
           decoration: BoxDecoration(
             color: isHovering
@@ -568,8 +496,8 @@ class _ContenedorPuntoLimpioState
 
             children: [
               SizedBox(
-                width: 165,
-                height: 165,
+                width: 180,
+                height: 180,
 
                 child: Stack(
                   alignment: Alignment.center,
@@ -577,58 +505,51 @@ class _ContenedorPuntoLimpioState
                   children: [
                     Image.asset(
                       widget.imagen,
-                      width: 165,
-                      height: 165,
+                      width: 180,
+                      height: 180,
                       fit: BoxFit.contain,
                     ),
 
-                    // ÚLTIMO OBJETO CORRECTO
                     if (widget.objetos.isNotEmpty)
-                      Image.asset(
-                        _buscarImagenObjeto(
-                          widget.objetos.last,
-                        ),
-                        width: 55,
-                        height: 55,
-                        fit: BoxFit.contain,
+                      ...widget.objetos.take(3).map(
+                        (nombreObjeto) {
+                          final imagenObjeto =
+                              widget.gameService.imagenDelObjeto(
+                            nombreObjeto,
+                            widget.todosLosObjetos,
+                          );
+
+                          if (imagenObjeto == null) {
+                            return const SizedBox();
+                          }
+
+                          return Image.asset(
+                            imagenObjeto,
+                            width: 55,
+                            height: 55,
+                            fit: BoxFit.contain,
+                          );
+                        },
                       ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-
-                child: Text(
-                  widget.nombre,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-
-                  style: GoogleFonts.quicksand(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF298133),
-                  ),
+              Text(
+                widget.nombre,
+                style: GoogleFonts.quicksand(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF298133),
                 ),
               ),
+
             ],
           ),
         );
       },
     );
-  }
-
-
-  // BUSCAR IMAGEN DEL OBJETO
-  String _buscarImagenObjeto(String nombre) {
-    final objeto = widget.todosLosObjetos.firstWhere(
-      (objeto) => objeto['nombre'] == nombre,
-      orElse: () => {},
-    );
-
-    return objeto['imagen'] ?? '';
   }
 }

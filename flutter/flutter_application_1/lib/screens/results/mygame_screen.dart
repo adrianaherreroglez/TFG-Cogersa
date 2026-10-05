@@ -23,7 +23,6 @@ class _MyGameState extends State<MyGame> {
             // BARRA DE NAVEGACIÓN
             const NavBar(),
 
-            // Mirar por qué aqui cambia la separación de la barra de navegacion
             const SizedBox(height: 30),
 
             // TÍTULOS

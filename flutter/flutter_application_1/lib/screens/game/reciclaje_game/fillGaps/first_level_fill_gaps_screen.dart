@@ -2,24 +2,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
-import 'package:flutter_application_1/screens/game/service/segundo_nivel.dart';
+import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../widgets/nav_bar.dart';
 
-class PuntoLimpioSecondFillPage extends StatefulWidget {
-  const PuntoLimpioSecondFillPage({super.key, required this.puntosPrevios});
+
+class FirstFillPage extends StatefulWidget {
+  const FirstFillPage({super.key});
 
   @override
-  State<PuntoLimpioSecondFillPage> createState() =>
-      _PuntoLimpioSecondFillPageState();
-  final int puntosPrevios;
+  State<FirstFillPage> createState() => _FirstPageState();
 }
 
-class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
+class _FirstPageState extends State<FirstFillPage> {
   final GameService gameService = GameService();
-  final SegundoNivel segundoNivel = SegundoNivel();
+  final PrimerNivel primerNivel = PrimerNivel();
 
   late List<Map<String, String>> objetos;
 
@@ -41,11 +40,8 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   @override
   void initState() {
     super.initState();
-    puntos = widget.puntosPrevios;
 
-    objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
-
-
+    objetos = gameService.getObjetosPrimerNivel();
     objetos.shuffle(Random());
   }
 
@@ -63,7 +59,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = segundoNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
 
       puntos += puntosRespuesta;
 
@@ -80,7 +76,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/mygame', extra: puntos);
+          context.go('/fillGaps/second', extra: puntos);
           return;
         }
 
@@ -95,14 +91,14 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
+        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
       });
     }
   }
 
-  // TARJETA DEL OBJETO
+  // TARJETA DEL OBJETO Y FRASE ACTUAL
   Widget construirTarjetaFrase() {
     final String nombre = objetoActual['nombre']!;
     final String articulo = objetoActual['articulo']!;
@@ -185,53 +181,53 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
 
                   const SizedBox(height: 8),
 
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      // ARTÍCULO
+                      // Artículo
                       Text(
                         '$articulo ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 19,
+                          fontSize: 21,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF4F5951),
                         ),
                       ),
 
-                      // NOMBRE
+                      //Nombre
                       Text(
                         nombre,
                         style: GoogleFonts.quicksand(
-                          fontSize: 19,
+                          fontSize: 21,
                           fontWeight: FontWeight.w800,
                           color: themeGreen,
                         ),
                       ),
 
-                      // TEXTO
+                      // va en el contenedor
                       Text(
-                        ' va en el contenedor de ',
+                        ' va en el contenedor ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 19,
+                          fontSize: 21,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF4F5951),
                         ),
                       ),
 
                       // HUECO
-
-                      // HUECO
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
-                        width: 180,
-                        height: 50,
-                        margin: const EdgeInsets.only(left: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        width: 85,
+                        height: 60,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: completada
                               ? colorContenedor.withValues(alpha: 0.10)
                               : const Color(0xFFF8FAF7),
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(15),
                           border: Border.all(
                             color: completada
                                 ? colorContenedor
@@ -239,35 +235,33 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                             width: 2,
                           ),
                         ),
-                        child: Center(
-                          child: completada
-                              ? Text(
-                                  gameService
-                                      .nombreContenedor(contenedorCorrecto)
-                                      .toUpperCase(),
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
+                        child: completada
+                            ? Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Image.asset(
+                                  gameService.imagenContenedor(
+                                    contenedorCorrecto,
                                   ),
-                                )
-                              : Text(
+                                  fit: BoxFit.contain,
+                                ),
+                              )
+                            : Center(
+                                child: Text(
                                   '...',
                                   style: GoogleFonts.quicksand(
-                                    fontSize: 22,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.w800,
                                     color: themeGreen,
+                                    letterSpacing: 2,
                                   ),
                                 ),
-                        ),
+                              ),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 8),
+
 
                   // MENSAJE DE ESTADO
                   AnimatedSwitcher(
@@ -331,8 +325,8 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     );
   }
 
-  // BOTÓN DEL CONTENEDOR
-  Widget construirBotonContenedor(String contenedor) {
+  // CONTENEDOR
+  Widget construirContenedor(String contenedor) {
     final bool esRespuestaIncorrecta = respuestaIncorrecta == contenedor;
 
     final bool esRespuestaCorrecta =
@@ -348,73 +342,68 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        height: 50,
+        width: 190,
+        height: 165,
         decoration: BoxDecoration(
           color: esRespuestaIncorrecta
               ? const Color(0xFFFFEBEE)
               : esRespuestaCorrecta
-              ? color.withValues(alpha: 0.15)
-              : Colors.black,
-          borderRadius: BorderRadius.circular(14),
+              ? color.withValues(alpha: 0.10)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: esRespuestaIncorrecta
                 ? const Color(0xFFE53935)
                 : esRespuestaCorrecta
                 ? color
-                : Colors.black,
-            width: esRespuestaCorrecta ? 3 : 1,
+                : color.withValues(alpha: 0.40),
+            width: esRespuestaCorrecta ? 3 : 2,
           ),
-        ),
-        child: Center(
-          child: Text(
-            gameService.nombreContenedor(contenedor).toUpperCase(),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.quicksand(
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
+          boxShadow: [
+            BoxShadow(
               color: esRespuestaIncorrecta
-                  ? const Color(0xFFE53935)
-                  : esRespuestaCorrecta
-                  ? color
-                  : Colors.white,
+                  ? Colors.red.withValues(alpha: 0.12)
+                  : Colors.black.withValues(alpha: 0.045),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-          ),
+          ],
         ),
-      ),
-    );
-  }
-
-  // TARJETA BLANCA CON LOS CONTENEDORES
-  Widget construirTarjetaContenedores() {
-    final List<String> contenedoresBotones = gameService
-        .getContenedoresBotonesSegundoNivel();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E7E0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: contenedoresBotones.map((contenedor) {
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: construirBotonContenedor(contenedor),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 95,
+              height: 95,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.07),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  gameService.imagenContenedor(contenedor),
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
-          );
-        }).toList(),
+
+            const SizedBox(height: 6),
+
+            Text(
+              gameService.nombreContenedor(contenedor).toUpperCase(),
+              style: GoogleFonts.quicksand(
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                color: esRespuestaIncorrecta
+                    ? const Color(0xFFE53935)
+                    : esRespuestaCorrecta
+                    ? color
+                    : secondaryText,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -440,7 +429,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
-                          // NIVEL 2
+                          // NIVEL 1
                           Align(
                             alignment: Alignment.topLeft,
                             child: Container(
@@ -462,7 +451,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                                   ),
                                   const SizedBox(width: 7),
                                   Text(
-                                    'NIVEL 2',
+                                    'NIVEL 1',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
@@ -488,7 +477,9 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                                   height: 1,
                                 ),
                               ),
+
                               const SizedBox(height: 5),
+
                               Text(
                                 'Completa cada frase eligiendo el contenedor correcto',
                                 textAlign: TextAlign.center,
@@ -541,15 +532,42 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 14),
 
-                    // TARJETA DEL OBJETO
-                    construirTarjetaFrase(),
 
-                    const SizedBox(height: 20),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          // TARJETA DEL OBJETO
+                          construirTarjetaFrase(),
 
-                    // TARJETA BLANCA DE CONTENEDORES
-                    construirTarjetaContenedores(),
+                          const SizedBox(height: 24),
+
+                          // CONTENEDORES
+                          Expanded(
+                            child: Center(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    construirContenedor('amarillo'),
+
+                                    const SizedBox(width: 25),
+
+                                    construirContenedor('azul'),
+
+                                    const SizedBox(width: 25),
+
+                                    construirContenedor('verde'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -2,50 +2,49 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
-import 'package:flutter_application_1/screens/game/service/primer_nivel.dart';
+import 'package:flutter_application_1/screens/game/service/tercer_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../widgets/nav_bar.dart';
 
-class PuntoLimpioFirstPage extends StatefulWidget {
-  const PuntoLimpioFirstPage({super.key});
+
+class ThirdPage extends StatefulWidget {
+
+  const ThirdPage({super.key, required this.puntosPrevios});
 
   @override
-  State<PuntoLimpioFirstPage> createState() => _FirstPageState();
+  State<ThirdPage> createState() => _ThirdPageState();
+  final int puntosPrevios;
+
+  
 }
 
-class _FirstPageState extends State<PuntoLimpioFirstPage> {
-  
+class _ThirdPageState extends State<ThirdPage> {
   final GameService gameService = GameService();
-  final PrimerNivel primerNivel = PrimerNivel();
+  final TercerNivel tercerNivel = TercerNivel();
 
   late List<Map<String, String>> objetos;
-
 
   int indiceObjetoActual = 0;
   int puntos = 0;
   int intentos = 0;
   bool objetoVisible = true;
 
-  // Objetos que aparecen dentro de los contenedores
-
-  final List<String> objetosIluminacion = [];
-  final List<String> objetosElectrodomesticos = [];
-  final List<String> objetosInformatica = [];
-  final List<String> objetosToner = [];
-  final List<String> objetosDvd = [];
-  final List<String> objetosPilas = [];
+  final List<String> objetosAmarillos = [];
+  final List<String> objetosAzules = [];
+  final List<String> objetosVerdes = [];
+  final List<String> objetosMarrones = [];
+  final List<String> objetosGrises = [];
 
   @override
   void initState() {
     super.initState();
-
-    objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
+    puntos = widget.puntosPrevios;
+    objetos = gameService.getObjetosTercerNivel();
     objetos.shuffle(Random());
   }
 
-  // OBJETO ACTUAL
   Map<String, String> get objetoActual {
     return objetos[indiceObjetoActual];
   }
@@ -57,38 +56,29 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      puntos += primerNivel.sumarPuntosRespuestaCorrecta();
-      setState(() {
-        // Solo mostramos el último objeto acertado
-        // dentro de cada contenedor.
+      puntos += tercerNivel.sumarPuntosRespuestaCorrecta();
 
-        if (contenedor == 'iluminacion') {
-          objetosIluminacion.clear();
-          objetosIluminacion.add(objeto['nombre']!);
-        } else if (contenedor == 'electrodomesticos') {
-          objetosElectrodomesticos.clear();
-          objetosElectrodomesticos.add(objeto['nombre']!);
-        } else if (contenedor == 'informatica') {
-          objetosInformatica.clear();
-          objetosInformatica.add(objeto['nombre']!);
-        } else if (contenedor == 'toner') {
-          objetosToner.clear();
-          objetosToner.add(objeto['nombre']!);
-        } else if (contenedor == 'dvd') {
-          objetosDvd.clear();
-          objetosDvd.add(objeto['nombre']!);
-        } else if (contenedor == 'pilas') {
-          objetosPilas.clear();
-          objetosPilas.add(objeto['nombre']!);
+      setState(() { 
+        if (contenedor == 'amarillo') {
+          objetosAmarillos.clear();
+          objetosAmarillos.add(objeto['nombre']!);
+        } else if (contenedor == 'azul') {
+          objetosAzules.clear();
+          objetosAzules.add(objeto['nombre']!);
+        } else if (contenedor == 'verde') {
+          objetosVerdes.clear();
+          objetosVerdes.add(objeto['nombre']!);
+        } else if (contenedor == 'marrón') {
+          objetosMarrones.clear();
+          objetosMarrones.add(objeto['nombre']!);
+        } else if (contenedor == 'gris') {
+          objetosGrises.clear();
+          objetosGrises.add(objeto['nombre']!);
         }
 
-        // Pasamos al siguiente objeto
         indiceObjetoActual++;
-
-        // Reiniciamos los intentos
         intentos = 0;
 
-        // Comprobamos si quedan objetos
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
@@ -96,26 +86,20 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
         }
       });
 
-      // FIN DEL NIVEL
       if (indiceObjetoActual >= objetos.length) {
         context.go(
-          '/puntolimpio/secondlevel',
+          '/mygame',
           extra: puntos,
         );
       }
-    }
+    } else {
+      puntos -= tercerNivel.restarPuntosRespuestaIncorrecta();
 
-    // RESPUESTA INCORRECTA
-    else {
       setState(() {
-        // Mantiene el objeto visible
         objetoVisible = true;
-
-        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +119,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
 
               child: Column(
                 children: [
-                  // Cabecera
+                  // CABECERA
                   SizedBox(
                     height: 70,
 
@@ -166,7 +150,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
                               const SizedBox(width: 8),
 
                               Text(
-                                'NIVEL 1',
+                                'NIVEL 3',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -179,6 +163,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
 
                         const SizedBox(width: 28),
 
+                        // TÍTULO Y SUBTÍTULO
                         Expanded(
                           child: Center(
                             child: Column(
@@ -260,114 +245,96 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
                     ),
                   ),
 
-                  // OBJETO ARRASTRABLE
+                  // OBJETO
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
-
                       child: objetoVisible &&
-                              indiceObjetoActual <
-                                  objetos.length
+                              indiceObjetoActual < objetos.length
                           ? _ObjetoArrastrable(
                               imagen: objetoActual['imagen']!,
-                              nombre: objetoActual['nombre']!,
                             )
                           : const SizedBox(),
                     ),
                   ),
 
-  
                   // CONTENEDORES
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // ILUMINACIÓN
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFFFFD740),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'ILUMINACIÓN',
-                        objetos: objetosIluminacion,
+                            'assets/icons/contenedores/basura-amarilla.png',
+                        nombre: 'AMARILLO',
+                        objetos: objetosAmarillos,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('iluminacion');
+                          comprobarRespuesta('amarillo');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // ELECTRODOMÉSTICOS
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFF42A5F5),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'ELECTRODOMÉSTICOS',
-                        objetos: objetosElectrodomesticos,
+                            'assets/icons/contenedores/basura-azul.png',
+                        nombre: 'AZUL',
+                        objetos: objetosAzules,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('electrodomesticos');
+                          comprobarRespuesta('azul');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // INFORMÁTICA
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color(0xFF66BB6A),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'INFORMÁTICA',
-                        objetos: objetosInformatica,
+                            'assets/icons/contenedores/basura-verde.png',
+                        nombre: 'VERDE',
+                        objetos: objetosVerdes,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('informatica');
+                          comprobarRespuesta('verde');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // TÓNER Y CARTUCHOS
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color.fromARGB(255, 146, 100, 71),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'TÓNER Y CARTUCHOS',
-                        objetos: objetosToner,
+                            'assets/icons/contenedores/basura-marron.png',
+                        nombre: 'MARRÓN',
+                        objetos: objetosMarrones,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('toner');
+                          comprobarRespuesta('marrón');
                         },
                       ),
 
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 35),
 
-                      // DVD-CD
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
+                      _ContenedorReciclaje(
+                        color: const Color.fromARGB(255, 150, 154, 158),
                         imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'DVD-CD Y RADIOGRAFÍAS',
-                        objetos: objetosDvd,
+                            'assets/icons/contenedores/basura-gris.png',
+                        nombre: 'GRIS',
+                        objetos: objetosGrises,
+                        gameService: gameService,
                         todosLosObjetos: objetos,
                         onAccept: () {
-                          comprobarRespuesta('dvd');
+                          comprobarRespuesta('gris');
                         },
                       ),
 
-                      const SizedBox(width: 20),
-
-                      // PILAS
-                      _ContenedorPuntoLimpio(
-                        color: const Color.fromARGB(255, 167, 164, 154),
-                        imagen:
-                            'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'PILAS Y BATERÍAS',
-                        objetos: objetosPilas,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('pilas');
-                        },
-                      ),
                     ],
                   ),
 
@@ -384,21 +351,19 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
 
 
 // OBJETO ARRASTRABLE
-
 class _ObjetoArrastrable extends StatelessWidget {
   final String imagen;
-  final String nombre;
 
   const _ObjetoArrastrable({
     required this.imagen,
-    required this.nombre,
   });
 
   @override
   Widget build(BuildContext context) {
     return Draggable<String>(
-      data: nombre,
+      data: imagen,
 
+      // Tamaño del objeto cuando lo estamos arrastrando
       feedback: Material(
         color: Colors.transparent,
 
@@ -466,33 +431,38 @@ class _ObjetoVisual extends StatelessWidget {
 }
 
 
-// CONTENEDOR DEL PUNTO LIMPIO
-class _ContenedorPuntoLimpio extends StatefulWidget {
+// CONTENEDOR DE RECICLAJE
+class _ContenedorReciclaje extends StatefulWidget {
   final Color color;
   final String imagen;
   final String nombre;
 
   final List<String> objetos;
+
+  final GameService gameService;
   final List<Map<String, String>> todosLosObjetos;
 
   final VoidCallback onAccept;
 
-  const _ContenedorPuntoLimpio({
+  const _ContenedorReciclaje({
     required this.color,
     required this.imagen,
     required this.nombre,
     required this.objetos,
+    required this.gameService,
     required this.todosLosObjetos,
     required this.onAccept,
   });
 
   @override
-  State<_ContenedorPuntoLimpio> createState() =>
-      _ContenedorPuntoLimpioState();
+  State<_ContenedorReciclaje> createState() =>
+      _ContenedorReciclajeState();
 }
 
-class _ContenedorPuntoLimpioState
-    extends State<_ContenedorPuntoLimpio> {
+
+class _ContenedorReciclajeState
+    extends State<_ContenedorReciclaje> {
+
   bool isHovering = false;
 
   @override
@@ -534,8 +504,8 @@ class _ContenedorPuntoLimpioState
             0,
           ),
 
-          width: 175,
-          height: 225,
+          width: 205,
+          height: 245,
 
           decoration: BoxDecoration(
             color: isHovering
@@ -567,8 +537,8 @@ class _ContenedorPuntoLimpioState
 
             children: [
               SizedBox(
-                width: 165,
-                height: 165,
+                width: 180,
+                height: 180,
 
                 child: Stack(
                   alignment: Alignment.center,
@@ -576,58 +546,51 @@ class _ContenedorPuntoLimpioState
                   children: [
                     Image.asset(
                       widget.imagen,
-                      width: 165,
-                      height: 165,
+                      width: 180,
+                      height: 180,
                       fit: BoxFit.contain,
                     ),
 
-                    // ÚLTIMO OBJETO CORRECTO
                     if (widget.objetos.isNotEmpty)
-                      Image.asset(
-                        _buscarImagenObjeto(
-                          widget.objetos.last,
-                        ),
-                        width: 55,
-                        height: 55,
-                        fit: BoxFit.contain,
+                      ...widget.objetos.take(3).map(
+                        (nombreObjeto) {
+                          final imagenObjeto =
+                              widget.gameService.imagenDelObjeto(
+                            nombreObjeto,
+                            widget.todosLosObjetos,
+                          );
+
+                          if (imagenObjeto == null) {
+                            return const SizedBox();
+                          }
+
+                          return Image.asset(
+                            imagenObjeto,
+                            width: 55,
+                            height: 55,
+                            fit: BoxFit.contain,
+                          );
+                        },
                       ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-
-                child: Text(
-                  widget.nombre,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-
-                  style: GoogleFonts.quicksand(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF298133),
-                  ),
+              Text(
+                widget.nombre,
+                style: GoogleFonts.quicksand(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF298133),
                 ),
               ),
+
             ],
           ),
         );
       },
     );
-  }
-
-
-  // BUSCAR IMAGEN DEL OBJETO
-  String _buscarImagenObjeto(String nombre) {
-    final objeto = widget.todosLosObjetos.firstWhere(
-      (objeto) => objeto['nombre'] == nombre,
-      orElse: () => {},
-    );
-
-    return objeto['imagen'] ?? '';
   }
 }

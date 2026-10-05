@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
-import 'package:flutter_application_1/screens/game/service/primer_nivel.dart';
+import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../widgets/nav_bar.dart';
+
 
 class PuntoLimpioFirstFillPage extends StatefulWidget {
   const PuntoLimpioFirstFillPage({super.key});

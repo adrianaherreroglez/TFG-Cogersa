@@ -11,14 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'EcoKids', // Nombre de la pestaña
-
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.white,
-        ),
-      ),
-
-      routerConfig: router,
+      routerConfig: router, // crear el router
     );
   }
 }

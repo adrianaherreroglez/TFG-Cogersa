@@ -1,24 +1,26 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/game_service.dart';
+import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../service/tercer_nivel.dart';
-import '../service/game_service.dart';
-import '../../../widgets/nav_bar.dart';
 
-class ThirdFillPage extends StatefulWidget {
 
-  const ThirdFillPage({super.key, required this.puntosPrevios});
+class SecondFillPage extends StatefulWidget {
+
+  const SecondFillPage({super.key, required this.puntosPrevios});
+
   @override
-  State<ThirdFillPage> createState() => _ThirdPageState();
+  State<SecondFillPage> createState() => _SecondPageState();
   final int puntosPrevios;
 }
 
-class _ThirdPageState extends State<ThirdFillPage> {
+class _SecondPageState extends State<SecondFillPage> {
   final GameService gameService = GameService();
-  final TercerNivel tercerNivel = TercerNivel();
+  final SegundoNivel segundoNivel = SegundoNivel();
 
   late List<Map<String, String>> objetos;
 
@@ -40,10 +42,8 @@ class _ThirdPageState extends State<ThirdFillPage> {
   @override
   void initState() {
     super.initState();
-
     puntos = widget.puntosPrevios;
-
-    objetos = gameService.getObjetosTercerNivel();
+    objetos = gameService.getObjetosSegundoNivel();
     objetos.shuffle(Random());
   }
 
@@ -61,7 +61,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = tercerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta = segundoNivel.sumarPuntosRespuestaCorrecta();
 
       puntos += puntosRespuesta;
 
@@ -78,7 +78,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/mygame', extra: puntos);
+          context.go('/fillGaps/third', extra: puntos);
           return;
         }
 
@@ -93,7 +93,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= tercerNivel.restarPuntosRespuestaIncorrecta();
+        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
       });
@@ -431,7 +431,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
-                          // NIVEL 3
+                          // NIVEL 2
                           Align(
                             alignment: Alignment.topLeft,
                             child: Container(
@@ -453,7 +453,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
                                   ),
                                   const SizedBox(width: 7),
                                   Text(
-                                    'NIVEL 3',
+                                    'NIVEL 2',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
@@ -565,10 +565,6 @@ class _ThirdPageState extends State<ThirdFillPage> {
                                     const SizedBox(width: 25),
 
                                     construirContenedor('marrón'),
-
-                                    const SizedBox(width: 25),
-
-                                    construirContenedor('gris'),
                                   ],
                                 ),
                               ),

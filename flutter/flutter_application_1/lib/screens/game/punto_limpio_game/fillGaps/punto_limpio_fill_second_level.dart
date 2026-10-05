@@ -1,23 +1,24 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/game_service.dart';
+import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../service/segundo_nivel.dart';
-import '../service/game_service.dart';
-import '../../../widgets/nav_bar.dart';
 
-class SecondFillPage extends StatefulWidget {
-
-  const SecondFillPage({super.key, required this.puntosPrevios});
+class PuntoLimpioSecondFillPage extends StatefulWidget {
+  const PuntoLimpioSecondFillPage({super.key, required this.puntosPrevios});
 
   @override
-  State<SecondFillPage> createState() => _SecondPageState();
+  State<PuntoLimpioSecondFillPage> createState() =>
+      _PuntoLimpioSecondFillPageState();
   final int puntosPrevios;
 }
 
-class _SecondPageState extends State<SecondFillPage> {
+class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   final GameService gameService = GameService();
   final SegundoNivel segundoNivel = SegundoNivel();
 
@@ -42,7 +43,10 @@ class _SecondPageState extends State<SecondFillPage> {
   void initState() {
     super.initState();
     puntos = widget.puntosPrevios;
-    objetos = gameService.getObjetosSegundoNivel();
+
+    objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
+
+
     objetos.shuffle(Random());
   }
 
@@ -77,7 +81,7 @@ class _SecondPageState extends State<SecondFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/fillGaps/third', extra: puntos);
+          context.go('/mygame', extra: puntos);
           return;
         }
 
@@ -99,7 +103,7 @@ class _SecondPageState extends State<SecondFillPage> {
     }
   }
 
-  // TARJETA DEL OBJETO Y FRASE ACTUAL
+  // TARJETA DEL OBJETO
   Widget construirTarjetaFrase() {
     final String nombre = objetoActual['nombre']!;
     final String articulo = objetoActual['articulo']!;
@@ -182,53 +186,53 @@ class _SecondPageState extends State<SecondFillPage> {
 
                   const SizedBox(height: 8),
 
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Artículo
+                      // ARTÍCULO
                       Text(
                         '$articulo ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF4F5951),
                         ),
                       ),
 
-                      //Nombre
+                      // NOMBRE
                       Text(
                         nombre,
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w800,
                           color: themeGreen,
                         ),
                       ),
 
-                      // va en el contenedor
+                      // TEXTO
                       Text(
-                        ' va en el contenedor ',
+                        ' va en el contenedor de ',
                         style: GoogleFonts.quicksand(
-                          fontSize: 21,
+                          fontSize: 19,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF4F5951),
                         ),
                       ),
 
                       // HUECO
+
+                      // HUECO
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
-                        width: 85,
-                        height: 60,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 5,
-                          vertical: 3,
-                        ),
+                        width: 180,
+                        height: 50,
+                        margin: const EdgeInsets.only(left: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color: completada
                               ? colorContenedor.withValues(alpha: 0.10)
                               : const Color(0xFFF8FAF7),
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: completada
                                 ? colorContenedor
@@ -236,33 +240,35 @@ class _SecondPageState extends State<SecondFillPage> {
                             width: 2,
                           ),
                         ),
-                        child: completada
-                            ? Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Image.asset(
-                                  gameService.imagenContenedor(
-                                    contenedorCorrecto,
-                                  ),
-                                  fit: BoxFit.contain,
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  '...',
+                        child: Center(
+                          child: completada
+                              ? Text(
+                                  gameService
+                                      .nombreContenedor(contenedorCorrecto)
+                                      .toUpperCase(),
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.quicksand(
-                                    fontSize: 24,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w800,
                                     color: themeGreen,
-                                    letterSpacing: 2,
+                                  ),
+                                )
+                              : Text(
+                                  '...',
+                                  style: GoogleFonts.quicksand(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                    color: themeGreen,
                                   ),
                                 ),
-                              ),
+                        ),
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 8),
-
 
                   // MENSAJE DE ESTADO
                   AnimatedSwitcher(
@@ -326,8 +332,8 @@ class _SecondPageState extends State<SecondFillPage> {
     );
   }
 
-  // CONTENEDOR
-  Widget construirContenedor(String contenedor) {
+  // BOTÓN DEL CONTENEDOR
+  Widget construirBotonContenedor(String contenedor) {
     final bool esRespuestaIncorrecta = respuestaIncorrecta == contenedor;
 
     final bool esRespuestaCorrecta =
@@ -343,68 +349,73 @@ class _SecondPageState extends State<SecondFillPage> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 190,
-        height: 165,
+        height: 50,
         decoration: BoxDecoration(
           color: esRespuestaIncorrecta
               ? const Color(0xFFFFEBEE)
               : esRespuestaCorrecta
-              ? color.withValues(alpha: 0.10)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(24),
+              ? color.withValues(alpha: 0.15)
+              : Colors.black,
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: esRespuestaIncorrecta
                 ? const Color(0xFFE53935)
                 : esRespuestaCorrecta
                 ? color
-                : color.withValues(alpha: 0.40),
-            width: esRespuestaCorrecta ? 3 : 2,
+                : Colors.black,
+            width: esRespuestaCorrecta ? 3 : 1,
           ),
-          boxShadow: [
-            BoxShadow(
+        ),
+        child: Center(
+          child: Text(
+            gameService.nombreContenedor(contenedor).toUpperCase(),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.quicksand(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
               color: esRespuestaIncorrecta
-                  ? Colors.red.withValues(alpha: 0.12)
-                  : Colors.black.withValues(alpha: 0.045),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+                  ? const Color(0xFFE53935)
+                  : esRespuestaCorrecta
+                  ? color
+                  : Colors.white,
             ),
-          ],
+          ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 95,
-              height: 95,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.07),
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Image.asset(
-                  gameService.imagenContenedor(contenedor),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
+      ),
+    );
+  }
 
-            const SizedBox(height: 6),
+  // TARJETA BLANCA CON LOS CONTENEDORES
+  Widget construirTarjetaContenedores() {
+    final List<String> contenedoresBotones = gameService
+        .getContenedoresBotonesSegundoNivel();
 
-            Text(
-              gameService.nombreContenedor(contenedor).toUpperCase(),
-              style: GoogleFonts.quicksand(
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                color: esRespuestaIncorrecta
-                    ? const Color(0xFFE53935)
-                    : esRespuestaCorrecta
-                    ? color
-                    : secondaryText,
-              ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2E7E0), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: contenedoresBotones.map((contenedor) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: construirBotonContenedor(contenedor),
             ),
-          ],
-        ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -478,9 +489,7 @@ class _SecondPageState extends State<SecondFillPage> {
                                   height: 1,
                                 ),
                               ),
-
                               const SizedBox(height: 5),
-
                               Text(
                                 'Completa cada frase eligiendo el contenedor correcto',
                                 textAlign: TextAlign.center,
@@ -533,45 +542,15 @@ class _SecondPageState extends State<SecondFillPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 18),
 
-                    Expanded(
-                      child: Column(
-                        children: [
-                          // TARJETA DEL OBJETO
-                          construirTarjetaFrase(),
+                    // TARJETA DEL OBJETO
+                    construirTarjetaFrase(),
 
-                          const SizedBox(height: 24),
+                    const SizedBox(height: 20),
 
-                          // CONTENEDORES
-                          Expanded(
-                            child: Center(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    construirContenedor('amarillo'),
-
-                                    const SizedBox(width: 25),
-
-                                    construirContenedor('azul'),
-
-                                    const SizedBox(width: 25),
-
-                                    construirContenedor('verde'),
-
-                                    const SizedBox(width: 25),
-
-                                    construirContenedor('marrón'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // TARJETA BLANCA DE CONTENEDORES
+                    construirTarjetaContenedores(),
                   ],
                 ),
               ),

@@ -1,23 +1,24 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/game_service.dart';
+import 'package:flutter_application_1/screens/game/service/tercer_nivel_service.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-import '../service/primer_nivel.dart';
-import '../service/game_service.dart';
-import '../../../widgets/nav_bar.dart';
 
-class FirstFillPage extends StatefulWidget {
-  const FirstFillPage({super.key});
+class ThirdFillPage extends StatefulWidget {
 
+  const ThirdFillPage({super.key, required this.puntosPrevios});
   @override
-  State<FirstFillPage> createState() => _FirstPageState();
+  State<ThirdFillPage> createState() => _ThirdPageState();
+  final int puntosPrevios;
 }
 
-class _FirstPageState extends State<FirstFillPage> {
+class _ThirdPageState extends State<ThirdFillPage> {
   final GameService gameService = GameService();
-  final PrimerNivel primerNivel = PrimerNivel();
+  final TercerNivel tercerNivel = TercerNivel();
 
   late List<Map<String, String>> objetos;
 
@@ -40,7 +41,9 @@ class _FirstPageState extends State<FirstFillPage> {
   void initState() {
     super.initState();
 
-    objetos = gameService.getObjetosPrimerNivel();
+    puntos = widget.puntosPrevios;
+
+    objetos = gameService.getObjetosTercerNivel();
     objetos.shuffle(Random());
   }
 
@@ -58,7 +61,7 @@ class _FirstPageState extends State<FirstFillPage> {
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta = tercerNivel.sumarPuntosRespuestaCorrecta();
 
       puntos += puntosRespuesta;
 
@@ -75,7 +78,7 @@ class _FirstPageState extends State<FirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/fillGaps/second', extra: puntos);
+          context.go('/mygame', extra: puntos);
           return;
         }
 
@@ -90,7 +93,7 @@ class _FirstPageState extends State<FirstFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        puntos -= tercerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
       });
@@ -428,7 +431,7 @@ class _FirstPageState extends State<FirstFillPage> {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
-                          // NIVEL 1
+                          // NIVEL 3
                           Align(
                             alignment: Alignment.topLeft,
                             child: Container(
@@ -450,7 +453,7 @@ class _FirstPageState extends State<FirstFillPage> {
                                   ),
                                   const SizedBox(width: 7),
                                   Text(
-                                    'NIVEL 1',
+                                    'NIVEL 3',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
@@ -533,7 +536,6 @@ class _FirstPageState extends State<FirstFillPage> {
 
                     const SizedBox(height: 14),
 
-
                     Expanded(
                       child: Column(
                         children: [
@@ -559,6 +561,14 @@ class _FirstPageState extends State<FirstFillPage> {
                                     const SizedBox(width: 25),
 
                                     construirContenedor('verde'),
+
+                                    const SizedBox(width: 25),
+
+                                    construirContenedor('marrón'),
+
+                                    const SizedBox(width: 25),
+
+                                    construirContenedor('gris'),
                                   ],
                                 ),
                               ),
