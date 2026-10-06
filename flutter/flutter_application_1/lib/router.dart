@@ -1,5 +1,7 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
+import 'package:flutter_application_1/screens/amigos/chat_screen.dart';
+import 'package:flutter_application_1/screens/amigos/lista_amigos_screen.dart';
 import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
 import 'package:flutter_application_1/screens/salas/crear_sala_screen.dart';
 import 'package:flutter_application_1/screens/salas/mis_salas_screen.dart';
@@ -126,6 +128,20 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/crearSala',
       builder: (context, state) => const CrearSalaPage(),
+    ),
+
+    GoRoute(
+      path: '/listAmigos',
+      builder: (context, state) => const ListaAmigos(),
+    ),
+
+    GoRoute(
+      path: '/chat',
+      builder: (context, state) {
+        final username = state.extra as String;
+
+        return ChatPage(username: username);
+      },
     ),
   ],
 );

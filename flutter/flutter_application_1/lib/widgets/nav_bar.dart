@@ -85,10 +85,21 @@ class NavBar extends StatelessWidget {
 
             // Salas
             _NavButton(
-              icon: Icons.groups_rounded,
+              icon: Icons.meeting_room_rounded,
               text: 'Salas',
               onPressed: () {
                 context.go('/salas');
+              },
+            ),
+
+            const SizedBox(width: 10),
+
+            // Amigos
+            _NavButton(
+              icon: Icons.people_alt_rounded,
+              text: 'Amigos',
+              onPressed: () {
+                context.go('/listAmigos');
               },
             ),
 
