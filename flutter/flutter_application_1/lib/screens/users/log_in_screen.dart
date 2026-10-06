@@ -1,6 +1,10 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -10,6 +14,67 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LogInPage> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      _showMessage('Introduce usuario y contraseña');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _authService.login(
+        username: username,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      context.go('/listgame');
+
+    } catch (e) {
+      if (!mounted) return;
+
+      _showMessage(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
+
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeGreen = const Color(0xFF298133);
@@ -21,14 +86,16 @@ class _LoginPageState extends State<LogInPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 30,
+            ),
 
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
 
               children: [
-                // ICONO
                 Container(
                   width: 100,
                   height: 100,
@@ -36,12 +103,15 @@ class _LoginPageState extends State<LogInPage> {
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.eco_rounded, size: 60, color: themeGreen),
+                  child: Icon(
+                    Icons.eco_rounded,
+                    size: 60,
+                    color: themeGreen,
+                  ),
                 ),
 
                 const SizedBox(height: 20),
 
-                // TÍTULO
                 Text(
                   'EcoKids',
                   textAlign: TextAlign.center,
@@ -54,7 +124,6 @@ class _LoginPageState extends State<LogInPage> {
 
                 const SizedBox(height: 8),
 
-                // SUBTÍTULO
                 Text(
                   'Iniciar Sesión',
                   textAlign: TextAlign.center,
@@ -67,21 +136,19 @@ class _LoginPageState extends State<LogInPage> {
 
                 const SizedBox(height: 30),
 
-                // USUARIO
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Usuario',
-                        hintText: 'Introduce tu usuario',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Usuario',
+                      hintText: 'Introduce tu usuario',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -89,22 +156,20 @@ class _LoginPageState extends State<LogInPage> {
 
                 const SizedBox(height: 16),
 
-                // CONTRASEÑA
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        hintText: 'Introduce tu contraseña',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      hintText: 'Introduce tu contraseña',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -112,14 +177,11 @@ class _LoginPageState extends State<LogInPage> {
 
                 const SizedBox(height: 25),
 
-                // BOTÓN INICIAR SESIÓN
                 SizedBox(
                   width: 180,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.go('/listgame');
-                    },
+                    onPressed: isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
                       elevation: 2,
                       padding: EdgeInsets.zero,
@@ -127,21 +189,26 @@ class _LoginPageState extends State<LogInPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.arrow_forward_rounded, size: 21),
-                      ],
-                    ),
+                    child: isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 21,
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // He olvidado mi contraseña
                 TextButton(
                   onPressed: () {
-                    //context.go('/');
+                    // Más adelante hacemos recuperación de contraseña.
                   },
                   child: Text(
                     'He olvidado mi contraseña',
@@ -152,10 +219,8 @@ class _LoginPageState extends State<LogInPage> {
                   ),
                 ),
 
-                // No tengo cuenta
                 TextButton(
                   onPressed: () {
-                    //context.go('/');
                     context.go('/register');
                   },
                   child: Text(
@@ -174,3 +239,5 @@ class _LoginPageState extends State<LogInPage> {
     );
   }
 }
+
+

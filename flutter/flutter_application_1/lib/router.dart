@@ -1,22 +1,22 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
-import 'package:flutter_application_1/screens/game/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
-import 'package:flutter_application_1/screens/game/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
+
 import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
-import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_second_level.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/code_page.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/dragDrop/first_level_drag_screen.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/dragDrop/second_level_drag_screen.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/dragDrop/third_level_drag_screen.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/fillGaps/first_level_fill_gaps_screen.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/fillGaps/second_level_fill_gaps_screen.dart';
-import 'package:flutter_application_1/screens/game/reciclaje_game/fillGaps/third_level_fill_gaps_screen.dart';
-import 'package:flutter_application_1/screens/list_game.dart';
-import 'package:go_router/go_router.dart';
 
+import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
+import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
+import 'screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_second_level.dart';
+import 'screens/game/reciclaje_game/code_page.dart';
+import 'screens/game/reciclaje_game/dragDrop/first_level_drag_screen.dart';
+import 'screens/game/reciclaje_game/dragDrop/second_level_drag_screen.dart';
+import 'screens/game/reciclaje_game/dragDrop/third_level_drag_screen.dart';
+import 'screens/game/reciclaje_game/fillGaps/first_level_fill_gaps_screen.dart';
+import 'screens/game/reciclaje_game/fillGaps/second_level_fill_gaps_screen.dart';
+import 'screens/game/reciclaje_game/fillGaps/third_level_fill_gaps_screen.dart';
 import 'screens/home_page_screen.dart';
+import 'screens/list_game.dart';
 import 'screens/results/mygame_screen.dart';
-
+import 'package:go_router/go_router.dart';
 import 'screens/users/log_in_screen.dart';
 import 'screens/users/register_screen.dart';
 

@@ -1,6 +1,10 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,6 +14,83 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+
+    super.dispose();
+  }
+
+  Future<void> _register() async {
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (username.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      _showMessage('Rellena todos los campos');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showMessage('Las contraseñas no coinciden');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _authService.register(
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) return;
+
+      context.go('/listgame');
+
+    } catch (e) {
+      if (!mounted) return;
+
+      _showMessage(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
+
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeGreen = const Color(0xFF298133);
@@ -21,14 +102,16 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 30,
+            ),
 
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
 
               children: [
-                // ICONO
                 Container(
                   width: 100,
                   height: 100,
@@ -36,12 +119,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.eco_rounded, size: 60, color: themeGreen),
+                  child: Icon(
+                    Icons.eco_rounded,
+                    size: 60,
+                    color: themeGreen,
+                  ),
                 ),
 
                 const SizedBox(height: 20),
 
-                // TÍTULO
                 Text(
                   'EcoKids',
                   textAlign: TextAlign.center,
@@ -54,7 +140,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 8),
 
-                // SUBTÍTULO
                 Text(
                   'Registrarse',
                   textAlign: TextAlign.center,
@@ -67,21 +152,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 30),
 
-                // USUARIO
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Usuario',
-                        hintText: 'Introduce tu usuario',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Usuario',
+                      hintText: 'Introduce tu usuario',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -89,21 +172,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 16),
 
-                // CORREO
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Correo',
-                        hintText: 'Introduce tu correo',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Correo',
+                      hintText: 'Introduce tu correo',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -111,22 +193,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 16),
 
-                // CONTRASEÑA
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        hintText: 'Introduce tu contraseña',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Contraseña',
+                      hintText: 'Introduce tu contraseña',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -134,22 +214,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 16),
 
-                // CONTRASEÑA
-                Center(
-                  child: SizedBox(
-                    width: 320,
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Confirmar contraseña',
-                        hintText: 'Confirmar contraseña',
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                SizedBox(
+                  width: 320,
+                  child: TextField(
+                    controller: confirmPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirmar contraseña',
+                      hintText: 'Confirmar contraseña',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -157,14 +235,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 const SizedBox(height: 25),
 
-                // BOTÓN REGISTRARSE
                 SizedBox(
                   width: 180,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.go('/listgame');
-                    },
+                    onPressed: isLoading ? null : _register,
                     style: ElevatedButton.styleFrom(
                       elevation: 2,
                       padding: EdgeInsets.zero,
@@ -172,18 +247,23 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.arrow_forward_rounded, size: 21),
-                      ],
-                    ),
+                    child: isLoading
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.arrow_forward_rounded,
+                            size: 21,
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // Ya tengo cuenta
                 TextButton(
                   onPressed: () {
                     context.go('/login');
@@ -196,7 +276,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
