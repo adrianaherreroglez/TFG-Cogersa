@@ -1,7 +1,8 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
-
 import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
+import 'package:flutter_application_1/screens/salas/crear_sala_screen.dart';
+import 'package:flutter_application_1/screens/salas/mis_salas_screen.dart';
 
 import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
 import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
@@ -16,10 +17,11 @@ import 'screens/game/reciclaje_game/fillGaps/third_level_fill_gaps_screen.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/list_game.dart';
 import 'screens/results/mygame_screen.dart';
+
 import 'package:go_router/go_router.dart';
+
 import 'screens/users/log_in_screen.dart';
 import 'screens/users/register_screen.dart';
-
 
 final GoRouter router = GoRouter(
   routes: [
@@ -30,7 +32,10 @@ final GoRouter router = GoRouter(
 
     GoRoute(path: '/login', builder: (context, state) => const LogInPage()),
 
-    GoRoute(path: '/register', builder: (context, state) => const RegisterPage()),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterPage(),
+    ),
 
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 
@@ -65,9 +70,11 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/puntolimpio/firstlevel', builder: (context, state) => const PuntoLimpioFirstPage()),
+    GoRoute(
+      path: '/puntolimpio/firstlevel',
+      builder: (context, state) => const PuntoLimpioFirstPage(),
+    ),
 
-   
     GoRoute(
       path: '/puntolimpio/secondlevel',
       builder: (context, state) {
@@ -77,10 +84,12 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/puntolimpio/fillGaps/firstlevel', builder: (context, state) => const PuntoLimpioFirstFillPage()),
+    GoRoute(
+      path: '/puntolimpio/fillGaps/firstlevel',
+      builder: (context, state) => const PuntoLimpioFirstFillPage(),
+    ),
 
-
-  GoRoute(
+    GoRoute(
       path: '/puntolimpio/fillGaps/secondLevel',
       builder: (context, state) {
         final puntos = state.extra as int? ?? 0;
@@ -89,7 +98,10 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(path: '/fillGaps/first', builder: (context, state) => const FirstFillPage()),
+    GoRoute(
+      path: '/fillGaps/first',
+      builder: (context, state) => const FirstFillPage(),
+    ),
 
     GoRoute(
       path: '/fillGaps/second',
@@ -109,7 +121,11 @@ final GoRouter router = GoRouter(
       },
     ),
 
+    GoRoute(path: '/salas', builder: (context, state) => const SalasPage()),
 
-
+    GoRoute(
+      path: '/crearSala',
+      builder: (context, state) => const CrearSalaPage(),
+    ),
   ],
 );

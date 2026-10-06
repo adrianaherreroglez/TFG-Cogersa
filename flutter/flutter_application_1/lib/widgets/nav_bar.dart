@@ -11,7 +11,7 @@ class NavBar extends StatelessWidget {
     final background = const Color(0xFFD8EDD5);
     final lightGreen = const Color(0xFFE8F5E9);
 
-    return Container(
+    return Container( 
       width: double.infinity,
       height: 70,
       decoration: BoxDecoration(
@@ -80,6 +80,18 @@ class NavBar extends StatelessWidget {
                 context.go('/listgame');
               },
             ),
+
+            const SizedBox(width: 10),
+
+            // Salas
+            _NavButton(
+              icon: Icons.groups_rounded,
+              text: 'Salas',
+              onPressed: () {
+                context.go('/salas');
+              },
+            ),
+
           ],
         ),
       ),
