@@ -513,6 +513,44 @@ const rejectFriendRequest = async (
   }
 };
 
+const getUserByUsername = async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    const result = await pool.query(
+      `
+      SELECT
+        id,
+        username
+      FROM users
+      WHERE username = $1
+      `,
+      [username]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    res.json({
+      user: result.rows[0],
+    });
+  } catch (error) {
+    console.error(
+      'Error obteniendo usuario:',
+      error
+    );
+
+    res.status(500).json({
+      message:
+        'Error interno del servidor',
+    });
+  }
+};
+
+
 
 // EXPORTAR
 module.exports = {
@@ -523,5 +561,6 @@ module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  getUserByUsername,
 };
 

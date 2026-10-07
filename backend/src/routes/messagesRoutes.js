@@ -1,9 +1,8 @@
 const express = require('express');
 
 const {
-  searchUsers,
-  getUserByUsername,
-} = require('../controllers/friendsController');
+  getMessages,
+} = require('../controllers/messagesController');
 
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -11,15 +10,8 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get(
-  '/search',
-  searchUsers
-);
-
-router.get(
-  '/username/:username',
-  getUserByUsername
-);
+// Obtener conversación con otro usuario
+router.get('/:userId', getMessages);
 
 module.exports = router;
 

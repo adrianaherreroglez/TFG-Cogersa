@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/message.dart';
+import 'package:flutter_application_1/services/messages_services.dart';
+import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/nav_bar.dart';
+
+
+const Color themeGreen = Color(0xFF298133);
+const Color pageBackground = Color(0xFFFAFDF4);
+const Color lightGreen = Color(0xFFE8F5E9);
+const Color borderGreen = Color(0xFFD8EDD5);
 
 class ChatPage extends StatefulWidget {
   final String username;
@@ -16,83 +24,195 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  final MessagesService _messagesService =
+      MessagesService();
+
   final TextEditingController _mensajeController =
       TextEditingController();
 
-  // Mensajes de ejemplo
-  final List<Map<String, dynamic>> mensajes = [
-    {
-      'mensaje': '¡Hola!',
-      'mio': false,
-    },
-    {
-      'mensaje': '¡Hola! ¿Qué tal?',
-      'mio': true,
-    },
-    {
-      'mensaje': 'Muy bien ¿Jugamos una partida?',
-      'mio': false,
-    },
-  ];
+  final ScrollController _scrollController =
+      ScrollController();
+
+  List<Message> mensajes = [];
+
+  int? _receiverId;
+
+  bool _cargando = true;
+
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _inicializarChat();
+  }
+
+  Future<void> _inicializarChat() async {
+    try {
+      // Obtener ID del usuario con el que estamos hablando.
+      final receiverId =
+          await _messagesService.obtenerIdUsuario(
+        widget.username,
+      );
+
+      // Cargar mensajes anteriores.
+      final mensajesCargados =
+          await _messagesService.obtenerMensajes(
+        receiverId,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _receiverId = receiverId;
+        mensajes = mensajesCargados;
+        _cargando = false;
+      });
+
+      _bajarAlFinal();
+
+      // Conectar Socket.IO para recibir mensajes nuevos.
+      await _messagesService.conectar(
+        onNuevoMensaje: _recibirMensaje,
+        onError: (mensaje) {
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            SnackBar(
+              content: Text(mensaje),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _cargando = false;
+        _error = e
+            .toString()
+            .replaceFirst(
+              'Exception: ',
+              '',
+            );
+      });
+    }
+  }
+
+  void _recibirMensaje(Message mensaje) {
+    if (_receiverId == null) {
+      return;
+    }
+
+    // Solo añadir mensajes de esta conversación.
+    final perteneceAConversacion =
+        (mensaje.senderId == _receiverId ||
+                mensaje.receiverId == _receiverId);
+
+    if (!perteneceAConversacion) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      // Evitamos duplicados.
+      final yaExiste = mensajes.any(
+        (m) => m.id == mensaje.id,
+      );
+
+      if (!yaExiste) {
+        mensajes.add(mensaje);
+      }
+    });
+
+    _bajarAlFinal();
+  }
+
+  void _enviarMensaje() {
+    final texto =
+        _mensajeController.text.trim();
+
+    if (texto.isEmpty) {
+      return;
+    }
+
+    if (_receiverId == null) {
+      return;
+    }
+
+    try {
+      _messagesService.enviarMensaje(
+        receiverId: _receiverId!,
+        message: texto,
+      );
+
+      _mensajeController.clear();
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+        SnackBar(
+          content: Text(
+            e
+                .toString()
+                .replaceFirst(
+                  'Exception: ',
+                  '',
+                ),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _bajarAlFinal() {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) {
+        return;
+      }
+
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration:
+            const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
 
   @override
   void dispose() {
     _mensajeController.dispose();
+    _scrollController.dispose();
+
+    _messagesService.desconectar();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor: pageBackground,
       body: Column(
         children: [
+          // NavBar existente
           const NavBar(),
 
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 30,
-              ),
-              child: Center(
+            child: Center(
+              child: Padding(
+                padding:
+                    const EdgeInsets.all(24),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
+                  constraints:
+                      const BoxConstraints(
                     maxWidth: 1000,
                   ),
-                  child: Container(
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: const Color(0xFFD8EDD5),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.06),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        _buildHeader(),
-
-                        const Divider(
-                          height: 1,
-                          color: Color(0xFFE5EDE2),
-                        ),
-
-                        Expanded(
-                          child: _buildMensajes(),
-                        ),
-
-                        _buildInput(),
-                      ],
-                    ),
-                  ),
+                  child: _buildChat(),
                 ),
               ),
             ),
@@ -102,11 +222,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
+  Widget _buildChat() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius:
+            BorderRadius.circular(28),
+        border: Border.all(
+          color: borderGreen,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(
+              alpha: 0.06,
+            ),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildChatHeader(),
+
+          Expanded(
+            child: _buildContenido(),
+          ),
+
+          _buildInput(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChatHeader() {
+    return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 22,
+        horizontal: 24,
         vertical: 18,
+      ),
+      decoration: const BoxDecoration(
+        color: lightGreen,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(28),
+          topRight: Radius.circular(28),
+        ),
       ),
       child: Row(
         children: [
@@ -116,48 +277,40 @@ class _ChatPageState extends State<ChatPage> {
             },
             icon: const Icon(
               Icons.arrow_back_rounded,
-              color: Color(0xFF298133),
+              color: themeGreen,
             ),
           ),
 
-          const SizedBox(width: 5),
+          const SizedBox(width: 8),
 
-          _buildAvatar(widget.username),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: borderGreen,
+              ),
+            ),
+            child: const Icon(
+              Icons.person_rounded,
+              color: themeGreen,
+              size: 25,
+            ),
+          ),
 
-          const SizedBox(width: 15),
+          const SizedBox(width: 12),
 
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.username,
-                  style: GoogleFonts.quicksand(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF298133),
-                  ),
-                ),
-
-                const SizedBox(height: 2),
-
-                Text(
-                  'Amigo',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 13,
-                    color: Colors.black45,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          IconButton(
-            tooltip: 'Más opciones',
-            onPressed: () {},
-            icon: const Icon(
-              Icons.more_vert_rounded,
-              color: Colors.black45,
+            child: Text(
+              widget.username,
+              style: GoogleFonts.quicksand(
+                fontSize: 20,
+                fontWeight:
+                    FontWeight.w700,
+                color: themeGreen,
+              ),
             ),
           ),
         ],
@@ -165,161 +318,235 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // MENSAJES
-  Widget _buildMensajes() {
+  Widget _buildContenido() {
+    if (_cargando) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: themeGreen,
+        ),
+      );
+    }
+
+    if (_error != null) {
+      return Center(
+        child: Padding(
+          padding:
+              const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize:
+                MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error_outline_rounded,
+                color: Colors.redAccent,
+                size: 45,
+              ),
+
+              const SizedBox(height: 12),
+
+              Text(
+                _error!,
+                textAlign:
+                    TextAlign.center,
+                style:
+                    GoogleFonts.quicksand(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _cargando = true;
+                    _error = null;
+                  });
+
+                  _inicializarChat();
+                },
+                style:
+                    ElevatedButton.styleFrom(
+                  backgroundColor:
+                      themeGreen,
+                  foregroundColor:
+                      Colors.white,
+                ),
+                child: Text(
+                  'Reintentar',
+                  style:
+                      GoogleFonts.quicksand(
+                    fontWeight:
+                        FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (mensajes.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.chat_bubble_outline_rounded,
-              size: 55,
-              color: Color(0xFFB4CDB1),
-            ),
-
-            const SizedBox(height: 15),
-
-            Text(
-              'Todavía no hay mensajes',
-              style: GoogleFonts.quicksand(
-                fontSize: 17,
-                color: Colors.black54,
-              ),
-            ),
-
-            const SizedBox(height: 5),
-
-            Text(
-              '¡Empieza la conversación!',
-              style: GoogleFonts.quicksand(
-                fontSize: 14,
-                color: Colors.black38,
-              ),
-            ),
-          ],
+        child: Text(
+          'Todavía no hay mensajes.\n¡Saluda a ${widget.username}!',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.quicksand(
+            fontSize: 17,
+            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(25),
+      controller: _scrollController,
+      padding: const EdgeInsets.all(24),
       itemCount: mensajes.length,
-      itemBuilder: (context, index) {
-        final mensaje = mensajes[index];
+      itemBuilder: (
+        context,
+        index,
+      ) {
+        final mensaje =
+            mensajes[index];
+
+        final mio =
+            mensaje.senderId !=
+                _receiverId;
 
         return _buildMensaje(
-          texto: mensaje['mensaje'],
-          mio: mensaje['mio'],
+          mensaje,
+          mio,
         );
       },
     );
   }
 
-  Widget _buildMensaje({
-    required String texto,
-    required bool mio,
-  }) {
+  Widget _buildMensaje(
+    Message mensaje,
+    bool mio,
+  ) {
     return Align(
-      alignment:
-          mio ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: mio
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
       child: Container(
-        constraints: const BoxConstraints(
+        constraints:
+            const BoxConstraints(
           maxWidth: 500,
         ),
         margin: const EdgeInsets.only(
           bottom: 12,
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 17,
-          vertical: 12,
+        padding:
+            const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 11,
         ),
         decoration: BoxDecoration(
           color: mio
-              ? const Color(0xFF298133)
-              : const Color(0xFFE8F5E9),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(18),
-            topRight: const Radius.circular(18),
-            bottomLeft: Radius.circular(
-              mio ? 18 : 4,
-            ),
-            bottomRight: Radius.circular(
-              mio ? 4 : 18,
-            ),
-          ),
+              ? themeGreen
+              : const Color(0xFFF8FCF6),
+          borderRadius:
+              BorderRadius.circular(18),
+          border: mio
+              ? null
+              : Border.all(
+                  color: borderGreen,
+                ),
         ),
         child: Text(
-          texto,
+          mensaje.message,
           style: GoogleFonts.quicksand(
             fontSize: 15,
-            color: mio ? Colors.white : Colors.black87,
+            fontWeight:
+                FontWeight.w600,
+            color: mio
+                ? Colors.white
+                : Colors.black87,
           ),
         ),
       ),
     );
   }
 
-
-  // CAMPO PARA ESCRIBIR
   Widget _buildInput() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(
-        20,
-        15,
-        20,
-        20,
-      ),
+      padding: const EdgeInsets.all(18),
       decoration: const BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.only(
+          bottomLeft:
+              Radius.circular(28),
+          bottomRight:
+              Radius.circular(28),
+        ),
       ),
       child: Row(
         children: [
-          IconButton(
-            tooltip: 'Adjuntar',
-            onPressed: () {},
-            icon: const Icon(
-              Icons.add_rounded,
-              color: Color(0xFF298133),
-            ),
-          ),
-
-          const SizedBox(width: 5),
-
           Expanded(
             child: TextField(
-              controller: _mensajeController,
-              textInputAction: TextInputAction.send,
+              controller:
+                  _mensajeController,
               onSubmitted: (_) {
                 _enviarMensaje();
               },
-              decoration: InputDecoration(
-                hintText: 'Escribe un mensaje...',
-                hintStyle: GoogleFonts.quicksand(
-                  color: Colors.black38,
+              textInputAction:
+                  TextInputAction.send,
+              decoration:
+                  InputDecoration(
+                hintText:
+                    'Escribe un mensaje...',
+                hintStyle:
+                    GoogleFonts.quicksand(
+                  color:
+                      Colors.grey.shade500,
                 ),
                 filled: true,
-                fillColor: const Color(0xFFF8FCF6),
-                contentPadding: const EdgeInsets.symmetric(
+                fillColor:
+                    const Color(
+                  0xFFF8FCF6,
+                ),
+                contentPadding:
+                    const EdgeInsets
+                        .symmetric(
                   horizontal: 18,
-                  vertical: 13,
+                  vertical: 14,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFD8EDD5),
+                border:
+                    OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(
+                    18,
+                  ),
+                  borderSide:
+                      const BorderSide(
+                    color: borderGreen,
                   ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFD8EDD5),
+                enabledBorder:
+                    OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(
+                    18,
+                  ),
+                  borderSide:
+                      const BorderSide(
+                    color: borderGreen,
                   ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF298133),
+                focusedBorder:
+                    OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(
+                    18,
+                  ),
+                  borderSide:
+                      const BorderSide(
+                    color: themeGreen,
                     width: 2,
                   ),
                 ),
@@ -330,13 +557,14 @@ class _ChatPageState extends State<ChatPage> {
           const SizedBox(width: 10),
 
           Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF298133),
+            decoration:
+                const BoxDecoration(
+              color: themeGreen,
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              tooltip: 'Enviar',
-              onPressed: _enviarMensaje,
+              onPressed:
+                  _enviarMensaje,
               icon: const Icon(
                 Icons.send_rounded,
                 color: Colors.white,
@@ -347,48 +575,5 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-
-
-  // ENVIAR MENSAJE
-  void _enviarMensaje() {
-    final texto = _mensajeController.text.trim();
-
-    if (texto.isEmpty) return;
-
-    setState(() {
-      mensajes.add({
-        'mensaje': texto,
-        'mio': true,
-      });
-    });
-
-    _mensajeController.clear();
-  }
-
-  // AVATAR
-  Widget _buildAvatar(String username) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xFFD8EDD5),
-        ),
-      ),
-      child: Center(
-        child: Text(
-          username.isNotEmpty
-              ? username[0].toUpperCase()
-              : '?',
-          style: GoogleFonts.quicksand(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF298133),
-          ),
-        ),
-      ),
-    );
-  }
 }
+
