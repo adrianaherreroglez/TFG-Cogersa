@@ -11,13 +11,16 @@ class NavBar extends StatelessWidget {
     final background = const Color(0xFFD8EDD5);
     final lightGreen = const Color(0xFFE8F5E9);
 
-    return Container( 
+    return Container(
       width: double.infinity,
       height: 70,
       decoration: BoxDecoration(
         color: background,
-        border: Border(
-          bottom: BorderSide(color: const Color(0xFFD8EDD5), width: 1.5),
+        border: const Border(
+          bottom: BorderSide(
+            color: Color(0xFFD8EDD5),
+            width: 1.5,
+          ),
         ),
         boxShadow: [
           BoxShadow(
@@ -27,10 +30,8 @@ class NavBar extends StatelessWidget {
           ),
         ],
       ),
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28),
-
         child: Row(
           children: [
             // LOGO
@@ -43,7 +44,11 @@ class NavBar extends StatelessWidget {
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.eco_rounded, color: themeGreen, size: 25),
+                  child: Icon(
+                    Icons.eco_rounded,
+                    color: themeGreen,
+                    size: 25,
+                  ),
                 ),
 
                 const SizedBox(width: 10),
@@ -83,7 +88,7 @@ class NavBar extends StatelessWidget {
 
             const SizedBox(width: 10),
 
-            // Salas
+            // SALAS
             _NavButton(
               icon: Icons.meeting_room_rounded,
               text: 'Salas',
@@ -94,7 +99,7 @@ class NavBar extends StatelessWidget {
 
             const SizedBox(width: 10),
 
-            // Amigos
+            // AMIGOS
             _NavButton(
               icon: Icons.people_alt_rounded,
               text: 'Amigos',
@@ -102,13 +107,13 @@ class NavBar extends StatelessWidget {
                 context.go('/listAmigos');
               },
             ),
-
           ],
         ),
       ),
     );
   }
 }
+
 
 class _NavButton extends StatelessWidget {
   const _NavButton({
@@ -128,17 +133,30 @@ class _NavButton extends StatelessWidget {
 
     return TextButton(
       onPressed: onPressed,
-      style: TextButton.styleFrom(
-        foregroundColor: themeGreen,
-        backgroundColor: lightGreen,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(lightGreen),
+        foregroundColor: WidgetStateProperty.all(themeGreen),
 
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
+        ),
+
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 21),
+          Icon(
+            icon,
+            size: 21,
+          ),
 
           const SizedBox(width: 7),
 
@@ -154,3 +172,4 @@ class _NavButton extends StatelessWidget {
     );
   }
 }
+
