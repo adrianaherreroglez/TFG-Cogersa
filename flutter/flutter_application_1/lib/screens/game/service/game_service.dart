@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GameService {
-
-  
   // Buscar imagen de un objeto por nombre del objeto
-  String? imagenDelObjeto(String? nombre, List<Map<String,String>> objetos) {
+  String? imagenDelObjeto(String? nombre, List<Map<String, String>> objetos) {
     if (nombre == null) {
       return null;
     }
@@ -34,9 +32,49 @@ class GameService {
       default:
         return '';
     }
+  }
 
-    
-   
+  String nombreContenedorPuntoLimpio(String contenedor) {
+    switch (contenedor) {
+      case 'iluminacion':
+        return 'ILUMINACIÓN';
+
+      case 'electrodomesticos':
+        return 'PEQUEÑOS ELECTRODOMÉSTICOS';
+
+      case 'informatica':
+        return 'INFORMÁTICA';
+
+      case 'toner':
+        return 'TÓNER Y CARTUCHOS';
+
+      case 'dvd':
+        return 'DVD-CD Y RADIOGRAFÍAS';
+
+      case 'pilas':
+        return 'PILAS Y BATERÍAS';
+
+      case 'toxico':
+        return 'TÓXICO HOGAR';
+
+      case 'motor':
+        return 'ACEITE DE MOTOR';
+
+      case 'vegetales':
+        return 'ACEITES VEGETALES';
+
+      case 'juguetes':
+        return 'JUGUETES';
+
+      case 'capsulas':
+        return 'CÁPSULAS';
+
+      case 'metal':
+        return 'METAL HOGAR';
+
+      default:
+        return contenedor;
+    }
   }
 
   String nombreContenedor(String contenedor) {
@@ -73,209 +111,276 @@ class GameService {
     }
   }
 
-
-  
   List<Map<String, String>> getObjetosPrimerNivel() {
-    return
-    [
-    {
-      'articulo': 'La',
-      'nombre': 'botella de plástico',
-      'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
-      'contenedor': 'amarillo',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'avión de papel',
-      'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
-      'contenedor': 'azul',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'botella de vidrio',
-      'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
-      'contenedor': 'verde',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'papel de regalo',
-      'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
-      'contenedor': 'azul',
-    },
-  ];
+    return [
+      {
+        'articulo': 'La',
+        'nombre': 'botella de plástico',
+        'imagen': 'assets/icons/objetos/amarillo/botella-de-plastico.png',
+        'contenedor': 'amarillo',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'cepillo de dientes',
+        'imagen': 'assets/icons/objetos/amarillo/cepillo-de-dientes.png',
+        'contenedor': 'amarillo',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'avión de papel',
+        'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
+        'contenedor': 'azul',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'botella de vidrio',
+        'imagen': 'assets/icons/objetos/verde/botella-de-vidrio.png',
+        'contenedor': 'verde',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'botella de vino',
+        'imagen': 'assets/icons/objetos/verde/vino.png',
+        'contenedor': 'verde',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'papel de regalo',
+        'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
+        'contenedor': 'azul',
+      },
+    ];
   }
 
   List<Map<String, String>> getObjetosSegundoNivel() {
-    return
-    [
-    {
-      'articulo': 'El',
-      'nombre': 'plátano',
-      'imagen': 'assets/icons/objetos/marron/platano.png',
-      'contenedor': 'marrón',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'espina',
-      'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
-      'contenedor': 'marrón',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'tarro',
-      'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
-      'contenedor': 'verde',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'caja',
-      'imagen': 'assets/icons/objetos/azul/caja.png',
-      'contenedor': 'azul',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'lata',
-      'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
-      'contenedor': 'amarillo',
-    },
+    return [
+      {
+        'articulo': 'La',
+        'nombre': 'piel de plátano',
+        'imagen': 'assets/icons/objetos/marron/platano.png',
+        'contenedor': 'marrón',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'espina',
+        'imagen': 'assets/icons/objetos/marron/espina-de-pescado.png',
+        'contenedor': 'marrón',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'flor',
+        'imagen': 'assets/icons/objetos/marron/tulipan.png',
+        'contenedor': 'marrón',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'tarro',
+        'imagen': 'assets/icons/objetos/verde/tarro-de-mermelada.png',
+        'contenedor': 'verde',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'caja',
+        'imagen': 'assets/icons/objetos/azul/caja.png',
+        'contenedor': 'azul',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'revista',
+        'imagen': 'assets/icons/objetos/azul/revista.png',
+        'contenedor': 'azul',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'lata',
+        'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
+        'contenedor': 'amarillo',
+      },
     ];
   }
 
   List<Map<String, String>> getObjetosTercerNivel() {
-    return
-    [
+    return [
       {
-      'articulo': 'La',
-      'nombre': 'mascarilla',
-      'imagen': 'assets/icons/objetos/gris/mascara-medica.png',
-      'contenedor': 'gris',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'cerámica',
-      'imagen': 'assets/icons/objetos/gris/ceramica.png',
-      'contenedor': 'gris',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'tirita',
-      'imagen': 'assets/icons/objetos/gris/tirita.png',
-      'contenedor': 'gris',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'periódico',
-      'imagen': 'assets/icons/objetos/azul/periodico.png',
-      'contenedor': 'azul',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'brick de leche',
-      'imagen': 'assets/icons/objetos/amarillo/leche.png',
-      'contenedor': 'amarillo',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'perfume',
-      'imagen': 'assets/icons/objetos/verde/perfume.png',
-      'contenedor': 'verde',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'manzana',
-      'imagen': 'assets/icons/objetos/marron/manzana.png',
-      'contenedor': 'marrón',
-    },
-  ];
-  }
-
-  List<Map<String,String>> getObjetosPrimerNivelPuntoLimpio(){
-    return
-    [
-    {
-      'articulo': 'El',
-      'nombre': 'teléfono',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/telefono-inteligente.png',
-      'contenedor': 'informatica',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'microondas',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/horno-microondas.png',
-      'contenedor': 'electrodomesticos',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'cd',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/cd.png',
-      'contenedor': 'dvd',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'bombilla',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/bombilla.png',
-      'contenedor': 'iluminacion',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'batería',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/bateria.png',
-      'contenedor': 'pilas',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'cartucho',
-      'imagen': 'assets/icons/puntolimpio/primer_nivel/cartucho-de-tinta.png',
-      'contenedor': 'toner',
-    },
+        'articulo': 'La',
+        'nombre': 'mascarilla',
+        'imagen': 'assets/icons/objetos/gris/mascara-medica.png',
+        'contenedor': 'gris',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'cerámica',
+        'imagen': 'assets/icons/objetos/gris/ceramica.png',
+        'contenedor': 'gris',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'tirita',
+        'imagen': 'assets/icons/objetos/gris/tirita.png',
+        'contenedor': 'gris',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'espejo',
+        'imagen': 'assets/icons/objetos/gris/espejo.png',
+        'contenedor': 'gris',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'periódico',
+        'imagen': 'assets/icons/objetos/azul/periodico.png',
+        'contenedor': 'azul',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'brick de leche',
+        'imagen': 'assets/icons/objetos/amarillo/leche.png',
+        'contenedor': 'amarillo',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'perfume',
+        'imagen': 'assets/icons/objetos/verde/perfume.png',
+        'contenedor': 'verde',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'manzana',
+        'imagen': 'assets/icons/objetos/marron/manzana.png',
+        'contenedor': 'marrón',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'cáscara de huevo',
+        'imagen': 'assets/icons/objetos/marron/huevo.png',
+        'contenedor': 'marrón',
+      },
     ];
   }
 
-  List<Map<String,String>> getObjetosSegundoNivelPuntoLimpio(){
-    return 
-    [
-    {
-      'articulo': 'La',
-      'nombre': 'aceite de motor',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
-      'contenedor': 'motor',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'tambor',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/tambor.png',
-      'contenedor': 'juguetes',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'sartén',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/sarten.png',
-      'contenedor': 'metal',
-    },
-    {
-      'articulo': 'El',
-      'nombre': 'aceite vegetal',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-vegetal.png',
-      'contenedor': 'vegetales',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'cápsula de café',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/capsula-de-cafe.png',
-      'contenedor': 'capsulas',
-    },
-    {
-      'articulo': 'La',
-      'nombre': 'pintura',
-      'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
-      'contenedor': 'toxico',
-    },
+  List<Map<String, String>> getObjetosPrimerNivelPuntoLimpio() {
+    return [
+      {
+        'articulo': 'El',
+        'nombre': 'teléfono',
+        'imagen':
+            'assets/icons/puntolimpio/primer_nivel/telefono-inteligente.png',
+        'contenedor': 'informatica',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'portátil',
+        'imagen':
+            'assets/icons/puntolimpio/primer_nivel/ordenador-portatil.png',
+        'contenedor': 'informatica',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'microondas',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/horno-microondas.png',
+        'contenedor': 'electrodomesticos',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'licuadora',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/licuadora.png',
+        'contenedor': 'electrodomesticos',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'cd',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/cd.png',
+        'contenedor': 'dvd',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'radiografía',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/radiografia.png',
+        'contenedor': 'dvd',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'bombilla',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/bombilla.png',
+        'contenedor': 'iluminacion',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'batería',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/bateria.png',
+        'contenedor': 'pilas',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'cartucho de tinta',
+        'imagen': 'assets/icons/puntolimpio/primer_nivel/cartucho-de-tinta.png',
+        'contenedor': 'toner',
+      },
     ];
   }
 
-  List<String> getContenedoresBotonesPrimerNivel(){
-    return
-    [
+  List<Map<String, String>> getObjetosSegundoNivelPuntoLimpio() {
+    return [
+      {
+        'articulo': 'La',
+        'nombre': 'aceite de motor',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
+        'contenedor': 'motor',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'tambor',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/tambor.png',
+        'contenedor': 'juguetes',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'peluche',
+        'imagen':
+            'assets/icons/puntolimpio/segundo_nivel/juguete-de-peluche.png',
+        'contenedor': 'juguetes',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'sartén',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/sarten.png',
+        'contenedor': 'metal',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'cazuela',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/cazuela.png',
+        'contenedor': 'metal',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'aceite de cocina',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-vegetal.png',
+        'contenedor': 'vegetales',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'cápsula de café',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/capsula-de-cafe.png',
+        'contenedor': 'capsulas',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'pintura',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
+        'contenedor': 'toxico',
+      },
+      {
+        'articulo': 'La',
+        'nombre': 'lejía',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/lejia.png',
+        'contenedor': 'toxico',
+      },
+    ];
+  }
+
+  List<String> getContenedoresBotonesPrimerNivel() {
+    return [
       'informatica',
       'electrodomesticos',
       'dvd',
@@ -285,16 +390,7 @@ class GameService {
     ];
   }
 
-  List<String> getContenedoresBotonesSegundoNivel(){
-    return
-    [
-      'motor',
-      'juguetes',
-      'metal',
-      'vegetales',
-      'capsulas',
-      'toxico',
-    ];
+  List<String> getContenedoresBotonesSegundoNivel() {
+    return ['motor', 'juguetes', 'metal', 'vegetales', 'capsulas', 'toxico'];
   }
-
 }

@@ -8,8 +8,6 @@ import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 class PuntoLimpioFirstFillPage extends StatefulWidget {
   const PuntoLimpioFirstFillPage({super.key});
 
@@ -33,6 +31,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
   String? respuestaIncorrecta;
   bool respuestaCorrectaMostrada = false;
   int puntosGanadosActuales = 0;
+  int puntosPerdidosActuales = 0;
 
   final Color themeGreen = const Color(0xFF298133);
   final Color lightGreen = const Color(0xFFE8F5E9);
@@ -90,6 +89,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
           respuestaIncorrecta = null;
           respuestaCorrectaMostrada = false;
           puntosGanadosActuales = 0;
+          puntosPerdidosActuales = 0;
         });
       });
     } else {
@@ -98,6 +98,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
+        puntosPerdidosActuales = primerNivel.restarPuntosRespuestaIncorrecta();
       });
     }
   }
@@ -218,13 +219,12 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                         ),
                       ),
 
-                      // HUECO
-
+                
                       // HUECO
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         width: 180,
-                        height: 50,
+                        height: 58,
                         margin: const EdgeInsets.only(left: 6),
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
@@ -243,10 +243,9 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                           child: completada
                               ? Text(
                                   gameService
-                                      .nombreContenedor(contenedorCorrecto)
-                                      .toUpperCase(),
-                                  maxLines: 1,
-                                  softWrap: false,
+                                      .nombreContenedorPuntoLimpio(contenedorCorrecto),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.visible,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.quicksand(
                                     fontSize: 12,
@@ -277,16 +276,16 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                             key: const ValueKey('error'),
                             children: [
                               const Icon(
-                                Icons.close_rounded,
+                                Icons.cancel_rounded,
                                 color: Color(0xFFE53935),
                                 size: 18,
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                'Ese no es el contenedor correcto',
+                                '-$puntosPerdidosActuales puntos',
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
                                   color: const Color(0xFFE53935),
                                 ),
                               ),
@@ -367,12 +366,12 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         ),
         child: Center(
           child: Text(
-            gameService.nombreContenedor(contenedor).toUpperCase(),
+            gameService.nombreContenedorPuntoLimpio(contenedor),
             textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            overflow: TextOverflow.visible,
             style: GoogleFonts.quicksand(
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w800,
               color: esRespuestaIncorrecta
                   ? const Color(0xFFE53935)

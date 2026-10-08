@@ -68,9 +68,9 @@ class _MyGameState extends State<MyGame> {
                       if (isSmallScreen) {
                         return Column(
                           children: [
-                            _buildMyGameCard(),
-                            const SizedBox(height: 30),
                             _buildRankingCard(),
+                            const SizedBox(height: 30),
+                            _buildMyGameCard(),
                           ],
                         );
                       }

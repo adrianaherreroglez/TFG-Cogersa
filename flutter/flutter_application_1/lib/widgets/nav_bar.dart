@@ -66,17 +66,6 @@ class NavBar extends StatelessWidget {
 
             const Spacer(),
 
-            // INICIO
-            _NavButton(
-              icon: Icons.home_rounded,
-              text: 'Inicio',
-              onPressed: () {
-                context.go('/');
-              },
-            ),
-
-            const SizedBox(width: 10),
-
             // JUEGOS
             _NavButton(
               icon: Icons.sports_esports_rounded,
@@ -89,15 +78,15 @@ class NavBar extends StatelessWidget {
             const SizedBox(width: 10),
 
             // SALAS
-            _NavButton(
-              icon: Icons.meeting_room_rounded,
-              text: 'Salas',
-              onPressed: () {
-                context.go('/salas');
-              },
-            ),
+            // _NavButton(
+            //   icon: Icons.meeting_room_rounded,
+            //   text: 'Salas',
+            //   onPressed: () {
+            //     context.go('/salas');
+            //   },
+            // ),
 
-            const SizedBox(width: 10),
+           // const SizedBox(width: 10),
 
             // AMIGOS
             _NavButton(

@@ -14,11 +14,11 @@ class PuntoLimpioSecondPage extends StatefulWidget {
   const PuntoLimpioSecondPage({super.key, required this.puntosPrevios});
 
   @override
-  State<PuntoLimpioSecondPage> createState() => _FirstPageState();
+  State<PuntoLimpioSecondPage> createState() => _SecondPageState();
   final int puntosPrevios;
 }
 
-class _FirstPageState extends State<PuntoLimpioSecondPage> {
+class _SecondPageState extends State<PuntoLimpioSecondPage> {
   
   final GameService gameService = GameService();
   final SegundoNivel segundoNivel = SegundoNivel();
@@ -289,7 +289,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                         color: const Color.fromARGB(255, 167, 164, 154),
                         imagen:
                             'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: ' MOTOR',
+                        nombre: ' ACEITE DE MOTOR',
                         objetos: objetosMotor,
                         todosLosObjetos: objetos,
                         onAccept: () {
@@ -319,7 +319,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                         color: const Color.fromARGB(255, 167, 164, 154),
                         imagen:
                             'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'METAL',
+                        nombre: 'METAL HOGAR',
                         objetos: objetosMetal,
                         todosLosObjetos: objetos,
                         onAccept: () {
@@ -334,7 +334,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                         color: const Color.fromARGB(255, 167, 164, 154),
                         imagen:
                             'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'VEGETALES',
+                        nombre: 'ACEITES VEGETALES',
                         objetos: objetosVegetales,
                         todosLosObjetos: objetos,
                         onAccept: () {
@@ -364,7 +364,7 @@ class _FirstPageState extends State<PuntoLimpioSecondPage> {
                         color: const Color.fromARGB(255, 167, 164, 154),
                         imagen:
                             'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'TÓXICO',
+                        nombre: 'TÓXICO HOGAR',
                         objetos: objetosToxico,
                         todosLosObjetos: objetos,
                         onAccept: () {

@@ -303,7 +303,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
                         color: const Color.fromARGB(255, 167, 164, 154),
                         imagen:
                             'assets/icons/contenedores/contenedor-de-basura.png',
-                        nombre: 'ELECTRODOMÉSTICOS',
+                        nombre: 'PEQUEÑOS ELECTRODOMÉSTICOS',
                         objetos: objetosElectrodomesticos,
                         todosLosObjetos: objetos,
                         onAccept: () {
