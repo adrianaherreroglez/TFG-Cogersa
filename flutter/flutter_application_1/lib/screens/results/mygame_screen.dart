@@ -212,7 +212,100 @@ class _MyGameState extends State<MyGame> {
 
           const SizedBox(height: 25),
 
-          // PEQUEÑA INFORMACIÓN
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              vertical: 25,
+              horizontal: 20,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3FAEF),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'PUNTOS',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: const Color(0xFF644633),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                Text(
+                  '${widget.puntosPrevios}',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 52,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+
+                Text(
+                  'puntos conseguidos',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF644633),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 25),
+
+          // TIEMPO TRANSCURRIDO
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              vertical: 25,
+              horizontal: 20,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3FAEF),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'TIEMPO',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: const Color(0xFF644633),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                Text(
+                  '${widget.puntosPrevios}',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 52,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+
+                Text(
+                  'segundos',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF644633),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Frase
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

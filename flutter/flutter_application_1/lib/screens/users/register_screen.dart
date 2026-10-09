@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -66,14 +63,10 @@ class _RegisterPageState extends State<RegisterPage> {
       if (!mounted) return;
 
       context.go('/listgame');
-
     } catch (e) {
       if (!mounted) return;
 
-      _showMessage(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
-
+      _showMessage(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) {
         setState(() {
@@ -84,11 +77,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -100,12 +90,10 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: const Color(0xFFFAFDF4),
 
       body: SafeArea(
-        child: Center(
+        child: SizedBox(
+          width: double.infinity,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 30,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
 
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -119,11 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.eco_rounded,
-                    size: 60,
-                    color: themeGreen,
-                  ),
+                  child: Icon(Icons.eco_rounded, size: 60, color: themeGreen),
                 ),
 
                 const SizedBox(height: 20),
@@ -251,14 +235,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? const SizedBox(
                             width: 22,
                             height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 21,
-                          ),
+                        : const Icon(Icons.arrow_forward_rounded, size: 21),
                   ),
                 ),
 

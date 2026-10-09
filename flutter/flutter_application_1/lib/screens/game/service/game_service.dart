@@ -322,7 +322,7 @@ class GameService {
   List<Map<String, String>> getObjetosSegundoNivelPuntoLimpio() {
     return [
       {
-        'articulo': 'La',
+        'articulo': 'El',
         'nombre': 'aceite de motor',
         'imagen': 'assets/icons/puntolimpio/segundo_nivel/aceite-de-motor.png',
         'contenedor': 'motor',
@@ -348,8 +348,8 @@ class GameService {
       },
       {
         'articulo': 'La',
-        'nombre': 'cazuela',
-        'imagen': 'assets/icons/puntolimpio/segundo_nivel/cazuela.png',
+        'nombre': 'cacerola',
+        'imagen': 'assets/icons/puntolimpio/segundo_nivel/cacerola.png',
         'contenedor': 'metal',
       },
       {
