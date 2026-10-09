@@ -33,6 +33,9 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const MyHomePage(title: 'EcoKids'),
     ),
 
+    // ----------------------------
+    // REGISTRO Y LOGIN DE USUARIOS
+    // ----------------------------
     GoRoute(path: '/login', builder: (context, state) => const LogInPage()),
 
     GoRoute(
@@ -40,9 +43,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const RegisterPage(),
     ),
 
+    // ----------------------------
+    // LISTA DE JUEGOS
+    // ----------------------------
+
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 
+    // -----------------------------
+    // ACCEDER CON CÓDIGO DE PARTIDA
+    // -----------------------------
+
     GoRoute(path: '/code', builder: (context, state) => const CodePage()),
+
+    // ------------------------------
+    // RECICLAJE - DRAG & DROP
+    // ------------------------------
 
     GoRoute(path: '/first', builder: (context, state) => const FirstPage()),
 
@@ -64,43 +79,10 @@ final GoRouter router = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: '/mygame',
-      builder: (context, state) {
-        final datosPartida = state.extra as DatosPartida;
 
-        return MyGame(datosPartida: datosPartida);
-      },
-    ),
-
-    GoRoute(
-      path: '/puntolimpio/firstlevel',
-      builder: (context, state) => const PuntoLimpioFirstPage(),
-    ),
-
-    GoRoute(
-      path: '/puntolimpio/secondlevel',
-      builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
-
-        return PuntoLimpioSecondPage(puntosPrevios: puntos);
-      },
-    ),
-
-    GoRoute(
-      path: '/puntolimpio/fillGaps/firstlevel',
-      builder: (context, state) => const PuntoLimpioFirstFillPage(),
-    ),
-
-    GoRoute(
-      path: '/puntolimpio/fillGaps/secondLevel',
-      builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
-
-        return PuntoLimpioSecondFillPage(puntosPrevios: puntos);
-      },
-    ),
-
+    // ----------------------------
+    // RECICLAJE - FILL IN THE GAPS
+    // ----------------------------
     GoRoute(
       path: '/fillGaps/first',
       builder: (context, state) => const FirstFillPage(),
@@ -124,12 +106,68 @@ final GoRouter router = GoRouter(
       },
     ),
 
+    // --------------------------
+    // PUNTO LIMPIO - DRAG & DROP
+    // --------------------------
+    GoRoute(
+      path: '/puntolimpio/firstlevel',
+      builder: (context, state) => const PuntoLimpioFirstPage(),
+    ),
+
+    GoRoute(
+      path: '/puntolimpio/secondlevel',
+      builder: (context, state) {
+        final datosPartida = state.extra as DatosPartida;
+
+        return PuntoLimpioSecondPage(datosPartida: datosPartida);
+      },
+    ),
+
+    // -------------------------------
+    // PUNTO LIMPIO - FILL IN THE GAPS
+    // ------------------------------
+
+    GoRoute(
+      path: '/puntolimpio/fillGaps/firstlevel',
+      builder: (context, state) => const PuntoLimpioFirstFillPage(),
+    ),
+
+    GoRoute(
+      path: '/puntolimpio/fillGaps/secondLevel',
+      builder: (context, state) {
+        final datosPartida = state.extra as DatosPartida;
+
+        return PuntoLimpioSecondFillPage(datosPartida: datosPartida);
+      },
+    ),
+
+    // --------------------
+    // RESULTADOS DEL JUEGO
+    // --------------------
+
+    GoRoute(
+      path: '/mygame',
+      builder: (context, state) {
+        final datosPartida = state.extra as DatosPartida;
+
+        return MyGame(datosPartida: datosPartida);
+      },
+    ),
+
+    // -------------------------------------------
+    // CREACIÓN DE PARTIDAS POR PARTE DEL PROFESOR
+    // --------------------------------------------
+
     GoRoute(path: '/salas', builder: (context, state) => const SalasPage()),
 
     GoRoute(
       path: '/crearSala',
       builder: (context, state) => const CrearSalaPage(),
     ),
+
+    // -------------------------------------
+    // RED SOCIAL (AMIGOS, SOLICITUDES, CHAT)
+    // --------------------------------------
 
     GoRoute(
       path: '/listAmigos',

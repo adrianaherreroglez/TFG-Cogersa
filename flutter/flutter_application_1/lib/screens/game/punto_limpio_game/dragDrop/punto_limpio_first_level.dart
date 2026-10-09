@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
@@ -18,6 +19,8 @@ class PuntoLimpioFirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<PuntoLimpioFirstPage> {
+
+  final DatosPartida datosPartida = DatosPartida();
   
   final GameService gameService = GameService();
   final PrimerNivel primerNivel = PrimerNivel();
@@ -26,8 +29,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
 
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
-  int intentos = 0;
+
   bool objetoVisible = true;
 
   // Objetos que aparecen dentro de los contenedores
@@ -42,7 +44,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
   @override
   void initState() {
     super.initState();
-
+    datosPartida.cronometro.start();
     objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
     objetos.shuffle(Random());
   }
@@ -53,13 +55,13 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
-    intentos++;
+    datosPartida.intentos++;
 
     final objeto = objetoActual;
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      puntos += primerNivel.sumarPuntosRespuestaCorrecta();
+      datosPartida.puntos += primerNivel.sumarPuntosRespuestaCorrecta();
       setState(() {
         // Solo mostramos el último objeto acertado
         // dentro de cada contenedor.
@@ -87,9 +89,6 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
         // Pasamos al siguiente objeto
         indiceObjetoActual++;
 
-        // Reiniciamos los intentos
-        intentos = 0;
-
         // Comprobamos si quedan objetos
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
@@ -102,7 +101,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
       if (indiceObjetoActual >= objetos.length) {
         context.go(
           '/puntolimpio/secondlevel',
-          extra: puntos,
+          extra: datosPartida,
         );
       }
     }
@@ -113,7 +112,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
         // Mantiene el objeto visible
         objetoVisible = true;
 
-        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
       });
     }
   }
@@ -248,7 +247,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
                               const SizedBox(width: 7),
 
                               Text(
-                                '$puntos puntos',
+                                '${datosPartida.puntos} puntos',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

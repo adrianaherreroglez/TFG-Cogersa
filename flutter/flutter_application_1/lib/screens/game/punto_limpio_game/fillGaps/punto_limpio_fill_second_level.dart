@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
@@ -10,12 +11,12 @@ import 'package:go_router/go_router.dart';
 
 
 class PuntoLimpioSecondFillPage extends StatefulWidget {
-  const PuntoLimpioSecondFillPage({super.key, required this.puntosPrevios});
+  const PuntoLimpioSecondFillPage({super.key, required this.datosPartida});
 
   @override
   State<PuntoLimpioSecondFillPage> createState() =>
       _PuntoLimpioSecondFillPageState();
-  final int puntosPrevios;
+  final DatosPartida datosPartida;
 }
 
 class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
@@ -25,8 +26,6 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
-  int intentos = 0;
 
   final Map<int, String> respuestasCorrectas = {};
 
@@ -43,7 +42,6 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   @override
   void initState() {
     super.initState();
-    puntos = widget.puntosPrevios;
 
     objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
 
@@ -60,14 +58,14 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
       return;
     }
 
-    intentos++;
+    widget.datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
       final int puntosRespuesta = segundoNivel.sumarPuntosRespuestaCorrecta();
 
-      puntos += puntosRespuesta;
+      widget.datosPartida.puntos += puntosRespuesta;
 
       setState(() {
         respuestasCorrectas[indiceObjetoActual] = contenedor;
@@ -82,13 +80,13 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/mygame', extra: puntos);
+          widget.datosPartida.cronometro.stop();
+          context.go('/mygame', extra: widget.datosPartida);
           return;
         }
 
         setState(() {
           indiceObjetoActual = siguienteIndice;
-          intentos = 0;
           respuestaIncorrecta = null;
           respuestaCorrectaMostrada = false;
           puntosGanadosActuales = 0;
@@ -98,7 +96,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
         puntosPerdidosActuales = segundoNivel.restarPuntosRespuestaIncorrecta();
@@ -529,7 +527,7 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '$puntos puntos',
+                                    '${widget.datosPartida.puntos} puntos',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
