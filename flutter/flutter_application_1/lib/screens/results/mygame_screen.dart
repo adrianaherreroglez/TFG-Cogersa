@@ -236,23 +236,52 @@ class _MyGameState extends State<MyGame> {
             ),
           ),
 
-          const SizedBox(height: 5),
+          const SizedBox(height: 25),
 
-          // Frase
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '¡Sigue aprendiendo y cuidando el planeta!',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.quicksand(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF644633),
+          //INTENTOS
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3FAEF),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'INTENTOS',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: const Color(0xFF644633),
+                  ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 5),
+
+                Text(
+                  '${widget.datosPartida.intentos}',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 52,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF298133),
+                  ),
+                ),
+
+                Text(
+                  'intentos',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF644633),
+                  ),
+                ),
+              ],
+            ),
           ),
+
+  
         ],
       ),
     );
@@ -387,23 +416,6 @@ class _MyGameState extends State<MyGame> {
             icon: Icons.emoji_events,
           ),
 
-          const SizedBox(height: 10),
-
-          _rankingRow(
-            position: '9',
-            name: 'Jugador 9',
-            points: 25,
-            icon: Icons.emoji_events,
-          ),
-
-          const SizedBox(height: 10),
-
-          _rankingRow(
-            position: '10',
-            name: 'Jugador 10',
-            points: -10,
-            icon: Icons.emoji_events,
-          ),
         ],
       ),
     );

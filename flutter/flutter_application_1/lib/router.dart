@@ -67,9 +67,9 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/mygame',
       builder: (context, state) {
-        final datos = state.extra as DatosPartida;
+        final datosPartida = state.extra as DatosPartida;
 
-        return MyGame(datosPartida: datos);
+        return MyGame(datosPartida: datosPartida);
       },
     ),
 
@@ -109,18 +109,18 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/fillGaps/second',
       builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
+        final datosPartida = state.extra as DatosPartida;
 
-        return SecondFillPage(puntosPrevios: puntos);
+        return SecondFillPage(datosPartida: datosPartida);
       },
     ),
 
     GoRoute(
       path: '/fillGaps/third',
       builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
+        final datosPartida = state.extra as DatosPartida;
 
-        return ThirdFillPage(puntosPrevios: puntos);
+        return ThirdFillPage(datosPartida: datosPartida);
       },
     ),
 

@@ -23,7 +23,6 @@ class _SecondPageState extends State<SecondPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int intentos = 0;
   bool objetoVisible = true;
 
   final List<String> objetosAmarillos = [];
@@ -44,7 +43,7 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
-    intentos++;
+    widget.datosPartida.intentos++;
 
     final objeto = objetoActual;
     final contenedorCorrecto = objeto['contenedor'];
@@ -68,7 +67,6 @@ class _SecondPageState extends State<SecondPage> {
         }
 
         indiceObjetoActual++;
-        intentos = 0;
 
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;

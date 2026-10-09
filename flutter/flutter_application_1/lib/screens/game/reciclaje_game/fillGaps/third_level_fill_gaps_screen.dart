@@ -1,19 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/tercer_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ThirdFillPage extends StatefulWidget {
-
-  const ThirdFillPage({super.key, required this.puntosPrevios});
+  const ThirdFillPage({super.key, required this.datosPartida});
   @override
   State<ThirdFillPage> createState() => _ThirdPageState();
-  final int puntosPrevios;
+  final DatosPartida datosPartida;
 }
 
 class _ThirdPageState extends State<ThirdFillPage> {
@@ -23,14 +22,13 @@ class _ThirdPageState extends State<ThirdFillPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
-  int intentos = 0;
 
   final Map<int, String> respuestasCorrectas = {};
 
   String? respuestaIncorrecta;
   bool respuestaCorrectaMostrada = false;
   int puntosGanadosActuales = 0;
+  int puntosPerdidosActuales = 0;
 
   final Color themeGreen = const Color(0xFF298133);
   final Color lightGreen = const Color(0xFFE8F5E9);
@@ -40,8 +38,6 @@ class _ThirdPageState extends State<ThirdFillPage> {
   @override
   void initState() {
     super.initState();
-
-    puntos = widget.puntosPrevios;
 
     objetos = gameService.getObjetosTercerNivel();
     objetos.shuffle(Random());
@@ -56,20 +52,22 @@ class _ThirdPageState extends State<ThirdFillPage> {
       return;
     }
 
-    intentos++;
+    widget.datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
       final int puntosRespuesta = tercerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuestaIncorrecta = tercerNivel.restarPuntosRespuestaIncorrecta();
 
-      puntos += puntosRespuesta;
+      widget.datosPartida.puntos += puntosRespuesta;
 
       setState(() {
         respuestasCorrectas[indiceObjetoActual] = contenedor;
         respuestaIncorrecta = null;
         respuestaCorrectaMostrada = true;
         puntosGanadosActuales = puntosRespuesta;
+        puntosPerdidosActuales = puntosRespuestaIncorrecta;
       });
 
       Future.delayed(const Duration(milliseconds: 1000), () {
@@ -78,24 +76,28 @@ class _ThirdPageState extends State<ThirdFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/mygame', extra: puntos);
+          widget.datosPartida.cronometro.stop();
+          context.go('/mygame', extra: widget.datosPartida);
           return;
         }
 
         setState(() {
           indiceObjetoActual = siguienteIndice;
-          intentos = 0;
           respuestaIncorrecta = null;
           respuestaCorrectaMostrada = false;
           puntosGanadosActuales = 0;
+          puntosPerdidosActuales = 0;
         });
       });
     } else {
+      final int puntosPerdidos = tercerNivel.restarPuntosRespuestaIncorrecta();
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= tercerNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= tercerNivel
+            .restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
+        puntosPerdidosActuales = puntosPerdidos;
       });
     }
   }
@@ -264,7 +266,6 @@ class _ThirdPageState extends State<ThirdFillPage> {
 
                   const SizedBox(height: 8),
 
-
                   // MENSAJE DE ESTADO
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
@@ -273,16 +274,16 @@ class _ThirdPageState extends State<ThirdFillPage> {
                             key: const ValueKey('error'),
                             children: [
                               const Icon(
-                                Icons.close_rounded,
+                                Icons.cancel_rounded,
                                 color: Color(0xFFE53935),
                                 size: 18,
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                'Ese no es el contenedor correcto',
+                                '-$puntosPerdidosActuales puntos',
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
                                   color: const Color(0xFFE53935),
                                 ),
                               ),
@@ -519,7 +520,7 @@ class _ThirdPageState extends State<ThirdFillPage> {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '$puntos puntos',
+                                    '${widget.datosPartida.puntos} puntos',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,

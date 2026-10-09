@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
@@ -23,14 +24,15 @@ class _FirstPageState extends State<FirstFillPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
-  int intentos = 0;
+
+  final DatosPartida datosPartida = DatosPartida();
 
   final Map<int, String> respuestasCorrectas = {};
 
   String? respuestaIncorrecta;
   bool respuestaCorrectaMostrada = false;
   int puntosGanadosActuales = 0;
+  int puntosPerdidosActuales = 0;
 
   final Color themeGreen = const Color(0xFF298133);
   final Color lightGreen = const Color(0xFFE8F5E9);
@@ -43,6 +45,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
     objetos = gameService.getObjetosPrimerNivel();
     objetos.shuffle(Random());
+    datosPartida.cronometro.start();
   }
 
   Map<String, String> get objetoActual {
@@ -54,20 +57,23 @@ class _FirstPageState extends State<FirstFillPage> {
       return;
     }
 
-    intentos++;
+    datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
       final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuestaIncorrecta = primerNivel.restarPuntosRespuestaIncorrecta();
 
-      puntos += puntosRespuesta;
+      datosPartida.puntos += puntosRespuesta;
 
       setState(() {
         respuestasCorrectas[indiceObjetoActual] = contenedor;
         respuestaIncorrecta = null;
         respuestaCorrectaMostrada = true;
         puntosGanadosActuales = puntosRespuesta;
+        puntosPerdidosActuales = puntosRespuestaIncorrecta;
+
       });
 
       Future.delayed(const Duration(milliseconds: 1000), () {
@@ -76,24 +82,27 @@ class _FirstPageState extends State<FirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/fillGaps/second', extra: puntos);
+          context.go('/fillGaps/second', extra: datosPartida);
           return;
         }
 
         setState(() {
           indiceObjetoActual = siguienteIndice;
-          intentos = 0;
           respuestaIncorrecta = null;
           respuestaCorrectaMostrada = false;
           puntosGanadosActuales = 0;
+          puntosPerdidosActuales = 0;
         });
       });
     } else {
+      final int puntosPerdidos = primerNivel.restarPuntosRespuestaIncorrecta();
+
       setState(() {
         respuestaIncorrecta = contenedor;
-        puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
+        puntosPerdidosActuales = puntosPerdidos;
       });
     }
   }
@@ -271,16 +280,16 @@ class _FirstPageState extends State<FirstFillPage> {
                             key: const ValueKey('error'),
                             children: [
                               const Icon(
-                                Icons.close_rounded,
+                                Icons.cancel_rounded,
                                 color: Color(0xFFE53935),
                                 size: 18,
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                'Ese no es el contenedor correcto',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
+                                '-$puntosPerdidosActuales puntos',
+                                style: GoogleFonts.quicksand( 
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
                                   color: const Color(0xFFE53935),
                                 ),
                               ),
@@ -517,7 +526,7 @@ class _FirstPageState extends State<FirstFillPage> {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '$puntos puntos',
+                                    '${datosPartida.puntos} puntos',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,

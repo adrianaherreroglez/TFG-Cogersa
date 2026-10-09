@@ -283,7 +283,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                               const SizedBox(width: 6),
                               Text(
                                 '-$puntosPerdidosActuales puntos',
-                                style: GoogleFonts.quicksand(
+                                style: GoogleFonts.quicksand( 
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                   color: const Color(0xFFE53935),

@@ -24,7 +24,7 @@ class _ThirdPageState extends State<ThirdPage> {
 
   int indiceObjetoActual = 0;
 
-  int intentos = 0;
+
   bool objetoVisible = true;
 
   final List<String> objetosAmarillos = [];
@@ -46,7 +46,7 @@ class _ThirdPageState extends State<ThirdPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
-    intentos++;
+    widget.datosPartida.intentos++;
 
     final objeto = objetoActual;
     final contenedorCorrecto = objeto['contenedor'];
@@ -73,7 +73,6 @@ class _ThirdPageState extends State<ThirdPage> {
         }
 
         indiceObjetoActual++;
-        intentos = 0;
 
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;

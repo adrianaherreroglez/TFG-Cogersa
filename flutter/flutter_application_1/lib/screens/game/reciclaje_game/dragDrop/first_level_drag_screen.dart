@@ -22,7 +22,6 @@ class _FirstPageState extends State<FirstPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int intentos = 0;
   bool objetoVisible = true;
 
   final List<String> objetosAmarillos = [];
@@ -45,7 +44,7 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
-    intentos++;
+    datosPartida.intentos++;
 
     final objeto = objetoActual;
     final contenedorCorrecto = objeto['contenedor'];
@@ -66,7 +65,6 @@ class _FirstPageState extends State<FirstPage> {
         }
 
         indiceObjetoActual++;
-        intentos = 0;
 
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
