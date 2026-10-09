@@ -3,6 +3,7 @@
 import 'package:flutter_application_1/screens/amigos/chat_screen.dart';
 import 'package:flutter_application_1/screens/amigos/lista_amigos_screen.dart';
 import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/salas/crear_sala_screen.dart';
 import 'package:flutter_application_1/screens/salas/mis_salas_screen.dart';
 
@@ -48,27 +49,27 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/second',
       builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
+        final datos = state.extra as DatosPartida;
 
-        return SecondPage(puntosPrevios: puntos);
+        return SecondPage(datosPartida: datos);
       },
     ),
 
     GoRoute(
       path: '/third',
       builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
+        final datos = state.extra as DatosPartida;
 
-        return ThirdPage(puntosPrevios: puntos);
+        return ThirdPage(datosPartida: datos);
       },
     ),
 
     GoRoute(
       path: '/mygame',
       builder: (context, state) {
-        final puntos = state.extra as int? ?? 0;
+        final datos = state.extra as DatosPartida;
 
-        return MyGame(puntosPrevios: puntos);
+        return MyGame(datosPartida: datos);
       },
     ),
 

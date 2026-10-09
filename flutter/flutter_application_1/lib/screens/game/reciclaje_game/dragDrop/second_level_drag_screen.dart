@@ -1,23 +1,19 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
 class SecondPage extends StatefulWidget {
-
-  const SecondPage({super.key, required this.puntosPrevios});
+  const SecondPage({super.key, required this.datosPartida});
 
   @override
   State<SecondPage> createState() => _SecondPageState();
-  final int puntosPrevios;
-
-  
+  final DatosPartida datosPartida;
 }
 
 class _SecondPageState extends State<SecondPage> {
@@ -27,7 +23,6 @@ class _SecondPageState extends State<SecondPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
   int intentos = 0;
   bool objetoVisible = true;
 
@@ -39,7 +34,7 @@ class _SecondPageState extends State<SecondPage> {
   @override
   void initState() {
     super.initState();
-    puntos = widget.puntosPrevios;
+
     objetos = gameService.getObjetosSegundoNivel();
     objetos.shuffle(Random());
   }
@@ -55,9 +50,9 @@ class _SecondPageState extends State<SecondPage> {
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      puntos += segundoNivel.sumarPuntosRespuestaCorrecta();
+      widget.datosPartida.puntos += segundoNivel.sumarPuntosRespuestaCorrecta();
 
-      setState(() { 
+      setState(() {
         if (contenedor == 'amarillo') {
           objetosAmarillos.clear();
           objetosAmarillos.add(objeto['nombre']!);
@@ -83,13 +78,11 @@ class _SecondPageState extends State<SecondPage> {
       });
 
       if (indiceObjetoActual >= objetos.length) {
-        context.go(
-          '/third',
-          extra: puntos,
-        );
+        context.go('/third', extra: widget.datosPartida);
       }
     } else {
-      puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
+      widget.datosPartida.puntos -= segundoNivel
+          .restarPuntosRespuestaIncorrecta();
 
       setState(() {
         objetoVisible = true;
@@ -108,10 +101,7 @@ class _SecondPageState extends State<SecondPage> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 45,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10),
 
               child: Column(
                 children: [
@@ -227,7 +217,7 @@ class _SecondPageState extends State<SecondPage> {
                               const SizedBox(width: 7),
 
                               Text(
-                                '$puntos puntos',
+                                '${widget.datosPartida.puntos} puntos',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -245,11 +235,9 @@ class _SecondPageState extends State<SecondPage> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
-                      child: objetoVisible &&
-                              indiceObjetoActual < objetos.length
-                          ? _ObjetoArrastrable(
-                              imagen: objetoActual['imagen']!,
-                            )
+                      child:
+                          objetoVisible && indiceObjetoActual < objetos.length
+                          ? _ObjetoArrastrable(imagen: objetoActual['imagen']!)
                           : const SizedBox(),
                     ),
                   ),
@@ -260,8 +248,7 @@ class _SecondPageState extends State<SecondPage> {
                     children: [
                       _ContenedorReciclaje(
                         color: const Color(0xFFFFD740),
-                        imagen:
-                            'assets/icons/contenedores/basura-amarilla.png',
+                        imagen: 'assets/icons/contenedores/basura-amarilla.png',
                         nombre: 'AMARILLO',
                         objetos: objetosAmarillos,
                         gameService: gameService,
@@ -275,8 +262,7 @@ class _SecondPageState extends State<SecondPage> {
 
                       _ContenedorReciclaje(
                         color: const Color(0xFF42A5F5),
-                        imagen:
-                            'assets/icons/contenedores/basura-azul.png',
+                        imagen: 'assets/icons/contenedores/basura-azul.png',
                         nombre: 'AZUL',
                         objetos: objetosAzules,
                         gameService: gameService,
@@ -290,8 +276,7 @@ class _SecondPageState extends State<SecondPage> {
 
                       _ContenedorReciclaje(
                         color: const Color(0xFF66BB6A),
-                        imagen:
-                            'assets/icons/contenedores/basura-verde.png',
+                        imagen: 'assets/icons/contenedores/basura-verde.png',
                         nombre: 'VERDE',
                         objetos: objetosVerdes,
                         gameService: gameService,
@@ -305,8 +290,7 @@ class _SecondPageState extends State<SecondPage> {
 
                       _ContenedorReciclaje(
                         color: const Color.fromARGB(255, 146, 100, 71),
-                        imagen:
-                            'assets/icons/contenedores/basura-marron.png',
+                        imagen: 'assets/icons/contenedores/basura-marron.png',
                         nombre: 'MARRÓN',
                         objetos: objetosMarrones,
                         gameService: gameService,
@@ -315,7 +299,6 @@ class _SecondPageState extends State<SecondPage> {
                           comprobarRespuesta('marrón');
                         },
                       ),
-
                     ],
                   ),
 
@@ -330,14 +313,11 @@ class _SecondPageState extends State<SecondPage> {
   }
 }
 
-
 // OBJETO ARRASTRABLE
 class _ObjetoArrastrable extends StatelessWidget {
   final String imagen;
 
-  const _ObjetoArrastrable({
-    required this.imagen,
-  });
+  const _ObjetoArrastrable({required this.imagen});
 
   @override
   Widget build(BuildContext context) {
@@ -359,26 +339,19 @@ class _ObjetoArrastrable extends StatelessWidget {
       childWhenDragging: Opacity(
         opacity: 0.2,
 
-        child: _ObjetoVisual(
-          imagen: imagen,
-        ),
+        child: _ObjetoVisual(imagen: imagen),
       ),
 
-      child: _ObjetoVisual(
-        imagen: imagen,
-      ),
+      child: _ObjetoVisual(imagen: imagen),
     );
   }
 }
-
 
 // VISUAL DEL OBJETO
 class _ObjetoVisual extends StatelessWidget {
   final String imagen;
 
-  const _ObjetoVisual({
-    required this.imagen,
-  });
+  const _ObjetoVisual({required this.imagen});
 
   @override
   Widget build(BuildContext context) {
@@ -401,16 +374,10 @@ class _ObjetoVisual extends StatelessWidget {
 
       padding: const EdgeInsets.all(32),
 
-      child: Image.asset(
-        imagen,
-        width: 115,
-        height: 115,
-        fit: BoxFit.contain,
-      ),
+      child: Image.asset(imagen, width: 115, height: 115, fit: BoxFit.contain),
     );
   }
 }
-
 
 // CONTENEDOR DE RECICLAJE
 class _ContenedorReciclaje extends StatefulWidget {
@@ -436,14 +403,10 @@ class _ContenedorReciclaje extends StatefulWidget {
   });
 
   @override
-  State<_ContenedorReciclaje> createState() =>
-      _ContenedorReciclajeState();
+  State<_ContenedorReciclaje> createState() => _ContenedorReciclajeState();
 }
 
-
-class _ContenedorReciclajeState
-    extends State<_ContenedorReciclaje> {
-
+class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
   bool isHovering = false;
 
   @override
@@ -471,107 +434,99 @@ class _ContenedorReciclajeState
         widget.onAccept();
       },
 
-      builder: (
-        BuildContext context,
-        List<String?> candidateData,
-        List<dynamic> rejectedData,
-      ) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+      builder:
+          (
+            BuildContext context,
+            List<String?> candidateData,
+            List<dynamic> rejectedData,
+          ) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
 
-          transform: Matrix4.translationValues(
-            0,
-            isHovering ? -8 : 0,
-            0,
-          ),
+              transform: Matrix4.translationValues(0, isHovering ? -8 : 0, 0),
 
-          width: 205,
-          height: 245,
+              width: 205,
+              height: 245,
 
-          decoration: BoxDecoration(
-            color: isHovering
-                ? widget.color.withValues(alpha: 0.18)
-                : Colors.transparent,
+              decoration: BoxDecoration(
+                color: isHovering
+                    ? widget.color.withValues(alpha: 0.18)
+                    : Colors.transparent,
 
-            borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(25),
 
-            border: Border.all(
-              color: isHovering
-                  ? widget.color
-                  : Colors.transparent,
-              width: 3,
-            ),
-
-            boxShadow: isHovering
-                ? [
-                    BoxShadow(
-                      color: widget.color.withValues(alpha: 0.35),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : [],
-          ),
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-              SizedBox(
-                width: 180,
-                height: 180,
-
-                child: Stack(
-                  alignment: Alignment.center,
-
-                  children: [
-                    Image.asset(
-                      widget.imagen,
-                      width: 180,
-                      height: 180,
-                      fit: BoxFit.contain,
-                    ),
-
-                    if (widget.objetos.isNotEmpty)
-                      ...widget.objetos.take(3).map(
-                        (nombreObjeto) {
-                          final imagenObjeto =
-                              widget.gameService.imagenDelObjeto(
-                            nombreObjeto,
-                            widget.todosLosObjetos,
-                          );
-
-                          if (imagenObjeto == null) {
-                            return const SizedBox();
-                          }
-
-                          return Image.asset(
-                            imagenObjeto,
-                            width: 55,
-                            height: 55,
-                            fit: BoxFit.contain,
-                          );
-                        },
-                      ),
-                  ],
+                border: Border.all(
+                  color: isHovering ? widget.color : Colors.transparent,
+                  width: 3,
                 ),
+
+                boxShadow: isHovering
+                    ? [
+                        BoxShadow(
+                          color: widget.color.withValues(alpha: 0.35),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ]
+                    : [],
               ),
 
-              const SizedBox(height: 3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              Text(
-                widget.nombre,
-                style: GoogleFonts.quicksand(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF298133),
-                ),
+                children: [
+                  SizedBox(
+                    width: 180,
+                    height: 180,
+
+                    child: Stack(
+                      alignment: Alignment.center,
+
+                      children: [
+                        Image.asset(
+                          widget.imagen,
+                          width: 180,
+                          height: 180,
+                          fit: BoxFit.contain,
+                        ),
+
+                        if (widget.objetos.isNotEmpty)
+                          ...widget.objetos.take(3).map((nombreObjeto) {
+                            final imagenObjeto = widget.gameService
+                                .imagenDelObjeto(
+                                  nombreObjeto,
+                                  widget.todosLosObjetos,
+                                );
+
+                            if (imagenObjeto == null) {
+                              return const SizedBox();
+                            }
+
+                            return Image.asset(
+                              imagenObjeto,
+                              width: 55,
+                              height: 55,
+                              fit: BoxFit.contain,
+                            );
+                          }),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 3),
+
+                  Text(
+                    widget.nombre,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF298133),
+                    ),
+                  ),
+                ],
               ),
-
-            ],
-          ),
-        );
-      },
+            );
+          },
     );
   }
 }

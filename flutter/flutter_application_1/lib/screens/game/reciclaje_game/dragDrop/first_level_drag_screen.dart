@@ -1,15 +1,12 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/primer_nivel_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-
-
-
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -25,7 +22,6 @@ class _FirstPageState extends State<FirstPage> {
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-  int puntos = 0;
   int intentos = 0;
   bool objetoVisible = true;
 
@@ -33,12 +29,15 @@ class _FirstPageState extends State<FirstPage> {
   final List<String> objetosAzules = [];
   final List<String> objetosVerdes = [];
 
+  final DatosPartida datosPartida = DatosPartida();
+
   @override
   void initState() {
     super.initState();
 
     objetos = gameService.getObjetosPrimerNivel();
     objetos.shuffle(Random());
+    datosPartida.cronometro.start();
   }
 
   Map<String, String> get objetoActual {
@@ -52,7 +51,7 @@ class _FirstPageState extends State<FirstPage> {
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      puntos += primerNivel.sumarPuntosRespuestaCorrecta();
+      datosPartida.puntos += primerNivel.sumarPuntosRespuestaCorrecta();
 
       setState(() {
         if (contenedor == 'amarillo') {
@@ -77,13 +76,10 @@ class _FirstPageState extends State<FirstPage> {
       });
 
       if (indiceObjetoActual >= objetos.length) {
-        context.go(
-          '/second',
-          extra: puntos,
-        );
+        context.go('/second', extra: datosPartida);
       }
     } else {
-      puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+      datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
 
       setState(() {
         objetoVisible = true;
@@ -102,10 +98,7 @@ class _FirstPageState extends State<FirstPage> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 45,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10),
 
               child: Column(
                 children: [
@@ -221,7 +214,7 @@ class _FirstPageState extends State<FirstPage> {
                               const SizedBox(width: 7),
 
                               Text(
-                                '$puntos puntos',
+                                '${datosPartida.puntos} puntos',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -239,11 +232,9 @@ class _FirstPageState extends State<FirstPage> {
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
-                      child: objetoVisible &&
-                              indiceObjetoActual < objetos.length
-                          ? _ObjetoArrastrable(
-                              imagen: objetoActual['imagen']!,
-                            )
+                      child:
+                          objetoVisible && indiceObjetoActual < objetos.length
+                          ? _ObjetoArrastrable(imagen: objetoActual['imagen']!)
                           : const SizedBox(),
                     ),
                   ),
@@ -254,8 +245,7 @@ class _FirstPageState extends State<FirstPage> {
                     children: [
                       _ContenedorReciclaje(
                         color: const Color(0xFFFFD740),
-                        imagen:
-                            'assets/icons/contenedores/basura-amarilla.png',
+                        imagen: 'assets/icons/contenedores/basura-amarilla.png',
                         nombre: 'AMARILLO',
                         objetos: objetosAmarillos,
                         gameService: gameService,
@@ -269,8 +259,7 @@ class _FirstPageState extends State<FirstPage> {
 
                       _ContenedorReciclaje(
                         color: const Color(0xFF42A5F5),
-                        imagen:
-                            'assets/icons/contenedores/basura-azul.png',
+                        imagen: 'assets/icons/contenedores/basura-azul.png',
                         nombre: 'AZUL',
                         objetos: objetosAzules,
                         gameService: gameService,
@@ -284,8 +273,7 @@ class _FirstPageState extends State<FirstPage> {
 
                       _ContenedorReciclaje(
                         color: const Color(0xFF66BB6A),
-                        imagen:
-                            'assets/icons/contenedores/basura-verde.png',
+                        imagen: 'assets/icons/contenedores/basura-verde.png',
                         nombre: 'VERDE',
                         objetos: objetosVerdes,
                         gameService: gameService,
@@ -308,14 +296,11 @@ class _FirstPageState extends State<FirstPage> {
   }
 }
 
-
 // OBJETO ARRASTRABLE
 class _ObjetoArrastrable extends StatelessWidget {
   final String imagen;
 
-  const _ObjetoArrastrable({
-    required this.imagen,
-  });
+  const _ObjetoArrastrable({required this.imagen});
 
   @override
   Widget build(BuildContext context) {
@@ -337,26 +322,19 @@ class _ObjetoArrastrable extends StatelessWidget {
       childWhenDragging: Opacity(
         opacity: 0.2,
 
-        child: _ObjetoVisual(
-          imagen: imagen,
-        ),
+        child: _ObjetoVisual(imagen: imagen),
       ),
 
-      child: _ObjetoVisual(
-        imagen: imagen,
-      ),
+      child: _ObjetoVisual(imagen: imagen),
     );
   }
 }
-
 
 // VISUAL DEL OBJETO
 class _ObjetoVisual extends StatelessWidget {
   final String imagen;
 
-  const _ObjetoVisual({
-    required this.imagen,
-  });
+  const _ObjetoVisual({required this.imagen});
 
   @override
   Widget build(BuildContext context) {
@@ -379,16 +357,10 @@ class _ObjetoVisual extends StatelessWidget {
 
       padding: const EdgeInsets.all(32),
 
-      child: Image.asset(
-        imagen,
-        width: 115,
-        height: 115,
-        fit: BoxFit.contain,
-      ),
+      child: Image.asset(imagen, width: 115, height: 115, fit: BoxFit.contain),
     );
   }
 }
-
 
 // CONTENEDOR DE RECICLAJE
 class _ContenedorReciclaje extends StatefulWidget {
@@ -414,14 +386,10 @@ class _ContenedorReciclaje extends StatefulWidget {
   });
 
   @override
-  State<_ContenedorReciclaje> createState() =>
-      _ContenedorReciclajeState();
+  State<_ContenedorReciclaje> createState() => _ContenedorReciclajeState();
 }
 
-
-class _ContenedorReciclajeState
-    extends State<_ContenedorReciclaje> {
-
+class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
   bool isHovering = false;
 
   @override
@@ -449,107 +417,99 @@ class _ContenedorReciclajeState
         widget.onAccept();
       },
 
-      builder: (
-        BuildContext context,
-        List<String?> candidateData,
-        List<dynamic> rejectedData,
-      ) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+      builder:
+          (
+            BuildContext context,
+            List<String?> candidateData,
+            List<dynamic> rejectedData,
+          ) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
 
-          transform: Matrix4.translationValues(
-            0,
-            isHovering ? -8 : 0,
-            0,
-          ),
+              transform: Matrix4.translationValues(0, isHovering ? -8 : 0, 0),
 
-          width: 205,
-          height: 245,
+              width: 205,
+              height: 245,
 
-          decoration: BoxDecoration(
-            color: isHovering
-                ? widget.color.withValues(alpha: 0.18)
-                : Colors.transparent,
+              decoration: BoxDecoration(
+                color: isHovering
+                    ? widget.color.withValues(alpha: 0.18)
+                    : Colors.transparent,
 
-            borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(25),
 
-            border: Border.all(
-              color: isHovering
-                  ? widget.color
-                  : Colors.transparent,
-              width: 3,
-            ),
-
-            boxShadow: isHovering
-                ? [
-                    BoxShadow(
-                      color: widget.color.withValues(alpha: 0.35),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : [],
-          ),
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-              SizedBox(
-                width: 180,
-                height: 180,
-
-                child: Stack(
-                  alignment: Alignment.center,
-
-                  children: [
-                    Image.asset(
-                      widget.imagen,
-                      width: 180,
-                      height: 180,
-                      fit: BoxFit.contain,
-                    ),
-
-                    if (widget.objetos.isNotEmpty)
-                      ...widget.objetos.take(3).map(
-                        (nombreObjeto) {
-                          final imagenObjeto =
-                              widget.gameService.imagenDelObjeto(
-                            nombreObjeto,
-                            widget.todosLosObjetos,
-                          );
-
-                          if (imagenObjeto == null) {
-                            return const SizedBox();
-                          }
-
-                          return Image.asset(
-                            imagenObjeto,
-                            width: 55,
-                            height: 55,
-                            fit: BoxFit.contain,
-                          );
-                        },
-                      ),
-                  ],
+                border: Border.all(
+                  color: isHovering ? widget.color : Colors.transparent,
+                  width: 3,
                 ),
+
+                boxShadow: isHovering
+                    ? [
+                        BoxShadow(
+                          color: widget.color.withValues(alpha: 0.35),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ]
+                    : [],
               ),
 
-              const SizedBox(height: 3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              Text(
-                widget.nombre,
-                style: GoogleFonts.quicksand(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF298133),
-                ),
+                children: [
+                  SizedBox(
+                    width: 180,
+                    height: 180,
+
+                    child: Stack(
+                      alignment: Alignment.center,
+
+                      children: [
+                        Image.asset(
+                          widget.imagen,
+                          width: 180,
+                          height: 180,
+                          fit: BoxFit.contain,
+                        ),
+
+                        if (widget.objetos.isNotEmpty)
+                          ...widget.objetos.take(3).map((nombreObjeto) {
+                            final imagenObjeto = widget.gameService
+                                .imagenDelObjeto(
+                                  nombreObjeto,
+                                  widget.todosLosObjetos,
+                                );
+
+                            if (imagenObjeto == null) {
+                              return const SizedBox();
+                            }
+
+                            return Image.asset(
+                              imagenObjeto,
+                              width: 55,
+                              height: 55,
+                              fit: BoxFit.contain,
+                            );
+                          }),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 3),
+
+                  Text(
+                    widget.nombre,
+                    style: GoogleFonts.quicksand(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF298133),
+                    ),
+                  ),
+                ],
               ),
-
-            ],
-          ),
-        );
-      },
+            );
+          },
     );
   }
 }

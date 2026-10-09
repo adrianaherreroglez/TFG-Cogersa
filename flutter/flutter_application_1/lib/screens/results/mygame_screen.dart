@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../widgets/nav_bar.dart';
 
 class MyGame extends StatefulWidget {
-  final int puntosPrevios;
-
-  const MyGame({
-    super.key,
-    required this.puntosPrevios,
-  });
+  const MyGame({super.key, required this.datosPartida});
 
   @override
   State<MyGame> createState() => _MyGameState();
+
+  final DatosPartida datosPartida;
 }
 
 class _MyGameState extends State<MyGame> {
@@ -28,13 +27,9 @@ class _MyGameState extends State<MyGame> {
           // CONTENIDO
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 50,
-                vertical: 35,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
               child: Column(
                 children: [
-
                   Text(
                     'Mi espacio de juego',
                     textAlign: TextAlign.center,
@@ -62,8 +57,7 @@ class _MyGameState extends State<MyGame> {
                   // TARJETAS
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final bool isSmallScreen =
-                          constraints.maxWidth < 950;
+                      final bool isSmallScreen = constraints.maxWidth < 950;
 
                       if (isSmallScreen) {
                         return Column(
@@ -78,15 +72,11 @@ class _MyGameState extends State<MyGame> {
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: _buildMyGameCard(),
-                          ),
+                          Expanded(child: _buildMyGameCard()),
 
                           const SizedBox(width: 35),
 
-                          Expanded(
-                            child: _buildRankingCard(),
-                          ),
+                          Expanded(child: _buildRankingCard()),
                         ],
                       );
                     },
@@ -100,21 +90,15 @@ class _MyGameState extends State<MyGame> {
     );
   }
 
-
   // MI PARTIDA
   Widget _buildMyGameCard() {
     return Container(
-      constraints: const BoxConstraints(
-        minHeight: 390,
-      ),
+      constraints: const BoxConstraints(minHeight: 390),
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: const Color(0xFFD8EDD5),
-          width: 2,
-        ),
+        border: Border.all(color: const Color(0xFFD8EDD5), width: 2),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
@@ -167,10 +151,7 @@ class _MyGameState extends State<MyGame> {
           // PUNTOS
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 25,
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
             decoration: BoxDecoration(
               color: const Color(0xFFF3FAEF),
               borderRadius: BorderRadius.circular(20),
@@ -190,7 +171,7 @@ class _MyGameState extends State<MyGame> {
                 const SizedBox(height: 5),
 
                 Text(
-                  '${widget.puntosPrevios}',
+                  '${widget.datosPartida.puntos}',
                   style: GoogleFonts.quicksand(
                     fontSize: 52,
                     fontWeight: FontWeight.w800,
@@ -212,60 +193,10 @@ class _MyGameState extends State<MyGame> {
 
           const SizedBox(height: 25),
 
+          // TIEMPO
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 25,
-              horizontal: 20,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF3FAEF),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'PUNTOS',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
-                    color: const Color(0xFF644633),
-                  ),
-                ),
-
-                const SizedBox(height: 5),
-
-                Text(
-                  '${widget.puntosPrevios}',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 52,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF298133),
-                  ),
-                ),
-
-                Text(
-                  'puntos conseguidos',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF644633),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 25),
-
-          // TIEMPO TRANSCURRIDO
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              vertical: 25,
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
             decoration: BoxDecoration(
               color: const Color(0xFFF3FAEF),
               borderRadius: BorderRadius.circular(20),
@@ -285,7 +216,7 @@ class _MyGameState extends State<MyGame> {
                 const SizedBox(height: 5),
 
                 Text(
-                  '${widget.puntosPrevios}',
+                  '${widget.datosPartida.cronometro.elapsed.inSeconds}',
                   style: GoogleFonts.quicksand(
                     fontSize: 52,
                     fontWeight: FontWeight.w800,
@@ -305,18 +236,12 @@ class _MyGameState extends State<MyGame> {
             ),
           ),
 
+          const SizedBox(height: 5),
+
           // Frase
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.eco_rounded,
-                color: Color(0xFF298133),
-                size: 22,
-              ),
-
-              const SizedBox(width: 8),
-
               Text(
                 '¡Sigue aprendiendo y cuidando el planeta!',
                 textAlign: TextAlign.center,
@@ -333,21 +258,15 @@ class _MyGameState extends State<MyGame> {
     );
   }
 
-
   // CLASIFICACIÓN
   Widget _buildRankingCard() {
     return Container(
-      constraints: const BoxConstraints(
-        minHeight: 390,
-      ),
+      constraints: const BoxConstraints(minHeight: 390),
       padding: const EdgeInsets.all(30),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: const Color(0xFFD8EDD5),
-          width: 2,
-        ),
+        border: Border.all(color: const Color(0xFFD8EDD5), width: 2),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
@@ -422,11 +341,73 @@ class _MyGameState extends State<MyGame> {
             points: 80,
             icon: Icons.emoji_events,
           ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '4',
+            name: 'Jugador 4',
+            points: 75,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '5',
+            name: 'Jugador 5',
+            points: 65,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '6',
+            name: 'Jugador 6',
+            points: 50,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '7',
+            name: 'Jugador 7',
+            points: 50,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '8',
+            name: 'Jugador 8',
+            points: 40,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '9',
+            name: 'Jugador 9',
+            points: 25,
+            icon: Icons.emoji_events,
+          ),
+
+          const SizedBox(height: 10),
+
+          _rankingRow(
+            position: '10',
+            name: 'Jugador 10',
+            points: -10,
+            icon: Icons.emoji_events,
+          ),
         ],
       ),
     );
   }
-
 
   // FILA DEL RANKING
   Widget _rankingRow({
@@ -436,10 +417,7 @@ class _MyGameState extends State<MyGame> {
     required IconData icon,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 13,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: BoxDecoration(
         color: const Color(0xFFF3FAEF),
         borderRadius: BorderRadius.circular(16),
@@ -467,11 +445,7 @@ class _MyGameState extends State<MyGame> {
 
           const SizedBox(width: 12),
 
-          Icon(
-            icon,
-            size: 21,
-            color: const Color(0xFF298133),
-          ),
+          Icon(icon, size: 21, color: const Color(0xFF298133)),
 
           const SizedBox(width: 10),
 
