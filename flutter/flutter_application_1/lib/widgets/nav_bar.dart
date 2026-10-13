@@ -5,116 +5,187 @@ import 'package:google_fonts/google_fonts.dart';
 class NavBar extends StatelessWidget {
   const NavBar({super.key});
 
+  static const Color themeGreen = Color(0xFF298133);
+  static const Color background = Color(0xFFD8EDD5);
+  static const Color lightGreen = Color(0xFFE8F5E9);
+  static const Color borderGreen = Color(0xFFC6E3C2);
+
   @override
   Widget build(BuildContext context) {
-    final themeGreen = const Color(0xFF298133);
-    final background = const Color(0xFFD8EDD5);
-    final lightGreen = const Color(0xFFE8F5E9);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool esMovil = constraints.maxWidth < 650;
 
-    return Container(
-      width: double.infinity,
-      height: 70,
-      decoration: BoxDecoration(
-        color: background,
-        border: const Border(
-          bottom: BorderSide(
-            color: Color(0xFFD8EDD5),
-            width: 1.5,
+        return Container(
+          width: double.infinity,
+          height: 70,
+          padding: EdgeInsets.symmetric(
+            horizontal: esMovil ? 12 : 28,
           ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+          decoration: BoxDecoration(
+            color: background,
+            border: const Border(
+              bottom: BorderSide(
+                color: Color(0xFFD8EDD5),
+                width: 1.5,
+              ),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28),
-        child: Row(
-          children: [
-            // LOGO
-            Row(
-              children: [
-                Container(
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    color: lightGreen,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.eco_rounded,
-                    color: themeGreen,
-                    size: 25,
-                  ),
+          child: Row(
+            children: [
+              // LOGO ECOKIDS
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: esMovil ? 36 : 42,
+                      height: esMovil ? 36 : 42,
+                      decoration: const BoxDecoration(
+                        color: lightGreen,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.eco_rounded,
+                        color: themeGreen,
+                        size: 25,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        'EcoKids',
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.quicksand(
+                          fontSize: esMovil ? 21 : 28,
+                          fontWeight: FontWeight.w800,
+                          color: themeGreen,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
 
+              const Spacer(),
+
+              // NAVEGACIÓN PARA PANTALLAS GRANDES
+              if (!esMovil) ...[
+                _NavButton(
+                  icon: Icons.sports_esports_rounded,
+                  text: 'Juegos',
+                  onPressed: () => context.go('/listgame'),
+                ),
                 const SizedBox(width: 10),
-
-                Text(
-                  'EcoKids',
-                  style: GoogleFonts.quicksand(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
+                _NavButton(
+                  icon: Icons.people_alt_rounded,
+                  text: 'Amigos',
+                  onPressed: () => context.go('/listAmigos'),
+                ),
+                const SizedBox(width: 10),
+                _NavButton(
+                  icon: Icons.person_rounded,
+                  text: 'Perfil',
+                  onPressed: () => context.go('/profile'),
+                ),
+              ] else ...[
+                // MENÚ DESPLEGABLE PARA MÓVILES
+                PopupMenuButton<String>(
+                  tooltip: 'Abrir menú',
+                  icon: const Icon(
+                    Icons.menu_rounded,
                     color: themeGreen,
+                    size: 30,
                   ),
+                  color: lightGreen,
+                  elevation: 8,
+                  surfaceTintColor: Colors.transparent,
+                  shadowColor: themeGreen.withValues(alpha: 0.20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: const BorderSide(
+                      color: borderGreen,
+                      width: 1.5,
+                    ),
+                  ),
+                  offset: const Offset(0, 12),
+                  onSelected: (ruta) => context.go(ruta),
+                  itemBuilder: (context) => [
+                    _crearOpcionMenu(
+                      icon: Icons.sports_esports_rounded,
+                      texto: 'Juegos',
+                      ruta: '/listgame',
+                    ),
+                    _crearOpcionMenu(
+                      icon: Icons.people_alt_rounded,
+                      texto: 'Amigos',
+                      ruta: '/listAmigos',
+                    ),
+                    _crearOpcionMenu(
+                      icon: Icons.person_rounded,
+                      texto: 'Perfil',
+                      ruta: '/profile',
+                    ),
+                  ],
                 ),
               ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // OPCIONES PERSONALIZADAS DEL MENÚ MÓVIL
+  static PopupMenuItem<String> _crearOpcionMenu({
+    required IconData icon,
+    required String texto,
+    required String ruta,
+  }) {
+    return PopupMenuItem<String>(
+      value: ruta,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 4,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: background,
+              borderRadius: BorderRadius.circular(12),
             ),
-
-            const Spacer(),
-
-            // JUEGOS
-            _NavButton(
-              icon: Icons.sports_esports_rounded,
-              text: 'Juegos',
-              onPressed: () {
-                context.go('/listgame');
-              },
+            child: Icon(
+              icon,
+              color: themeGreen,
+              size: 21,
             ),
-
-            const SizedBox(width: 10),
-
-            // SALAS
-            // _NavButton(
-            //   icon: Icons.meeting_room_rounded,
-            //   text: 'Salas',
-            //   onPressed: () {
-            //     context.go('/salas');
-            //   },
-            // ),
-
-           // const SizedBox(width: 10),
-
-            // AMIGOS
-            _NavButton(
-              icon: Icons.people_alt_rounded,
-              text: 'Amigos',
-              onPressed: () {
-                context.go('/listAmigos');
-              },
+          ),
+          const SizedBox(width: 12),
+          Text(
+            texto,
+            style: GoogleFonts.quicksand(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: themeGreen,
             ),
-
-            const SizedBox(width: 10),
-
-            // Mi Perfil
-            _NavButton(
-              icon: Icons.person,
-              text: 'Perfil',
-              onPressed: () {
-                context.go('/profile');
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-
+// BOTONES DE NAVEGACIÓN PARA ORDENADOR
 class _NavButton extends StatelessWidget {
   const _NavButton({
     required this.icon,
@@ -128,26 +199,17 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeGreen = const Color(0xFF298133);
-    final lightGreen = const Color(0xFFE8F5E9);
-
     return TextButton(
       onPressed: onPressed,
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(lightGreen),
-        foregroundColor: WidgetStateProperty.all(themeGreen),
-
-        padding: WidgetStateProperty.all(
-          const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 10,
-          ),
+      style: TextButton.styleFrom(
+        backgroundColor: NavBar.lightGreen,
+        foregroundColor: NavBar.themeGreen,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
         ),
-
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
         ),
       ),
       child: Row(
@@ -157,9 +219,7 @@ class _NavButton extends StatelessWidget {
             icon,
             size: 21,
           ),
-
           const SizedBox(width: 7),
-
           Text(
             text,
             style: GoogleFonts.quicksand(
@@ -172,4 +232,3 @@ class _NavButton extends StatelessWidget {
     );
   }
 }
-
