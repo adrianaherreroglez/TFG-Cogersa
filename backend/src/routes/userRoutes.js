@@ -7,22 +7,19 @@ const {
 
 const {
   getMe,
+  updateMe,
 } = require('../controllers/authController');
 
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Todas estas rutas requieren autenticación.
 router.use(authMiddleware);
 
-// Obtener el usuario que ha iniciado sesión.
 router.get('/me', getMe);
+router.put('/me', updateMe);
 
-// Buscar usuarios.
 router.get('/search', searchUsers);
-
-// Buscar usuario por nombre
 router.get('/username/:username', getUserByUsername);
 
 module.exports = router;

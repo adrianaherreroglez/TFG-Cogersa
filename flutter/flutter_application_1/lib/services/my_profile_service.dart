@@ -19,44 +19,57 @@ class ProfileService {
     return token;
   }
 
-  Future<Map<String, dynamic>> _obtenerPerfil() async {
+  Future<Map<String, dynamic>> _peticion({
+    required String metodo,
+    required String ruta,
+    Map<String, dynamic>? body,
+  }) async {
     final token = await _obtenerToken();
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/users/me'),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    final uri = Uri.parse('$baseUrl$ruta');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
-    if (response.statusCode != 200) {
-      String mensaje = 'Error al obtener el perfil';
+    late http.Response response;
 
-      try {
-        final errorData = jsonDecode(response.body);
-        if (errorData is Map && errorData['message'] != null) {
-          mensaje = errorData['message'].toString();
-        }
-      } catch (_) {
-        // Se conserva el mensaje predeterminado.
-      }
-
-      throw Exception(mensaje);
+    if (metodo == 'GET') {
+      response = await http.get(uri, headers: headers);
+    } else {
+      response = await http.put(
+        uri,
+        headers: headers,
+        body: jsonEncode(body ?? {}),
+      );
     }
 
-    final data = jsonDecode(response.body);
+    Map<String, dynamic> data;
 
-    if (data is! Map<String, dynamic>) {
-      throw Exception('La respuesta del perfil no es válida');
+    try {
+      final decoded = jsonDecode(response.body);
+      data = Map<String, dynamic>.from(decoded as Map);
+    } catch (_) {
+      throw Exception('El servidor devolvió una respuesta no válida');
+    }
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(
+        data['message'] ?? 'Error al comunicarse con el servidor',
+      );
     }
 
     return data;
   }
 
   Future<String> getNombreUsuario() async {
-    final usuario = await _obtenerPerfil();
-    final username = usuario['username'];
+    final data = await _peticion(
+      metodo: 'GET',
+      ruta: '/users/me',
+    );
+
+    final username = data['username'];
 
     if (username == null) {
       throw Exception('No se encontró el nombre de usuario');
@@ -64,6 +77,32 @@ class ProfileService {
 
     return username.toString();
   }
+
+  Future<Map<String, dynamic>> actualizarPerfil({
+    required String username,
+    String? currentPassword,
+    String? newPassword,
+    String? confirmPassword,
+  }) async {
+    final body = <String, dynamic>{
+      'username': username.trim(),
+    };
+
+    if (newPassword != null && newPassword.isNotEmpty) {
+      body['currentPassword'] = currentPassword ?? '';
+      body['newPassword'] = newPassword;
+      body['confirmPassword'] = confirmPassword ?? '';
+    }
+
+    final data = await _peticion(
+      metodo: 'PUT',
+      ruta: '/users/me',
+      body: body,
+    );
+
+    return Map<String, dynamic>.from(data['user'] as Map);
+  }
+
 
   Future<String> getPassword() async {
     // Las contraseñas están almacenadas como hashes bcrypt
