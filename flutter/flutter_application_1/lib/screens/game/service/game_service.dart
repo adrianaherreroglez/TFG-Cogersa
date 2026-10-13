@@ -120,9 +120,9 @@ class GameService {
         'contenedor': 'amarillo',
       },
       {
-        'articulo': 'El',
-        'nombre': 'cepillo de dientes',
-        'imagen': 'assets/icons/objetos/amarillo/cepillo-de-dientes.png',
+        'articulo': 'La',
+        'nombre': 'bolsa de plástico',
+        'imagen': 'assets/icons/objetos/amarillo/bolsa.png',
         'contenedor': 'amarillo',
       },
       {
@@ -196,6 +196,12 @@ class GameService {
         'imagen': 'assets/icons/objetos/amarillo/lata-de-refresco.png',
         'contenedor': 'amarillo',
       },
+      {
+        'articulo': 'El',
+        'nombre': 'bote de champú',
+        'imagen': 'assets/icons/objetos/amarillo/champu.png',
+        'contenedor': 'amarillo',
+      },
     ];
   }
 
@@ -205,6 +211,12 @@ class GameService {
         'articulo': 'La',
         'nombre': 'mascarilla',
         'imagen': 'assets/icons/objetos/gris/mascara-medica.png',
+        'contenedor': 'gris',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'cepillo de dientes',
+        'imagen': 'assets/icons/objetos/gris/cepillo-de-dientes.png',
         'contenedor': 'gris',
       },
       {
@@ -235,6 +247,12 @@ class GameService {
         'articulo': 'El',
         'nombre': 'brick de leche',
         'imagen': 'assets/icons/objetos/amarillo/leche.png',
+        'contenedor': 'amarillo',
+      },
+      {
+        'articulo': 'El',
+        'nombre': 'papel de aluminio',
+        'imagen': 'assets/icons/objetos/amarillo/papel-de-aluminio.png',
         'contenedor': 'amarillo',
       },
       {
