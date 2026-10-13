@@ -12,7 +12,6 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final usernameController = TextEditingController();
-  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -23,7 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     usernameController.dispose();
-    emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
 
@@ -32,12 +30,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<void> _register() async {
     final username = usernameController.text.trim();
-    final email = emailController.text.trim();
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
     if (username.isEmpty ||
-        email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
       _showMessage('Rellena todos los campos');
@@ -56,7 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await _authService.register(
         username: username,
-        email: email,
         password: password,
       );
 
@@ -143,27 +138,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Usuario',
                       hintText: 'Introduce tu usuario',
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: 320,
-                  child: TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: 'Correo',
-                      hintText: 'Introduce tu correo',
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,

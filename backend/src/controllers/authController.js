@@ -4,32 +4,32 @@ const pool = require('../config/database');
 
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username ||  !password) {
       return res.status(400).json({
         message: 'Todos los campos son obligatorios',
       });
     }
 
     const existingUser = await pool.query(
-      'SELECT id FROM users WHERE username = $1 OR email = $2',
-      [username, email]
+      'SELECT id FROM users WHERE username = $1',
+      [username]
     );
 
     if (existingUser.rows.length > 0) {
       return res.status(409).json({
-        message: 'El usuario o correo ya existe',
+        message: 'El usuario ya existe',
       });
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
 
     const result = await pool.query(
-      `INSERT INTO users (username, email, password_hash)
-       VALUES ($1, $2, $3)
-       RETURNING id, username, email, created_at`,
-      [username, email, passwordHash]
+      `INSERT INTO users (username, password_hash)
+       VALUES ($1, $2)
+       RETURNING id, username, created_at`,
+      [username, passwordHash]
     );
 
     const user = result.rows[0];
@@ -111,8 +111,7 @@ const login = async (req, res) => {
       token,
       user: {
         id: user.id,
-        username: user.username,
-        email: user.email,
+        username: user.username
       },
     });
 
@@ -129,7 +128,7 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, username, email, created_at
+      `SELECT id, username, created_at
        FROM users
        WHERE id = $1`,
       [req.user.id]
@@ -257,7 +256,7 @@ const updateMe = async (req, res) => {
              ELSE password_hash
            END
        WHERE id = $1
-       RETURNING id, username, email, created_at`,
+       RETURNING id, username, created_at`,
       [
         userId,
         cambiarUsername,

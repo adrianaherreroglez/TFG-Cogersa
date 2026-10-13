@@ -15,7 +15,6 @@ class AuthService {
 
   Future<Map<String, dynamic>> register({
     required String username,
-    required String email,
     required String password,
   }) async {
     final response = await http.post(
@@ -25,7 +24,6 @@ class AuthService {
       },
       body: jsonEncode({
         'username': username,
-        'email': email,
         'password': password,
       }),
     );
