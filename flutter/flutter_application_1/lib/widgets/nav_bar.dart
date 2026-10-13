@@ -96,6 +96,17 @@ class NavBar extends StatelessWidget {
                 context.go('/listAmigos');
               },
             ),
+
+            const SizedBox(width: 10),
+
+            // Mi Perfil
+            _NavButton(
+              icon: Icons.person,
+              text: 'Perfil',
+              onPressed: () {
+                context.go('/profile');
+              },
+            ),
           ],
         ),
       ),

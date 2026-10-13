@@ -4,6 +4,7 @@ import 'package:flutter_application_1/screens/amigos/chat_screen.dart';
 import 'package:flutter_application_1/screens/amigos/lista_amigos_screen.dart';
 import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
+import 'package:flutter_application_1/screens/profile/my_profile.dart';
 import 'package:flutter_application_1/screens/salas/crear_sala_screen.dart';
 import 'package:flutter_application_1/screens/salas/mis_salas_screen.dart';
 
@@ -48,6 +49,11 @@ final GoRouter router = GoRouter(
     // ----------------------------
 
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
+
+    // -------------------
+    //  MI PERFIL
+    // -------------------
+    GoRoute(path: '/profile', builder: (context, state) => const MyProfile()),
 
     // -----------------------------
     // ACCEDER CON CÓDIGO DE PARTIDA
