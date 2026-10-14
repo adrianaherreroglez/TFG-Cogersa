@@ -1,9 +1,3 @@
-BEGIN;
-
-
-DROP TABLE IF EXISTS friend_requests CASCADE;
-DROP TABLE IF EXISTS messages CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
 
 -- Tabla de usuarios
 CREATE TABLE users (
@@ -58,4 +52,71 @@ CREATE INDEX idx_messages_receiver_sender
 CREATE INDEX idx_messages_created_at
     ON messages(created_at);
 
-COMMIT;
+
+-- Tabla de juegos
+CREATE TABLE juegos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    tipo VARCHAR(50) NOT NULL
+);
+
+-- Insertar juegos ya creados
+INSERT INTO juegos (nombre, tipo)
+VALUES
+    ('Reciclaje', 'Drag & Drop'),
+    ('Reciclaje', 'Fill in the Gaps'),
+    ('Punto Limpio', 'Drag & Drop'),
+    ('Punto Limpio', 'Fill in the Gaps');
+
+-- Tablas para crear la sala y los users q se unan
+
+CREATE TABLE salas (
+    id SERIAL PRIMARY KEY,
+
+    codigo VARCHAR(8) NOT NULL UNIQUE,
+
+    juego_id INTEGER NOT NULL
+        REFERENCES juegos(id)
+        ON DELETE RESTRICT,
+
+    creador_id INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    num_jugadores INTEGER NOT NULL DEFAULT 10
+        CHECK (num_jugadores BETWEEN 2 AND 100),
+
+    estado VARCHAR(20) NOT NULL DEFAULT 'esperando'
+        CHECK (estado IN ('esperando', 'jugando', 'cerrada')),
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sala_miembros (
+    id SERIAL PRIMARY KEY,
+
+    sala_id INTEGER NOT NULL
+        REFERENCES salas(id)
+        ON DELETE CASCADE,
+
+    usuario_id INTEGER NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    unido_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_sala_miembro
+        UNIQUE (sala_id, usuario_id)
+);
+
+CREATE INDEX idx_salas_creador
+    ON salas(creador_id);
+
+CREATE INDEX idx_salas_estado
+    ON salas(estado);
+
+CREATE INDEX idx_sala_miembros_sala
+    ON sala_miembros(sala_id);
+
+CREATE INDEX idx_sala_miembros_usuario
+    ON sala_miembros(usuario_id);
