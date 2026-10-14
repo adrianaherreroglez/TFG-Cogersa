@@ -1,15 +1,11 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
-import 'package:flutter_application_1/screens/amigos/chat_screen.dart';
-import 'package:flutter_application_1/screens/amigos/lista_amigos_screen.dart';
-import 'package:flutter_application_1/screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
-import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
-import 'package:flutter_application_1/screens/profile/my_profile.dart';
-import 'package:flutter_application_1/screens/salas/crear_sala_screen.dart';
-import 'package:flutter_application_1/screens/salas/mis_salas_screen.dart';
 
+import 'screens/amigos/chat_screen.dart';
+import 'screens/amigos/lista_amigos_screen.dart';
 import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
 import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
+import 'screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
 import 'screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_second_level.dart';
 import 'screens/game/reciclaje_game/code_page.dart';
 import 'screens/game/reciclaje_game/dragDrop/first_level_drag_screen.dart';
@@ -18,12 +14,15 @@ import 'screens/game/reciclaje_game/dragDrop/third_level_drag_screen.dart';
 import 'screens/game/reciclaje_game/fillGaps/first_level_fill_gaps_screen.dart';
 import 'screens/game/reciclaje_game/fillGaps/second_level_fill_gaps_screen.dart';
 import 'screens/game/reciclaje_game/fillGaps/third_level_fill_gaps_screen.dart';
+import 'screens/game/service/datos_partida.dart';
 import 'screens/home_page_screen.dart';
 import 'screens/list_game.dart';
+import 'screens/profile/my_profile.dart';
 import 'screens/results/mygame_screen.dart';
-
 import 'package:go_router/go_router.dart';
 
+import 'screens/salas/crear_sala_screen.dart';
+import 'screens/salas/mis_salas_screen.dart';
 import 'screens/users/log_in_screen.dart';
 import 'screens/users/register_screen.dart';
 
