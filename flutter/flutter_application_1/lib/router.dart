@@ -1,5 +1,7 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
+import 'package:flutter_application_1/screens/game/codeGame/code_page.dart';
+import 'package:flutter_application_1/screens/game/codeGame/list_players_game.dart';
 
 import 'screens/amigos/chat_screen.dart';
 import 'screens/amigos/lista_amigos_screen.dart';
@@ -7,7 +9,6 @@ import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_first_level.dart';
 import 'screens/game/punto_limpio_game/dragDrop/punto_limpio_second_level.dart';
 import 'screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_first_level.dart';
 import 'screens/game/punto_limpio_game/fillGaps/punto_limpio_fill_second_level.dart';
-import 'screens/game/reciclaje_game/code_page.dart';
 import 'screens/game/reciclaje_game/dragDrop/first_level_drag_screen.dart';
 import 'screens/game/reciclaje_game/dragDrop/second_level_drag_screen.dart';
 import 'screens/game/reciclaje_game/dragDrop/third_level_drag_screen.dart';
@@ -19,6 +20,7 @@ import 'screens/home_page_screen.dart';
 import 'screens/list_game.dart';
 import 'screens/profile/my_profile.dart';
 import 'screens/results/mygame_screen.dart';
+
 import 'package:go_router/go_router.dart';
 
 import 'screens/salas/crear_sala_screen.dart';
@@ -46,7 +48,6 @@ final GoRouter router = GoRouter(
     // ----------------------------
     // LISTA DE JUEGOS
     // ----------------------------
-
     GoRoute(path: '/listgame', builder: (context, state) => const ListGame()),
 
     // -------------------
@@ -57,13 +58,20 @@ final GoRouter router = GoRouter(
     // -----------------------------
     // ACCEDER CON CÓDIGO DE PARTIDA
     // -----------------------------
-
     GoRoute(path: '/code', builder: (context, state) => const CodePage()),
+
+    GoRoute(
+      path: '/listPlayersGame',
+      builder: (context, state) {
+        final salaId = state.extra as int;
+
+        return ListPlayersGame(salaId: salaId);
+      },
+    ),
 
     // ------------------------------
     // RECICLAJE - DRAG & DROP
     // ------------------------------
-
     GoRoute(path: '/first', builder: (context, state) => const FirstPage()),
 
     GoRoute(
@@ -83,7 +91,6 @@ final GoRouter router = GoRouter(
         return ThirdPage(datosPartida: datos);
       },
     ),
-
 
     // ----------------------------
     // RECICLAJE - FILL IN THE GAPS
@@ -131,7 +138,6 @@ final GoRouter router = GoRouter(
     // -------------------------------
     // PUNTO LIMPIO - FILL IN THE GAPS
     // ------------------------------
-
     GoRoute(
       path: '/puntolimpio/fillGaps/firstlevel',
       builder: (context, state) => const PuntoLimpioFirstFillPage(),
@@ -149,7 +155,6 @@ final GoRouter router = GoRouter(
     // --------------------
     // RESULTADOS DEL JUEGO
     // --------------------
-
     GoRoute(
       path: '/mygame',
       builder: (context, state) {
@@ -162,7 +167,6 @@ final GoRouter router = GoRouter(
     // -------------------------------------------
     // CREACIÓN DE PARTIDAS POR PARTE DEL PROFESOR
     // --------------------------------------------
-
     GoRoute(
       path: '/crearSala',
       builder: (context, state) => const CrearSalaPage(),
@@ -171,7 +175,6 @@ final GoRouter router = GoRouter(
     // -------------------------------------
     // RED SOCIAL (AMIGOS, SOLICITUDES, CHAT)
     // --------------------------------------
-
     GoRoute(
       path: '/listAmigos',
       builder: (context, state) => const ListaAmigos(),

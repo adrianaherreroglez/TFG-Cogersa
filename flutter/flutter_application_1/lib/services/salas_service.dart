@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:math';
 
@@ -8,8 +7,7 @@ import 'package:http/http.dart' as http;
 class SalasService {
   static const String baseUrl = 'http://localhost:3000';
 
-  final FlutterSecureStorage _storage =
-      const FlutterSecureStorage();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<String> _getToken() async {
     final token = await _storage.read(key: 'token');
@@ -68,5 +66,49 @@ class SalasService {
     }
 
     return Map<String, dynamic>.from(data['sala']);
+  }
+
+  Future<Map<String, dynamic>> unirseSala({required String codigo}) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/salas/unirse'),
+      headers: await _headers(),
+      body: jsonEncode({'codigo': codigo.trim().toUpperCase()}),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return Map<String, dynamic>.from(data['sala']);
+    }
+
+    throw Exception(data['message'] ?? 'No se pudo unir a la sala');
+  }
+
+  Future<Map<String, dynamic>> obtenerSala(int salaId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/salas/$salaId'),
+      headers: await _headers(),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Map<String, dynamic>.from(data);
+    }
+
+    throw Exception(data['message'] ?? 'No se pudo cargar la sala');
+  }
+
+  Future<void> iniciarSala(int salaId) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/salas/$salaId/iniciar'),
+      headers: await _headers(),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode != 200) {
+      throw Exception(data['message'] ?? 'No se pudo iniciar la sala');
+    }
   }
 }
