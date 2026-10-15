@@ -9,7 +9,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class FirstPage extends StatefulWidget {
-  const FirstPage({super.key});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const FirstPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -28,7 +35,7 @@ class _FirstPageState extends State<FirstPage> {
   final List<String> objetosAzules = [];
   final List<String> objetosVerdes = [];
 
-  final DatosPartida datosPartida = DatosPartida();
+  DatosPartida get datosPartida => widget.datosPartida;
 
   @override
   void initState() {
@@ -74,7 +81,10 @@ class _FirstPageState extends State<FirstPage> {
       });
 
       if (indiceObjetoActual >= objetos.length) {
-        context.go('/second', extra: datosPartida);
+        context.go(
+          '/second',
+          extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida},
+        );
       }
     } else {
       datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();

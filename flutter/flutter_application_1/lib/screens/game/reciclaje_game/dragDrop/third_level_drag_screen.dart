@@ -4,26 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/tercer_nivel_service.dart';
+import 'package:flutter_application_1/services/salas_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class ThirdPage extends StatefulWidget {
-  const ThirdPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const ThirdPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<ThirdPage> createState() => _ThirdPageState();
-  final DatosPartida datosPartida;
 }
 
 class _ThirdPageState extends State<ThirdPage> {
   final GameService gameService = GameService();
   final TercerNivel tercerNivel = TercerNivel();
 
+  final SalasService salasService = SalasService();
+
+  bool finalizandoPartida = false;
+
   late List<Map<String, String>> objetos;
 
   int indiceObjetoActual = 0;
-
 
   bool objetoVisible = true;
 
@@ -82,8 +92,7 @@ class _ThirdPageState extends State<ThirdPage> {
       });
 
       if (indiceObjetoActual >= objetos.length) {
-        widget.datosPartida.cronometro.stop();
-        context.go('/mygame', extra: widget.datosPartida);
+        finalizarPartida();
       }
     } else {
       widget.datosPartida.puntos -= tercerNivel
@@ -92,6 +101,53 @@ class _ThirdPageState extends State<ThirdPage> {
       setState(() {
         objetoVisible = true;
       });
+    }
+  }
+
+  Future<void> finalizarPartida() async {
+    if (finalizandoPartida) return;
+
+    setState(() {
+      finalizandoPartida = true;
+    });
+
+    widget.datosPartida.cronometro.stop();
+
+    try {
+      final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
+
+      await salasService.guardarResultado(
+        salaId: widget.salaId,
+        puntos: widget.datosPartida.puntos < 0 ? 0 : widget.datosPartida.puntos,
+        tiempoSegundos: tiempoSegundos,
+        intentos: widget.datosPartida.intentos,
+      );
+
+      if (!mounted) return;
+
+      context.go(
+        '/clasificacion',
+        extra: {
+          'salaId': widget.salaId,
+          'esAnfitrion': false,
+          'datosPartida': widget.datosPartida,
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        finalizandoPartida = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No se pudo guardar tu resultado. Inténtalo de nuevo. $e',
+          ),
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
 

@@ -2,6 +2,7 @@
 
 import 'package:flutter_application_1/screens/game/codeGame/code_page.dart';
 import 'package:flutter_application_1/screens/game/codeGame/list_players_game.dart';
+import 'package:flutter_application_1/screens/results/clasificacion_page.dart';
 
 import 'screens/amigos/chat_screen.dart';
 import 'screens/amigos/lista_amigos_screen.dart';
@@ -72,23 +73,39 @@ final GoRouter router = GoRouter(
     // ------------------------------
     // RECICLAJE - DRAG & DROP
     // ------------------------------
-    GoRoute(path: '/first', builder: (context, state) => const FirstPage()),
+    GoRoute(
+      path: '/first',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return FirstPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
+      },
+    ),
 
     GoRoute(
       path: '/second',
       builder: (context, state) {
-        final datos = state.extra as DatosPartida;
+        final extra = state.extra as Map<String, dynamic>;
 
-        return SecondPage(datosPartida: datos);
+        return SecondPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
       },
     ),
 
     GoRoute(
       path: '/third',
       builder: (context, state) {
-        final datos = state.extra as DatosPartida;
+        final extra = state.extra as Map<String, dynamic>;
 
-        return ThirdPage(datosPartida: datos);
+        return ThirdPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
       },
     ),
 
@@ -155,6 +172,19 @@ final GoRouter router = GoRouter(
     // --------------------
     // RESULTADOS DEL JUEGO
     // --------------------
+    GoRoute(
+      path: '/clasificacion',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return ClasificacionPage(
+          salaId: extra['salaId'] as int,
+          esAnfitrion: extra['esAnfitrion'] as bool,
+          datosPartida: extra['datosPartida'] as DatosPartida?,
+        );
+      },
+    ),
+
     GoRoute(
       path: '/mygame',
       builder: (context, state) {

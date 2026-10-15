@@ -9,11 +9,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class SecondPage extends StatefulWidget {
-  const SecondPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const SecondPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<SecondPage> createState() => _SecondPageState();
-  final DatosPartida datosPartida;
 }
 
 class _SecondPageState extends State<SecondPage> {
@@ -76,7 +82,10 @@ class _SecondPageState extends State<SecondPage> {
       });
 
       if (indiceObjetoActual >= objetos.length) {
-        context.go('/third', extra: widget.datosPartida);
+        context.go(
+          '/third',
+          extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida},
+        );
       }
     } else {
       widget.datosPartida.puntos -= segundoNivel

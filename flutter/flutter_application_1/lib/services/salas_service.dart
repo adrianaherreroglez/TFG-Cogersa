@@ -111,4 +111,71 @@ class SalasService {
       throw Exception(data['message'] ?? 'No se pudo iniciar la sala');
     }
   }
+
+  Future<Map<String, dynamic>> guardarResultado({
+    required int salaId,
+    required int puntos,
+    required int tiempoSegundos,
+    required int intentos,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/salas/$salaId/resultados'),
+      headers: await _headers(),
+      body: jsonEncode({
+        'puntos': puntos,
+        'tiempo_segundos': tiempoSegundos,
+        'intentos': intentos,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Map<String, dynamic>.from(data['resultado']);
+    }
+
+    throw Exception(
+      data is Map
+          ? data['message'] ?? 'No se pudo guardar el resultado'
+          : 'No se pudo guardar el resultado',
+    );
+  }
+
+  Future<Map<String, dynamic>> obtenerClasificacion({
+    required int salaId,
+    String orden = 'puntos',
+  }) async {
+    final uri = Uri.parse('$baseUrl/salas/$salaId/clasificacion')
+        .replace(queryParameters: {'orden': orden});
+
+    final response = await http.get(uri, headers: await _headers());
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return Map<String, dynamic>.from(data);
+    }
+
+    throw Exception(
+      data is Map
+          ? data['message'] ?? 'No se pudo cargar la clasificación'
+          : 'No se pudo cargar la clasificación',
+    );
+  }
+
+  Future<void> cerrarSala(int salaId) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/salas/$salaId/cerrar'),
+      headers: await _headers(),
+    );
+
+    if (response.statusCode == 200) return;
+
+    final data = jsonDecode(response.body);
+    throw Exception(
+      data is Map
+          ? data['message'] ?? 'No se pudo cerrar la sala'
+          : 'No se pudo cerrar la sala',
+    );
+  }
 }

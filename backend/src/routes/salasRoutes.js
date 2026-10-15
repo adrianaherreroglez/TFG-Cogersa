@@ -5,7 +5,11 @@ const {
   unirseSala,
   obtenerSala,
   iniciarSala,
+  guardarResultado,
+  obtenerClasificacion,
+  cerrarSala,
 } = require('../controllers/salasController');
+
 
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -17,5 +21,9 @@ router.post('/', crearSala);
 router.post('/unirse', unirseSala);
 router.get('/:id', obtenerSala);
 router.patch('/:id/iniciar', iniciarSala);
+
+router.post('/:id/resultados', guardarResultado);
+router.get('/:id/clasificacion', obtenerClasificacion);
+router.patch('/:id/cerrar', cerrarSala);
 
 module.exports = router;

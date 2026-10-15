@@ -120,3 +120,32 @@ CREATE INDEX idx_sala_miembros_sala
 
 CREATE INDEX idx_sala_miembros_usuario
     ON sala_miembros(usuario_id);
+
+CREATE TABLE resultados_partida (
+    id SERIAL PRIMARY KEY,
+    sala_id INTEGER NOT NULL
+        REFERENCES salas(id) ON DELETE CASCADE,
+    usuario_id INTEGER NOT NULL
+        REFERENCES users(id) ON DELETE CASCADE,
+
+    puntos INTEGER NOT NULL DEFAULT 0
+        CHECK (puntos >= 0),
+    tiempo_segundos INTEGER NOT NULL DEFAULT 0
+        CHECK (tiempo_segundos >= 0),
+    intentos INTEGER NOT NULL DEFAULT 0
+        CHECK (intentos >= 0),
+
+    terminado BOOLEAN NOT NULL DEFAULT FALSE,
+    terminado_en TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_resultado_sala_usuario
+        UNIQUE (sala_id, usuario_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_resultados_sala_puntos
+    ON resultados_partida (sala_id, puntos DESC);
+
+CREATE INDEX IF NOT EXISTS idx_resultados_sala_tiempo
+    ON resultados_partida (sala_id, tiempo_segundos ASC);
