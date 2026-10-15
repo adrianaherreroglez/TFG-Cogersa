@@ -176,13 +176,6 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFDF4),
-      appBar: AppBar(
-        title: Text(
-          'Sala de juego',
-          style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFD8EDD5),
-      ),
 
       body: SafeArea(
         child: _cargando

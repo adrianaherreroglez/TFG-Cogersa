@@ -129,13 +129,6 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F8EF),
-      appBar: AppBar(
-        title: Text(
-          'Clasificación',
-          style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFB7DFA5),
-      ),
       body: SafeArea(
         child: Column(
           children: [
