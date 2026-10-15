@@ -18,7 +18,7 @@ class _ListGameState extends State<ListGame> {
       backgroundColor: const Color(0xFFFAFDF4),
       body: Column(
         children: [
-          const NavBar(),
+          const NavBar(), 
 
           Expanded(
             child: SingleChildScrollView(

@@ -10,6 +10,8 @@ const authRoutes = require('./routes/authRoutes');
 const friendsRoutes = require('./routes/friendsRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
+const salasRoutes = require('./routes/salasRoutes');
+
 
 const {
   saveMessage,
@@ -32,6 +34,7 @@ app.use('/auth', authRoutes);
 app.use('/friends', friendsRoutes);
 app.use('/users', userRoutes);
 app.use('/messages', messagesRoutes);
+app.use('/salas', salasRoutes);
 
 
 // SERVIDOR HTTP

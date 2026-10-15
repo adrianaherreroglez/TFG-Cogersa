@@ -22,7 +22,7 @@ import 'screens/results/mygame_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/salas/crear_sala_screen.dart';
-import 'screens/salas/mis_salas_screen.dart';
+
 import 'screens/users/log_in_screen.dart';
 import 'screens/users/register_screen.dart';
 
@@ -162,8 +162,6 @@ final GoRouter router = GoRouter(
     // -------------------------------------------
     // CREACIÓN DE PARTIDAS POR PARTE DEL PROFESOR
     // --------------------------------------------
-
-    GoRoute(path: '/salas', builder: (context, state) => const SalasPage()),
 
     GoRoute(
       path: '/crearSala',
