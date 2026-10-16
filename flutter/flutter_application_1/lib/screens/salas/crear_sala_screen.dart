@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,12 +15,15 @@ class CrearSalaPage extends StatefulWidget {
 class _CrearSalaPageState extends State<CrearSalaPage> {
   final SalasService _salasService = SalasService();
 
-  final TextEditingController _codigoController = TextEditingController();
+  final TextEditingController _codigoController =
+      TextEditingController();
 
-  // Juego seleccionado. Debe coincidir con un ID real de la tabla juegos.
+  final ScrollController _scrollController = ScrollController();
+
+  // Juego seleccionado. Coincide con un ID real de la tabla juegos.
   int juegoSeleccionado = 1;
 
-  // Número de jugadores de la sala.
+  // Número máximo de jugadores.
   int numJugadores = 10;
 
   bool creandoSala = false;
@@ -40,6 +44,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _codigoController.dispose();
     super.dispose();
   }
@@ -64,14 +69,16 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       setState(() {
         salaCreadaCorrectamente = true;
         mensajeResultado =
-            '¡Sala creada! Código: ${sala['codigo'] ?? _codigoController.text}';
+            '¡Sala creada! Código: '
+            '${sala['codigo'] ?? _codigoController.text}';
       });
     } catch (e) {
       if (!mounted) return;
 
       setState(() {
         salaCreadaCorrectamente = false;
-        mensajeResultado = e.toString().replaceFirst('Exception: ', '');
+        mensajeResultado =
+            e.toString().replaceFirst('Exception: ', '');
       });
     } finally {
       if (mounted) {
@@ -85,7 +92,11 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
   Widget _construirEtiqueta(String texto, IconData icono) {
     return Row(
       children: [
-        Icon(icono, color: verdePrincipal, size: 23),
+        Icon(
+          icono,
+          color: verdePrincipal,
+          size: 23,
+        ),
         const SizedBox(width: 8),
         Text(
           texto,
@@ -98,399 +109,412 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       ],
     );
   }
-
-  Widget _construirTarjeta({required Widget child}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFDDEEDB), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: fondo,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 22, 20, 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const NavBar(),
-              const SizedBox(height: 14),
-              // Encabezado
-              Center(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 92,
-                      height: 92,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDDF3D8),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Icon(
-                        Icons.meeting_room_rounded,
-                        color: Color(0xFF388E3C),
-                        size: 52,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Text(
-                      '¡Crea tu sala!',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.quicksand(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF285C32),
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                    Text(
-                      'Elige un juego e invita a tus amigos a aprender jugando.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.quicksand(
-                        fontSize: 14,
-                        color: Colors.black54,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+        child: Column(
+          children: [
+            const NavBar(),
 
-              const SizedBox(height: 28),
-
-              // Código de la sala
-              _construirTarjeta(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _construirEtiqueta(
-                      'Código de la sala',
-                      Icons.vpn_key_rounded,
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _codigoController,
-                      readOnly: true,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.quicksand(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 5,
-                        color: const Color(0xFF2E7D32),
-                      ),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: verdeClaro,
-                        suffixIcon: const Icon(
-                          Icons.lock_outline_rounded,
-                          color: Color(0xFF4CAF50),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFC8E6C9),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 17,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Este código se genera automáticamente al entrar. '
-                      'Se guardará cuando crees la sala.',
-                      style: GoogleFonts.quicksand(
-                        fontSize: 12,
-                        color: Colors.black54,
-                        height: 1.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 18),
-
-              // Selección del juego
-              _construirTarjeta(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _construirEtiqueta(
-                      'Selecciona un juego',
-                      Icons.sports_esports_rounded,
-                    ),
-                    const SizedBox(height: 14),
-                    DropdownButtonFormField<int>(
-                      value: juegoSeleccionado,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color(0xFFF8FBF6),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFDDEEDB),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFDDEEDB),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 14,
-                        ),
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 1,
-                          child: Text('Reciclaje - Drag & Drop'),
-                        ),
-                        DropdownMenuItem(
-                          value: 2,
-                          child: Text('Reciclaje - Fill in the Gaps'),
-                        ),
-                        DropdownMenuItem(
-                          value: 3,
-                          child: Text('Punto Limpio - Drag & Drop'),
-                        ),
-                        DropdownMenuItem(
-                          value: 4,
-                          child: Text('Punto Limpio - Fill in the Gaps'),
-                        ),
-                      ],
-                      onChanged: creandoSala
-                          ? null
-                          : (valor) {
-                              if (valor == null) return;
-
-                              setState(() {
-                                juegoSeleccionado = valor;
-                              });
-                            },
-                      style: GoogleFonts.quicksand(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF31543A),
-                      ),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: Color(0xFF4CAF50),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 18),
-
-              // Número de jugadores
-              _construirTarjeta(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _construirEtiqueta(
-                      'Número máximo de jugadores',
-                      Icons.people_alt_rounded,
-                    ),
-                    const SizedBox(height: 18),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Jugadores',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: verdeClaro,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Text(
-                            '$numJugadores',
-                            style: GoogleFonts.quicksand(
-                              fontSize: 21,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFF2E7D32),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Slider(
-                      value: numJugadores.toDouble(),
-                      min: 2,
-                      max: 100,
-                      divisions: 98,
-                      activeColor: verdePrincipal,
-                      inactiveColor: const Color(0xFFDDEEDB),
-                      label: '$numJugadores',
-                      onChanged: creandoSala
-                          ? null
-                          : (valor) {
-                              setState(() {
-                                numJugadores = valor.round();
-                              });
-                            },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '2 jugadores',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
-                        ),
-                        Text(
-                          '100 jugadores',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              // Botón para crear la sala y mensaje
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+            Expanded(
+              child: Stack(
                 children: [
-                  ElevatedButton(
-                    onPressed: creandoSala ? null : _crearSala,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: verdePrincipal,
-                      disabledBackgroundColor: Colors.grey.shade400,
-                      foregroundColor: Colors.white,
-                      elevation: 2,
+                  // Contenido desplazable.
+                  // El formulario permanece centrado.
+                  Positioned.fill(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 13,
+                        horizontal: 20,
+                        vertical: 24,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: creandoSala
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: 620,
+                          ),
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.stretch,
                             children: [
-                              const Icon(
-                                Icons.add_circle_outline_rounded,
-                                size: 20,
+                              // Encabezado.
+                              Icon(
+                                Icons.meeting_room_rounded,
+                                color: verdePrincipal,
+                                size: 42,
                               ),
-                              const SizedBox(width: 7),
+                              const SizedBox(height: 8),
+
                               Text(
-                                'Crear sala',
+                                '¡Crea tu sala!',
+                                textAlign: TextAlign.center,
                                 style: GoogleFonts.quicksand(
-                                  fontSize: 15,
+                                  fontSize: 30,
                                   fontWeight: FontWeight.w800,
+                                  color: const Color(0xFF285C32),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+
+                              Text(
+                                'Configura tu partida e invita '
+                                'a tus amigos.',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.quicksand(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+
+                              // Tarjeta principal.
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(24),
+                                  border: Border.all(
+                                    color: const Color(0xFFDDEEDB),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // Código de la sala.
+                                    _construirEtiqueta(
+                                      'Código de la sala',
+                                      Icons.vpn_key_rounded,
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    TextField(
+                                      controller: _codigoController,
+                                      readOnly: true,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.quicksand(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 4,
+                                        color: const Color(0xFF2E7D32),
+                                      ),
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: verdeClaro,
+                                        suffixIcon: const Icon(
+                                          Icons.lock_outline_rounded,
+                                          color: Color(0xFF4CAF50),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+
+                                    Text(
+                                      'Se genera automáticamente y se '
+                                      'guardará al crear la sala.',
+                                      style: GoogleFonts.quicksand(
+                                        fontSize: 12,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 24),
+                                    const Divider(
+                                      color: Color(0xFFE8F0E6),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Selección del juego.
+                                    _construirEtiqueta(
+                                      'Selecciona un juego',
+                                      Icons.sports_esports_rounded,
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    DropdownButtonFormField<int>(
+                                      initialValue: juegoSeleccionado,
+                                      isExpanded: true,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor:
+                                            const Color(0xFFF8FBF6),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 14,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          borderSide: const BorderSide(
+                                            color: Color(0xFFDDEEDB),
+                                          ),
+                                        ),
+                                      ),
+                                      items: const [
+                                        DropdownMenuItem(
+                                          value: 1,
+                                          child: Text(
+                                            'Reciclaje - Drag & Drop',
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 2,
+                                          child: Text(
+                                            'Reciclaje - Fill in the Gaps',
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 3,
+                                          child: Text(
+                                            'Punto Limpio - Drag & Drop',
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 4,
+                                          child: Text(
+                                            'Punto Limpio - Fill in the Gaps',
+                                          ),
+                                        ),
+                                      ],
+                                      onChanged: creandoSala
+                                          ? null
+                                          : (valor) {
+                                              if (valor == null) return;
+
+                                              setState(() {
+                                                juegoSeleccionado = valor;
+                                              });
+                                            },
+                                    ),
+
+                                    const SizedBox(height: 24),
+                                    const Divider(
+                                      color: Color(0xFFE8F0E6),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Número de jugadores.
+                                    _construirEtiqueta(
+                                      'Número máximo de jugadores',
+                                      Icons.people_alt_rounded,
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Jugadores',
+                                          style: GoogleFonts.quicksand(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: verdeClaro,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            '$numJugadores',
+                                            style: GoogleFonts.quicksand(
+                                              fontSize: 21,
+                                              fontWeight: FontWeight.w800,
+                                              color: const Color(
+                                                0xFF2E7D32,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    Slider(
+                                      value: numJugadores.toDouble(),
+                                      min: 2,
+                                      max: 100,
+                                      divisions: 98,
+                                      activeColor: verdePrincipal,
+                                      inactiveColor:
+                                          const Color(0xFFDDEEDB),
+                                      label: '$numJugadores',
+                                      onChanged: creandoSala
+                                          ? null
+                                          : (valor) {
+                                              setState(() {
+                                                numJugadores =
+                                                    valor.round();
+                                              });
+                                            },
+                                    ),
+
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '2 jugadores',
+                                          style: GoogleFonts.quicksand(
+                                            fontSize: 12,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        Text(
+                                          '100 jugadores',
+                                          style: GoogleFonts.quicksand(
+                                            fontSize: 12,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 24),
+
+                                    // Botón para crear la sala.
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 50,
+                                      child: ElevatedButton(
+                                        onPressed: creandoSala
+                                            ? null
+                                            : _crearSala,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: verdePrincipal,
+                                          foregroundColor: Colors.white,
+                                          disabledBackgroundColor:
+                                              Colors.grey.shade400,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                          ),
+                                        ),
+                                        child: creandoSala
+                                            ? const SizedBox(
+                                                width: 22,
+                                                height: 22,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                  strokeWidth: 2,
+                                                ),
+                                              )
+                                            : Text(
+                                                'Crear sala',
+                                                style:
+                                                    GoogleFonts.quicksand(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                      FontWeight.w800,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+
+                                    // Mensaje de resultado.
+                                    if (mensajeResultado != null) ...[
+                                      const SizedBox(height: 14),
+                                      Container(
+                                        padding:
+                                            const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              salaCreadaCorrectamente
+                                                  ? const Color(0xFFE8F5E9)
+                                                  : const Color(0xFFFFEBEE),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              salaCreadaCorrectamente
+                                                  ? Icons
+                                                      .check_circle_rounded
+                                                  : Icons
+                                                      .error_outline_rounded,
+                                              color:
+                                                  salaCreadaCorrectamente
+                                                      ? const Color(
+                                                          0xFF2E7D32,
+                                                        )
+                                                      : Colors.redAccent,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                mensajeResultado!,
+                                                style:
+                                                    GoogleFonts.quicksand(
+                                                  fontSize: 13,
+                                                  fontWeight:
+                                                      FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                    ),
                   ),
 
-                  const SizedBox(width: 12),
-
-                  // Mensaje a la derecha del botón
-                  if (mensajeResultado != null)
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 9,
-                          ),
-                          decoration: BoxDecoration(
-                            color: salaCreadaCorrectamente
-                                ? const Color(0xFFE8F5E9)
-                                : const Color(0xFFFFEBEE),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                salaCreadaCorrectamente
-                                    ? Icons.check_circle_rounded
-                                    : Icons.error_outline_rounded,
-                                size: 17,
-                                color: salaCreadaCorrectamente
-                                    ? Colors.green
-                                    : Colors.redAccent,
-                              ),
-                              const SizedBox(width: 6),
-                              Flexible(
-                                child: Text(
-                                  mensajeResultado!,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: salaCreadaCorrectamente
-                                        ? const Color(0xFF2E7D32)
-                                        : Colors.redAccent,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                  // Barra de desplazamiento en el borde derecho.
+                  Positioned(
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    child: IgnorePointer(
+                      child: Scrollbar(
+                        controller: _scrollController,
+                        thumbVisibility: true,
+                        thickness: 6,
+                        radius: const Radius.circular(10),
+                        child: const SizedBox(
+                          width: 1,
+                          height: 1,
                         ),
                       ),
                     ),
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

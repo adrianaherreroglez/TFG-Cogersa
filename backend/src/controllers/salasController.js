@@ -386,7 +386,7 @@ const guardarResultado = async (req, res) => {
       resultado: resultado.rows[0]
     });
   } catch (error) {
-    await client.query('ROLLBACK').catch(() => {});
+    await client.query('ROLLBACK').catch(() => { });
     console.error('Error guardando resultado:', error);
     return res.status(500).json({
       message: 'Error al guardar el resultado.'
@@ -428,28 +428,30 @@ const obtenerClasificacion = async (req, res) => {
 
     const resultado = await pool.query(
       `SELECT
-         sm.usuario_id,
-         COALESCE(
-           to_jsonb(u)->>'nombre',
-           to_jsonb(u)->>'username',
-           to_jsonb(u)->>'name',
-           'Jugador'
-         ) AS nombre,
-         rp.puntos,
-         rp.tiempo_segundos,
-         rp.intentos,
-         COALESCE(rp.terminado, FALSE) AS terminado,
-         rp.terminado_en
-       FROM sala_miembros sm
-       LEFT JOIN users u ON u.id = sm.usuario_id
-       LEFT JOIN resultados_partida rp
-         ON rp.sala_id = sm.sala_id
-        AND rp.usuario_id = sm.usuario_id
-       WHERE sm.sala_id = $1
-       ORDER BY
-         COALESCE(rp.terminado, FALSE) DESC,
-         ${orderBy},
-         sm.unido_en ASC`,
+     sm.usuario_id,
+     COALESCE(
+       to_jsonb(u)->>'nombre',
+       to_jsonb(u)->>'username',
+       to_jsonb(u)->>'name',
+       'Jugador'
+     ) AS nombre,
+     rp.puntos,
+     rp.tiempo_segundos,
+     rp.intentos,
+     COALESCE(rp.terminado, FALSE) AS terminado,
+     rp.terminado_en
+   FROM sala_miembros sm
+   JOIN salas s ON s.id = sm.sala_id
+   LEFT JOIN users u ON u.id = sm.usuario_id
+   LEFT JOIN resultados_partida rp
+     ON rp.sala_id = sm.sala_id
+    AND rp.usuario_id = sm.usuario_id
+   WHERE sm.sala_id = $1
+     AND sm.usuario_id <> s.creador_id
+   ORDER BY
+     COALESCE(rp.terminado, FALSE) DESC,
+     ${orderBy},
+     sm.unido_en ASC`,
       [salaId]
     );
 
@@ -476,7 +478,7 @@ const obtenerClasificacion = async (req, res) => {
 };
 
 
-// Cerrar una sala; solo el anfitrión puede hacerlo
+// Cerrar una sala: solo el anfitrión puede hacerlo
 const cerrarSala = async (req, res) => {
   try {
     const salaId = Number(req.params.id);
