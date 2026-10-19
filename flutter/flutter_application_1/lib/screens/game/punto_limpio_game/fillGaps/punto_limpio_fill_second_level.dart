@@ -4,19 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
+import 'package:flutter_application_1/services/salas_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
 class PuntoLimpioSecondFillPage extends StatefulWidget {
-  const PuntoLimpioSecondFillPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+  const PuntoLimpioSecondFillPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<PuntoLimpioSecondFillPage> createState() =>
       _PuntoLimpioSecondFillPageState();
-  final DatosPartida datosPartida;
 }
 
 class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
@@ -24,6 +29,8 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
   final SegundoNivel segundoNivel = SegundoNivel();
 
   late List<Map<String, String>> objetos;
+
+  final SalasService salasService = SalasService();
 
   int indiceObjetoActual = 0;
 
@@ -44,7 +51,6 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     super.initState();
 
     objetos = gameService.getObjetosSegundoNivelPuntoLimpio();
-
 
     objetos.shuffle(Random());
   }
@@ -74,14 +80,25 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
         puntosGanadosActuales = puntosRespuesta;
       });
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(milliseconds: 1000), () async {
         if (!mounted) return;
 
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
           widget.datosPartida.cronometro.stop();
-          context.go('/mygame', extra: widget.datosPartida);
+          final tiempoSegundos =
+              widget.datosPartida.cronometro.elapsed.inSeconds;
+          await salasService.guardarResultado(
+            salaId: widget.salaId,
+            puntos: widget.datosPartida.puntos < 0
+                ? 0
+                : widget.datosPartida.puntos,
+            tiempoSegundos: tiempoSegundos,
+            intentos: widget.datosPartida.intentos,
+          );
+
+          _irAClasificacion();
           return;
         }
 
@@ -96,12 +113,25 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        widget.datosPartida.puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= segundoNivel
+            .restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
         puntosPerdidosActuales = segundoNivel.restarPuntosRespuestaIncorrecta();
       });
     }
+  }
+
+  
+  void _irAClasificacion(){
+    context.go(
+        '/clasificacion',
+        extra: {
+          'salaId': widget.salaId,
+          'esAnfitrion': false,
+          'datosPartida': widget.datosPartida,
+        },
+      );
   }
 
   // TARJETA DEL OBJETO
@@ -244,8 +274,9 @@ class _PuntoLimpioSecondFillPageState extends State<PuntoLimpioSecondFillPage> {
                         child: Center(
                           child: completada
                               ? Text(
-                                  gameService
-                                      .nombreContenedorPuntoLimpio(contenedorCorrecto),
+                                  gameService.nombreContenedorPuntoLimpio(
+                                    contenedorCorrecto,
+                                  ),
                                   maxLines: 2,
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.center,

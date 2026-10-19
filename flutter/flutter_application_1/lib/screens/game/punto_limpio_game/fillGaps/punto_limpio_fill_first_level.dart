@@ -10,7 +10,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class PuntoLimpioFirstFillPage extends StatefulWidget {
-  const PuntoLimpioFirstFillPage({super.key});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const PuntoLimpioFirstFillPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<PuntoLimpioFirstFillPage> createState() =>
@@ -18,8 +25,6 @@ class PuntoLimpioFirstFillPage extends StatefulWidget {
 }
 
 class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
-
-  final DatosPartida datosPartida = DatosPartida();
 
   final GameService gameService = GameService();
   final PrimerNivel primerNivel = PrimerNivel();
@@ -48,7 +53,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
     // Solo se barajan los objetos.
     objetos.shuffle(Random());
-    datosPartida.cronometro.start();
+    widget.datosPartida.cronometro.start();
   }
 
   Map<String, String> get objetoActual {
@@ -60,14 +65,14 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
       return;
     }
 
-    datosPartida.intentos++;
+    widget.datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
       final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
 
-      datosPartida.puntos += puntosRespuesta;
+      widget.datosPartida.puntos += puntosRespuesta;
 
       setState(() {
         respuestasCorrectas[indiceObjetoActual] = contenedor;
@@ -82,7 +87,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/puntolimpio/fillGaps/secondLevel', extra: datosPartida);
+          context.go('/puntolimpio/fillGaps/secondlevel', extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida});
           return;
         }
 
@@ -97,7 +102,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     } else {
       setState(() {
         respuestaIncorrecta = contenedor;
-        datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
         puntosPerdidosActuales = primerNivel.restarPuntosRespuestaIncorrecta();
@@ -221,7 +226,6 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                         ),
                       ),
 
-                
                       // HUECO
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
@@ -244,8 +248,9 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                         child: Center(
                           child: completada
                               ? Text(
-                                  gameService
-                                      .nombreContenedorPuntoLimpio(contenedorCorrecto),
+                                  gameService.nombreContenedorPuntoLimpio(
+                                    contenedorCorrecto,
+                                  ),
                                   maxLines: 2,
                                   overflow: TextOverflow.visible,
                                   textAlign: TextAlign.center,
@@ -285,7 +290,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                               const SizedBox(width: 6),
                               Text(
                                 '-$puntosPerdidosActuales puntos',
-                                style: GoogleFonts.quicksand( 
+                                style: GoogleFonts.quicksand(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w800,
                                   color: const Color(0xFFE53935),
@@ -527,7 +532,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '${datosPartida.puntos} puntos',
+                                    '${widget.datosPartida.puntos} puntos',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,
