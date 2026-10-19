@@ -32,7 +32,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
   bool _cargando = true;
   bool _iniciando = false;
   bool _navegando = false;
-
+ 
   String? _error;
   String _estado = 'esperando';
   String _codigo = '';

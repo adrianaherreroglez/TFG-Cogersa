@@ -112,7 +112,7 @@ class _ThirdPageState extends State<ThirdPage> {
     });
 
     widget.datosPartida.cronometro.stop();
-
+ 
     try {
       final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
 

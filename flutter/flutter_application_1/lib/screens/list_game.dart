@@ -80,7 +80,7 @@ class _ListGameState extends State<ListGame> {
                           title: 'PUNTO LIMPIO',
                           gameType: 'Drag & Drop',
                           onTap: () {
-                            context.go('/puntolimpio/firstlevel');
+                            context.go('code', extra: '/puntolimpio/firstlevel');
                           },
                         ),
 

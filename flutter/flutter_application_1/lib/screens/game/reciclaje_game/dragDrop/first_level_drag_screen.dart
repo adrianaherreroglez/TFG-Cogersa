@@ -86,7 +86,7 @@ class _FirstPageState extends State<FirstPage> {
           extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida},
         );
       }
-    } else {
+    } else { 
       datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
 
       setState(() { 

@@ -162,23 +162,34 @@ final GoRouter router = GoRouter(
     // --------------------------
     // PUNTO LIMPIO - DRAG & DROP
     // --------------------------
+
     GoRoute(
       path: '/puntolimpio/firstlevel',
-      builder: (context, state) => const PuntoLimpioFirstPage(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return PuntoLimpioFirstPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
+      },
     ),
 
     GoRoute(
       path: '/puntolimpio/secondlevel',
       builder: (context, state) {
-        final datosPartida = state.extra as DatosPartida;
+        final extra = state.extra as Map<String, dynamic>;
 
-        return PuntoLimpioSecondPage(datosPartida: datosPartida);
+        return PuntoLimpioSecondPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
       },
     ),
 
     // -------------------------------
     // PUNTO LIMPIO - FILL IN THE GAPS
-    // ------------------------------
+    // -------------------------------
     GoRoute(
       path: '/puntolimpio/fillGaps/firstlevel',
       builder: (context, state) => const PuntoLimpioFirstFillPage(),

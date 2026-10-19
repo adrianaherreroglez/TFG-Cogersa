@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/nav_bar.dart';
@@ -15,8 +15,7 @@ class CrearSalaPage extends StatefulWidget {
 class _CrearSalaPageState extends State<CrearSalaPage> {
   final SalasService _salasService = SalasService();
 
-  final TextEditingController _codigoController =
-      TextEditingController();
+  final TextEditingController _codigoController = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
 
@@ -29,6 +28,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
   bool creandoSala = false;
   String? mensajeResultado;
   bool salaCreadaCorrectamente = false;
+  int? salaIdCreada;
 
   final Color verdePrincipal = const Color(0xFF4CAF50);
   final Color verdeClaro = const Color(0xFFE8F5E9);
@@ -68,6 +68,8 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
       setState(() {
         salaCreadaCorrectamente = true;
+        salaIdCreada = int.parse(sala['id'].toString());
+
         mensajeResultado =
             '¡Sala creada! Código: '
             '${sala['codigo'] ?? _codigoController.text}';
@@ -77,8 +79,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
       setState(() {
         salaCreadaCorrectamente = false;
-        mensajeResultado =
-            e.toString().replaceFirst('Exception: ', '');
+        mensajeResultado = e.toString().replaceFirst('Exception: ', '');
       });
     } finally {
       if (mounted) {
@@ -89,14 +90,31 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
     }
   }
 
+  void _irALaSala() {
+    if (salaIdCreada == null) return;
+
+    // Relacionar el ID del juego con la ruta correspondiente.
+    final rutasJuegos = <int, String>{
+      1: '/first',
+      2: '/fillGaps/first',
+      3: '/puntolimpio/firstlevel',
+      4: '/puntolimpio/fillGaps/firstlevel', 
+    };
+
+    final rutaJuego = rutasJuegos[juegoSeleccionado];
+
+    if (rutaJuego == null) return;
+
+    context.go(
+      '/listPlayersGame',
+      extra: {'salaId': salaIdCreada!, 'rutaJuego': rutaJuego},
+    );
+  }
+
   Widget _construirEtiqueta(String texto, IconData icono) {
     return Row(
       children: [
-        Icon(
-          icono,
-          color: verdePrincipal,
-          size: 23,
-        ),
+        Icon(icono, color: verdePrincipal, size: 23),
         const SizedBox(width: 8),
         Text(
           texto,
@@ -109,7 +127,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       ],
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,12 +151,9 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                       ),
                       child: Center(
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            maxWidth: 620,
-                          ),
+                          constraints: const BoxConstraints(maxWidth: 620),
                           child: Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.stretch,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               // Encabezado.
                               Icon(
@@ -175,8 +190,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                 padding: const EdgeInsets.all(24),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(24),
                                   border: Border.all(
                                     color: const Color(0xFFDDEEDB),
                                   ),
@@ -219,8 +233,9 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           color: Color(0xFF4CAF50),
                                         ),
                                         border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(14),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                           borderSide: BorderSide.none,
                                         ),
                                       ),
@@ -237,9 +252,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                     ),
 
                                     const SizedBox(height: 24),
-                                    const Divider(
-                                      color: Color(0xFFE8F0E6),
-                                    ),
+                                    const Divider(color: Color(0xFFE8F0E6)),
                                     const SizedBox(height: 20),
 
                                     // Selección del juego.
@@ -254,16 +267,16 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                       isExpanded: true,
                                       decoration: InputDecoration(
                                         filled: true,
-                                        fillColor:
-                                            const Color(0xFFF8FBF6),
+                                        fillColor: const Color(0xFFF8FBF6),
                                         contentPadding:
                                             const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 14,
-                                        ),
+                                              horizontal: 14,
+                                              vertical: 14,
+                                            ),
                                         border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(14),
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
                                           borderSide: const BorderSide(
                                             color: Color(0xFFDDEEDB),
                                           ),
@@ -307,9 +320,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                     ),
 
                                     const SizedBox(height: 24),
-                                    const Divider(
-                                      color: Color(0xFFE8F0E6),
-                                    ),
+                                    const Divider(color: Color(0xFFE8F0E6)),
                                     const SizedBox(height: 20),
 
                                     // Número de jugadores.
@@ -331,24 +342,22 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           ),
                                         ),
                                         Container(
-                                          padding:
-                                              const EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 16,
                                             vertical: 8,
                                           ),
                                           decoration: BoxDecoration(
                                             color: verdeClaro,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
                                           child: Text(
                                             '$numJugadores',
                                             style: GoogleFonts.quicksand(
                                               fontSize: 21,
                                               fontWeight: FontWeight.w800,
-                                              color: const Color(
-                                                0xFF2E7D32,
-                                              ),
+                                              color: const Color(0xFF2E7D32),
                                             ),
                                           ),
                                         ),
@@ -361,15 +370,13 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                       max: 100,
                                       divisions: 98,
                                       activeColor: verdePrincipal,
-                                      inactiveColor:
-                                          const Color(0xFFDDEEDB),
+                                      inactiveColor: const Color(0xFFDDEEDB),
                                       label: '$numJugadores',
                                       onChanged: creandoSala
                                           ? null
                                           : (valor) {
                                               setState(() {
-                                                numJugadores =
-                                                    valor.round();
+                                                numJugadores = valor.round();
                                               });
                                             },
                                     ),
@@ -412,8 +419,9 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                               Colors.grey.shade400,
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(14),
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
                                           ),
                                         ),
                                         child: creandoSala
@@ -422,64 +430,49 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                                 height: 22,
                                                 child:
                                                     CircularProgressIndicator(
-                                                  color: Colors.white,
-                                                  strokeWidth: 2,
-                                                ),
+                                                      color: Colors.white,
+                                                      strokeWidth: 2,
+                                                    ),
                                               )
                                             : Text(
                                                 'Crear sala',
-                                                style:
-                                                    GoogleFonts.quicksand(
+                                                style: GoogleFonts.quicksand(
                                                   fontSize: 16,
-                                                  fontWeight:
-                                                      FontWeight.w800,
+                                                  fontWeight: FontWeight.w800,
                                                 ),
                                               ),
                                       ),
                                     ),
 
                                     // Mensaje de resultado.
-                                    if (mensajeResultado != null) ...[
-                                      const SizedBox(height: 14),
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color:
-                                              salaCreadaCorrectamente
-                                                  ? const Color(0xFFE8F5E9)
-                                                  : const Color(0xFFFFEBEE),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              salaCreadaCorrectamente
-                                                  ? Icons
-                                                      .check_circle_rounded
-                                                  : Icons
-                                                      .error_outline_rounded,
-                                              color:
-                                                  salaCreadaCorrectamente
-                                                      ? const Color(
-                                                          0xFF2E7D32,
-                                                        )
-                                                      : Colors.redAccent,
+                                    if (salaCreadaCorrectamente &&
+                                        salaIdCreada != null) ...[
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 50,
+                                        child: ElevatedButton.icon(
+                                          onPressed: _irALaSala,
+                                          icon: const Icon(
+                                            Icons.meeting_room_rounded,
+                                          ),
+                                          label: Text(
+                                            'Ir a la sala',
+                                            style: GoogleFonts.quicksand(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w800,
                                             ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                mensajeResultado!,
-                                                style:
-                                                    GoogleFonts.quicksand(
-                                                  fontSize: 13,
-                                                  fontWeight:
-                                                      FontWeight.w700,
-                                                ),
-                                              ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(
+                                              0xFF2E7D32,
                                             ),
-                                          ],
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -504,10 +497,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                         thumbVisibility: true,
                         thickness: 6,
                         radius: const Radius.circular(10),
-                        child: const SizedBox(
-                          width: 1,
-                          height: 1,
-                        ),
+                        child: const SizedBox(width: 1, height: 1),
                       ),
                     ),
                   ),

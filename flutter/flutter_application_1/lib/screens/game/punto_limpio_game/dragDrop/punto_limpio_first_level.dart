@@ -12,7 +12,13 @@ import 'package:go_router/go_router.dart';
 
 
 class PuntoLimpioFirstPage extends StatefulWidget {
-  const PuntoLimpioFirstPage({super.key});
+  final DatosPartida datosPartida;
+  final int salaId;
+  const PuntoLimpioFirstPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
 
   @override
   State<PuntoLimpioFirstPage> createState() => _FirstPageState();
@@ -101,7 +107,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
       if (indiceObjetoActual >= objetos.length) {
         context.go(
           '/puntolimpio/secondlevel',
-          extra: datosPartida,
+          extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida},
         );
       }
     }

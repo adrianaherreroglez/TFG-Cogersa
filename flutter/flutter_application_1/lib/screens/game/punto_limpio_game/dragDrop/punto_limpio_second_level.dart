@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/segundo_nivel_service.dart';
+import 'package:flutter_application_1/services/salas_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 
-
 class PuntoLimpioSecondPage extends StatefulWidget {
-  const PuntoLimpioSecondPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const PuntoLimpioSecondPage({super.key, 
+  required this.datosPartida,
+  required this.salaId,});
 
   @override
   State<PuntoLimpioSecondPage> createState() => _SecondPageState();
-  final DatosPartida datosPartida;
 }
 
 class _SecondPageState extends State<PuntoLimpioSecondPage> {
@@ -25,6 +29,8 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
   final SegundoNivel segundoNivel = SegundoNivel();
 
   late List<Map<String, String>> objetos;
+
+  final SalasService salasService = SalasService();
 
 
   int indiceObjetoActual = 0;
@@ -52,7 +58,7 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
     return objetos[indiceObjetoActual];
   }
 
-  void comprobarRespuesta(String contenedor) {
+  Future<void> comprobarRespuesta(String contenedor) async {
     widget.datosPartida.intentos++;
 
     final objeto = objetoActual;
@@ -98,10 +104,14 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
       // FIN DEL NIVEL
       if (indiceObjetoActual >= objetos.length) {
         widget.datosPartida.cronometro.stop();
-        context.go(
-          '/mygame',
-          extra: widget.datosPartida,
-        );
+        final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
+        await salasService.guardarResultado(
+        salaId: widget.salaId,
+        puntos: widget.datosPartida.puntos < 0 ? 0 : widget.datosPartida.puntos,
+        tiempoSegundos: tiempoSegundos,
+        intentos: widget.datosPartida.intentos,
+      );
+      _irAClasificacion();
       }
     }
 
@@ -114,6 +124,17 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
         widget.datosPartida.puntos -= segundoNivel.restarPuntosRespuestaIncorrecta();
       });
     }
+  }
+
+  void _irAClasificacion(){
+    context.go(
+        '/clasificacion',
+        extra: {
+          'salaId': widget.salaId,
+          'esAnfitrion': false,
+          'datosPartida': widget.datosPartida,
+        },
+      );
   }
 
 
