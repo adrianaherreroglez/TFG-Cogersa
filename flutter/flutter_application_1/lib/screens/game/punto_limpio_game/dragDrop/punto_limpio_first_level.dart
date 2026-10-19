@@ -25,8 +25,6 @@ class PuntoLimpioFirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<PuntoLimpioFirstPage> {
-
-  final DatosPartida datosPartida = DatosPartida();
   
   final GameService gameService = GameService();
   final PrimerNivel primerNivel = PrimerNivel();
@@ -50,7 +48,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
   @override
   void initState() {
     super.initState();
-    datosPartida.cronometro.start();
+    widget.datosPartida.cronometro.start();
     objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
     objetos.shuffle(Random());
   }
@@ -61,13 +59,13 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
   }
 
   void comprobarRespuesta(String contenedor) {
-    datosPartida.intentos++;
+    widget.datosPartida.intentos++;
 
     final objeto = objetoActual;
     final contenedorCorrecto = objeto['contenedor'];
 
     if (contenedor == contenedorCorrecto) {
-      datosPartida.puntos += primerNivel.sumarPuntosRespuestaCorrecta();
+      widget.datosPartida.puntos += primerNivel.sumarPuntosRespuestaCorrecta();
       setState(() {
         // Solo mostramos el último objeto acertado
         // dentro de cada contenedor.
@@ -118,7 +116,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
         // Mantiene el objeto visible
         objetoVisible = true;
 
-        datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
       });
     }
   }
@@ -253,7 +251,7 @@ class _FirstPageState extends State<PuntoLimpioFirstPage> {
                               const SizedBox(width: 7),
 
                               Text(
-                                '${datosPartida.puntos} puntos',
+                                '${widget.datosPartida.puntos} puntos',
                                 style: GoogleFonts.quicksand(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

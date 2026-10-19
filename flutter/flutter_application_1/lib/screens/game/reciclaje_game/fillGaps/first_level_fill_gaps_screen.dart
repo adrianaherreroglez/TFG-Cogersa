@@ -30,8 +30,6 @@ class _FirstPageState extends State<FirstFillPage> {
 
   int indiceObjetoActual = 0;
 
-  final DatosPartida datosPartida = DatosPartida();
-
   final Map<int, String> respuestasCorrectas = {};
 
   String? respuestaIncorrecta;
@@ -51,7 +49,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
     objetos = gameService.getObjetosPrimerNivel();
     objetos.shuffle(Random());
-    datosPartida.cronometro.start();
+    widget.datosPartida.cronometro.start();
   }
 
   Map<String, String> get objetoActual {
@@ -63,7 +61,7 @@ class _FirstPageState extends State<FirstFillPage> {
       return;
     }
 
-    datosPartida.intentos++;
+    widget.datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
@@ -71,7 +69,7 @@ class _FirstPageState extends State<FirstFillPage> {
       final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
       final int puntosRespuestaIncorrecta = primerNivel.restarPuntosRespuestaIncorrecta();
 
-      datosPartida.puntos += puntosRespuesta;
+      widget.datosPartida.puntos += puntosRespuesta;
 
       setState(() {
         respuestasCorrectas[indiceObjetoActual] = contenedor;
@@ -105,7 +103,7 @@ class _FirstPageState extends State<FirstFillPage> {
 
       setState(() {
         respuestaIncorrecta = contenedor;
-        datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
         puntosPerdidosActuales = puntosPerdidos;
@@ -532,7 +530,7 @@ class _FirstPageState extends State<FirstFillPage> {
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
-                                    '${datosPartida.puntos} puntos',
+                                    '${widget.datosPartida.puntos} puntos',
                                     style: GoogleFonts.quicksand(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800,

@@ -99,7 +99,7 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
         } else {
           objetoVisible = false;
         }
-      });
+      }); 
 
       // FIN DEL NIVEL
       if (indiceObjetoActual >= objetos.length) {

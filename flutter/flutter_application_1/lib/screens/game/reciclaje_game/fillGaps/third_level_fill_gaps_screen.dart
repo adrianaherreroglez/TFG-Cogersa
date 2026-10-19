@@ -87,8 +87,8 @@ class _ThirdPageState extends State<ThirdFillPage> {
 
 
         if (siguienteIndice >= objetos.length) {
-          final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
           widget.datosPartida.cronometro.stop();
+          final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
           await salasService.guardarResultado(
             salaId: widget.salaId,
             puntos: widget.datosPartida.puntos < 0
