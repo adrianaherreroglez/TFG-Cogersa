@@ -18,7 +18,7 @@ class _ListGameState extends State<ListGame> {
       backgroundColor: const Color(0xFFFAFDF4),
       body: Column(
         children: [
-          const NavBar(), 
+          const NavBar(),
 
           Expanded(
             child: SingleChildScrollView(
@@ -62,7 +62,7 @@ class _ListGameState extends State<ListGame> {
                           title: 'RECICLAJE',
                           gameType: 'Drag & Drop',
                           onTap: () {
-                            context.go('/code');
+                            context.go('/code', extra: '/first');
                           },
                         ),
 
@@ -71,7 +71,7 @@ class _ListGameState extends State<ListGame> {
                           title: 'RECICLAJE',
                           gameType: 'Fill in the Gaps',
                           onTap: () {
-                            context.go('/fillGaps/first');
+                            context.go('/code', extra: '/fillGaps/first');
                           },
                         ),
 
@@ -146,18 +146,11 @@ class _GameCardState extends State<GameCard> {
           duration: const Duration(milliseconds: 180),
           width: 230,
           height: 260,
-          transform: Matrix4.translationValues(
-            0,
-            isHovered ? -6 : 0,
-            0,
-          ),
+          transform: Matrix4.translationValues(0, isHovered ? -6 : 0, 0),
           decoration: BoxDecoration(
             color: const Color(0xFFE8F5E9),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: const Color(0xFFD8EDD5),
-              width: 1.5,
-            ),
+            border: Border.all(color: const Color(0xFFD8EDD5), width: 1.5),
             boxShadow: isHovered
                 ? [
                     BoxShadow(
@@ -175,10 +168,7 @@ class _GameCardState extends State<GameCard> {
                   ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 18,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

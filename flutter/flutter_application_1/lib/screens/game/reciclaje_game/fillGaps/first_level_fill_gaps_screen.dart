@@ -11,7 +11,12 @@ import 'package:go_router/go_router.dart';
 
 
 class FirstFillPage extends StatefulWidget {
-  const FirstFillPage({super.key});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const FirstFillPage({super.key,
+    required this.datosPartida,
+    required this.salaId,});
 
   @override
   State<FirstFillPage> createState() => _FirstPageState();
@@ -38,6 +43,7 @@ class _FirstPageState extends State<FirstFillPage> {
   final Color lightGreen = const Color(0xFFE8F5E9);
   final Color secondaryGreen = const Color(0xFFD8EDD5);
   final Color secondaryText = const Color(0xFF5D7A61);
+
 
   @override
   void initState() {
@@ -82,7 +88,7 @@ class _FirstPageState extends State<FirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/fillGaps/second', extra: datosPartida);
+          context.go('/fillGaps/second', extra:  {'salaId': widget.salaId, 'datosPartida': widget.datosPartida});
           return;
         }
 

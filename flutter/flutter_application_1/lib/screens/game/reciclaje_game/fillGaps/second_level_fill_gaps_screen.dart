@@ -9,11 +9,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class SecondFillPage extends StatefulWidget {
-  const SecondFillPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const SecondFillPage({super.key, 
+  required this.datosPartida,
+  required this.salaId});
 
   @override
   State<SecondFillPage> createState() => _SecondPageState();
-  final DatosPartida datosPartida;
+
 }
 
 class _SecondPageState extends State<SecondFillPage> {
@@ -77,7 +82,7 @@ class _SecondPageState extends State<SecondFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/fillGaps/third', extra: widget.datosPartida);
+          context.go('/fillGaps/third', extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida});
           return;
         }
 

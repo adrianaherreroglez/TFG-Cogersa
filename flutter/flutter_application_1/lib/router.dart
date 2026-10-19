@@ -59,14 +59,24 @@ final GoRouter router = GoRouter(
     // -----------------------------
     // ACCEDER CON CÓDIGO DE PARTIDA
     // -----------------------------
-    GoRoute(path: '/code', builder: (context, state) => const CodePage()),
+    GoRoute(
+      path: '/code',
+      builder: (context, state) {
+        final rutaJuego = state.extra as String? ?? '/fillGaps/first';
+
+        return CodePage(rutaJuego: rutaJuego);
+      },
+    ),
 
     GoRoute(
       path: '/listPlayersGame',
       builder: (context, state) {
-        final salaId = state.extra as int;
+        final datos = state.extra as Map<String, dynamic>;
 
-        return ListPlayersGame(salaId: salaId);
+        return ListPlayersGame(
+          salaId: datos['salaId'] as int,
+          rutaJuego: datos['rutaJuego'] as String,
+        );
       },
     ),
 
@@ -112,26 +122,40 @@ final GoRouter router = GoRouter(
     // ----------------------------
     // RECICLAJE - FILL IN THE GAPS
     // ----------------------------
+
     GoRoute(
       path: '/fillGaps/first',
-      builder: (context, state) => const FirstFillPage(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+
+        return FirstFillPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
+      },
     ),
 
     GoRoute(
       path: '/fillGaps/second',
       builder: (context, state) {
-        final datosPartida = state.extra as DatosPartida;
+        final extra = state.extra as Map<String, dynamic>;
 
-        return SecondFillPage(datosPartida: datosPartida);
+        return SecondFillPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
       },
     ),
 
     GoRoute(
       path: '/fillGaps/third',
       builder: (context, state) {
-        final datosPartida = state.extra as DatosPartida;
+        final extra = state.extra as Map<String, dynamic>;
 
-        return ThirdFillPage(datosPartida: datosPartida);
+        return ThirdFillPage(
+          salaId: extra['salaId'] as int,
+          datosPartida: extra['datosPartida'] as DatosPartida,
+        );
       },
     ),
 

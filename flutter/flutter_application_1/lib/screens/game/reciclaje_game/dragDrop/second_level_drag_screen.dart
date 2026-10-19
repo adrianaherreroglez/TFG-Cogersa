@@ -77,7 +77,7 @@ class _SecondPageState extends State<SecondPage> {
         if (indiceObjetoActual < objetos.length) {
           objetoVisible = true;
         } else {
-          objetoVisible = false;
+          objetoVisible = false; 
         }
       });
 

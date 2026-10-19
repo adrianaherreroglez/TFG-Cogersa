@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -12,8 +11,13 @@ import 'package:flutter_application_1/widgets/nav_bar.dart';
 
 class ListPlayersGame extends StatefulWidget {
   final int salaId;
+  final String rutaJuego;
 
-  const ListPlayersGame({super.key, required this.salaId});
+  const ListPlayersGame({
+    super.key,
+    required this.salaId,
+    required this.rutaJuego,
+  });
 
   @override
   State<ListPlayersGame> createState() => _ListPlayersGameState();
@@ -84,10 +88,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
       setState(() {
         _codigo = sala['codigo']?.toString() ?? '';
         _estado = estado;
-        _juegoId = int.tryParse(
-              sala['juego_id']?.toString() ?? '',
-            ) ??
-            0;
+        _juegoId = int.tryParse(sala['juego_id']?.toString() ?? '') ?? 0;
 
         _maxJugadores = maxJugadores ?? _maxJugadores;
         _esAnfitrion = data['es_anfitrion'] == true;
@@ -148,10 +149,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
     context.go(
       '/clasificacion',
-      extra: {
-        'salaId': widget.salaId,
-        'esAnfitrion': _esAnfitrion,
-      },
+      extra: {'salaId': widget.salaId, 'esAnfitrion': _esAnfitrion},
     );
   }
 
@@ -163,21 +161,10 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
     final datosPartida = DatosPartida();
 
-    if (_juegoId == 1) {
-      context.go(
-        '/first',
-        extra: {
-          'salaId': widget.salaId,
-          'datosPartida': datosPartida,
-        },
-      );
-    } else {
-      _navegando = false;
-
-      setState(() {
-        _error = 'El juego $_juegoId no está configurado.';
-      });
-    }
+    context.go(
+      widget.rutaJuego,
+      extra: {'salaId': widget.salaId, 'datosPartida': datosPartida},
+    );
   }
 
   Future<void> _copiarCodigo() async {
@@ -185,9 +172,8 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Código copiado')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Código copiado')));
   }
 
   @override
@@ -206,9 +192,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
             Expanded(
               child: _cargando
-                  ? const Center(
-                      child: CircularProgressIndicator(color: verde),
-                    )
+                  ? const Center(child: CircularProgressIndicator(color: verde))
                   : Stack(
                       children: [
                         // Contenido desplazable.
@@ -270,7 +254,9 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: verde.withValues(alpha: 0.08),
+                                            color: verde.withValues(
+                                              alpha: 0.08,
+                                            ),
                                             blurRadius: 24,
                                             offset: const Offset(0, 8),
                                           ),
@@ -297,8 +283,8 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   _estado == 'esperando'
                                                       ? 'Sala esperando jugadores'
                                                       : _estado == 'jugando'
-                                                          ? 'Partida en curso'
-                                                          : 'Sala finalizada',
+                                                      ? 'Partida en curso'
+                                                      : 'Sala finalizada',
                                                   style: GoogleFonts.quicksand(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.w700,
@@ -308,31 +294,45 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                               ),
                                               if (_esAnfitrion)
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 6,
-                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 6,
+                                                      ),
                                                   decoration: BoxDecoration(
-                                                    color: const Color(0xFFFFF3CD),
+                                                    color: const Color(
+                                                      0xFFFFF3CD,
+                                                    ),
                                                     borderRadius:
-                                                        BorderRadius.circular(20),
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
                                                   ),
                                                   child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
                                                     children: [
                                                       const Icon(
                                                         Icons.workspace_premium,
                                                         size: 15,
-                                                        color: Color(0xFF9A7200),
+                                                        color: Color(
+                                                          0xFF9A7200,
+                                                        ),
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
                                                         'Anfitrión',
-                                                        style: GoogleFonts.quicksand(
-                                                          fontSize: 11,
-                                                          fontWeight: FontWeight.w800,
-                                                          color: const Color(0xFF8A6700),
-                                                        ),
+                                                        style:
+                                                            GoogleFonts.quicksand(
+                                                              fontSize: 11,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF8A6700,
+                                                                  ),
+                                                            ),
                                                       ),
                                                     ],
                                                   ),
@@ -347,7 +347,8 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                             padding: const EdgeInsets.all(18),
                                             decoration: BoxDecoration(
                                               color: verdeClaro,
-                                              borderRadius: BorderRadius.circular(18),
+                                              borderRadius:
+                                                  BorderRadius.circular(18),
                                               border: Border.all(
                                                 color: const Color(0xFFC8E6C9),
                                               ),
@@ -366,12 +367,14 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                     const SizedBox(width: 7),
                                                     Text(
                                                       'CÓDIGO DE LA SALA',
-                                                      style: GoogleFonts.quicksand(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w800,
-                                                        letterSpacing: 1,
-                                                        color: verdeOscuro,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.quicksand(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            letterSpacing: 1,
+                                                            color: verdeOscuro,
+                                                          ),
                                                     ),
                                                   ],
                                                 ),
@@ -385,13 +388,17 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                         _codigo.isEmpty
                                                             ? '------'
                                                             : _codigo,
-                                                        textAlign: TextAlign.center,
-                                                        style: GoogleFonts.quicksand(
-                                                          fontSize: 30,
-                                                          fontWeight: FontWeight.w800,
-                                                          letterSpacing: 4,
-                                                          color: verde,
-                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style:
+                                                            GoogleFonts.quicksand(
+                                                              fontSize: 30,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800,
+                                                              letterSpacing: 4,
+                                                              color: verde,
+                                                            ),
                                                       ),
                                                     ),
                                                     const SizedBox(width: 4),
@@ -400,10 +407,13 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                       onPressed: _codigo.isEmpty
                                                           ? null
                                                           : _copiarCodigo,
-                                                      style: IconButton.styleFrom(
-                                                        backgroundColor: Colors.white,
-                                                        foregroundColor: verde,
-                                                      ),
+                                                      style:
+                                                          IconButton.styleFrom(
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            foregroundColor:
+                                                                verde,
+                                                          ),
                                                       icon: const Icon(
                                                         Icons.copy_rounded,
                                                       ),
@@ -416,7 +426,9 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   textAlign: TextAlign.center,
                                                   style: GoogleFonts.quicksand(
                                                     fontSize: 12,
-                                                    color: const Color(0xFF527357),
+                                                    color: const Color(
+                                                      0xFF527357,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -424,14 +436,18 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                           ),
 
                                           const SizedBox(height: 24),
-                                          const Divider(color: Color(0xFFE8F0E6)),
+                                          const Divider(
+                                            color: Color(0xFFE8F0E6),
+                                          ),
                                           const SizedBox(height: 18),
 
                                           // LISTA DE JUGADORES
                                           Row(
                                             children: [
                                               Container(
-                                                padding: const EdgeInsets.all(10),
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: verdeClaro,
                                                   borderRadius:
@@ -451,27 +467,32 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   children: [
                                                     Text(
                                                       'Jugadores',
-                                                      style: GoogleFonts.quicksand(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w800,
-                                                        color: verdeOscuro,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.quicksand(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            color: verdeOscuro,
+                                                          ),
                                                     ),
                                                     Text(
                                                       'Personas en la sala',
-                                                      style: GoogleFonts.quicksand(
-                                                        fontSize: 12,
-                                                        color: Colors.black54,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.quicksand(
+                                                            fontSize: 12,
+                                                            color:
+                                                                Colors.black54,
+                                                          ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: 14,
-                                                  vertical: 8,
-                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 14,
+                                                      vertical: 8,
+                                                    ),
                                                 decoration: BoxDecoration(
                                                   color: verdeClaro,
                                                   borderRadius:
@@ -499,13 +520,16 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                 borderRadius:
                                                     BorderRadius.circular(16),
                                                 border: Border.all(
-                                                  color: const Color(0xFFE5EEE2),
+                                                  color: const Color(
+                                                    0xFFE5EEE2,
+                                                  ),
                                                 ),
                                               ),
                                               child: Column(
                                                 children: [
                                                   const Icon(
-                                                    Icons.person_add_alt_1_rounded,
+                                                    Icons
+                                                        .person_add_alt_1_rounded,
                                                     size: 34,
                                                     color: Color(0xFF81A985),
                                                   ),
@@ -513,19 +537,22 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   Text(
                                                     'Todavía no hay jugadores',
                                                     textAlign: TextAlign.center,
-                                                    style: GoogleFonts.quicksand(
-                                                      fontWeight: FontWeight.w700,
-                                                      color: verdeOscuro,
-                                                    ),
+                                                    style:
+                                                        GoogleFonts.quicksand(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: verdeOscuro,
+                                                        ),
                                                   ),
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     'Comparte el código para que se unan.',
                                                     textAlign: TextAlign.center,
-                                                    style: GoogleFonts.quicksand(
-                                                      fontSize: 12,
-                                                      color: Colors.black54,
-                                                    ),
+                                                    style:
+                                                        GoogleFonts.quicksand(
+                                                          fontSize: 12,
+                                                          color: Colors.black54,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -533,10 +560,12 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                           else
                                             ..._miembros.map((miembro) {
                                               final esAnfitrion =
-                                                  miembro['es_anfitrion'] == true;
+                                                  miembro['es_anfitrion'] ==
+                                                  true;
                                               final nombre =
-                                                  miembro['nombre']?.toString() ??
-                                                      'Jugador';
+                                                  miembro['nombre']
+                                                      ?.toString() ??
+                                                  'Jugador';
 
                                               return Container(
                                                 margin: const EdgeInsets.only(
@@ -544,32 +573,47 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                 ),
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 12,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 12,
+                                                    ),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFFF8FBF6),
+                                                  color: const Color(
+                                                    0xFFF8FBF6,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.circular(16),
                                                   border: Border.all(
                                                     color: esAnfitrion
-                                                        ? const Color(0xFFC8E6C9)
-                                                        : const Color(0xFFEDF2EA),
+                                                        ? const Color(
+                                                            0xFFC8E6C9,
+                                                          )
+                                                        : const Color(
+                                                            0xFFEDF2EA,
+                                                          ),
                                                   ),
                                                 ),
                                                 child: Row(
                                                   children: [
                                                     CircleAvatar(
                                                       radius: 22,
-                                                      backgroundColor: esAnfitrion
-                                                          ? const Color(0xFFFFF0C2)
-                                                          : const Color(0xFFD8EDD5),
+                                                      backgroundColor:
+                                                          esAnfitrion
+                                                          ? const Color(
+                                                              0xFFFFF0C2,
+                                                            )
+                                                          : const Color(
+                                                              0xFFD8EDD5,
+                                                            ),
                                                       child: Icon(
                                                         esAnfitrion
-                                                            ? Icons.workspace_premium_rounded
-                                                            : Icons.person_rounded,
+                                                            ? Icons
+                                                                  .workspace_premium_rounded
+                                                            : Icons
+                                                                  .person_rounded,
                                                         color: esAnfitrion
-                                                            ? const Color(0xFF9A7200)
+                                                            ? const Color(
+                                                                0xFF9A7200,
+                                                              )
                                                             : verde,
                                                       ),
                                                     ),
@@ -577,34 +621,41 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                     Expanded(
                                                       child: Text(
                                                         nombre,
-                                                        style: GoogleFonts.quicksand(
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: verdeOscuro,
-                                                        ),
+                                                        style:
+                                                            GoogleFonts.quicksand(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              color:
+                                                                  verdeOscuro,
+                                                            ),
                                                       ),
                                                     ),
                                                     if (esAnfitrion)
                                                       Container(
                                                         padding:
                                                             const EdgeInsets.symmetric(
-                                                          horizontal: 9,
-                                                          vertical: 5,
-                                                        ),
+                                                              horizontal: 9,
+                                                              vertical: 5,
+                                                            ),
                                                         decoration: BoxDecoration(
                                                           color: verdeClaro,
                                                           borderRadius:
-                                                              BorderRadius.circular(20),
+                                                              BorderRadius.circular(
+                                                                20,
+                                                              ),
                                                         ),
                                                         child: Text(
                                                           'Anfitrión',
                                                           style:
                                                               GoogleFonts.quicksand(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w800,
-                                                            color: verde,
-                                                          ),
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                                color: verde,
+                                                              ),
                                                         ),
                                                       ),
                                                   ],
@@ -630,19 +681,21 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                     height: 20,
                                                     child:
                                                         CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color: verde,
-                                                    ),
+                                                          strokeWidth: 2,
+                                                          color: verde,
+                                                        ),
                                                   ),
                                                   const SizedBox(width: 12),
                                                   Expanded(
                                                     child: Text(
                                                       'Esperando al anfitrión para comenzar…',
-                                                      style: GoogleFonts.quicksand(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w700,
-                                                        color: verdeOscuro,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.quicksand(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: verdeOscuro,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -673,11 +726,14 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   Expanded(
                                                     child: Text(
                                                       _error!,
-                                                      style: GoogleFonts.quicksand(
-                                                        fontSize: 12,
-                                                        color: Colors.redAccent,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.quicksand(
+                                                            fontSize: 12,
+                                                            color: Colors
+                                                                .redAccent,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -704,51 +760,64 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                   elevation: 0,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(15),
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
                                                   ),
                                                 ),
                                                 child: _iniciando
                                                     ? Row(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment.center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
                                                           const SizedBox(
                                                             width: 20,
                                                             height: 20,
                                                             child:
                                                                 CircularProgressIndicator(
-                                                              color: Colors.white,
-                                                              strokeWidth: 2,
-                                                            ),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  strokeWidth:
+                                                                      2,
+                                                                ),
                                                           ),
-                                                          const SizedBox(width: 10),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
                                                           Text(
                                                             'Iniciando partida…',
                                                             style:
                                                                 GoogleFonts.quicksand(
-                                                              fontWeight:
-                                                                  FontWeight.w800,
-                                                            ),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                ),
                                                           ),
                                                         ],
                                                       )
                                                     : Row(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment.center,
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
                                                           const Icon(
-                                                            Icons.play_arrow_rounded,
+                                                            Icons
+                                                                .play_arrow_rounded,
                                                             size: 24,
                                                           ),
-                                                          const SizedBox(width: 8),
+                                                          const SizedBox(
+                                                            width: 8,
+                                                          ),
                                                           Text(
                                                             'Iniciar partida',
                                                             style:
                                                                 GoogleFonts.quicksand(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight.w800,
-                                                            ),
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w800,
+                                                                ),
                                                           ),
                                                         ],
                                                       ),
@@ -786,10 +855,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                             interactive: true,
                             thickness: 6,
                             radius: const Radius.circular(10),
-                            child: const SizedBox(
-                              width: 1,
-                              height: 1,
-                            ),
+                            child: const SizedBox(width: 1, height: 1),
                           ),
                         ),
                       ],

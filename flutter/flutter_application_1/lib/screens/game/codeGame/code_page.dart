@@ -4,9 +4,10 @@ import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
-
 class CodePage extends StatefulWidget {
-  const CodePage({super.key});
+  final String rutaJuego;
+
+  const CodePage({super.key, required this.rutaJuego});
 
   @override
   State<CodePage> createState() => _CodePageState();
@@ -43,7 +44,10 @@ class _CodePageState extends State<CodePage> {
       final salaId = int.parse(sala['id'].toString());
 
       // Todos acceden a la misma pantalla de espera.
-      context.go('/listPlayersGame', extra: salaId);
+      context.go(
+        '/listPlayersGame',
+        extra: {'salaId': salaId, 'rutaJuego': widget.rutaJuego},
+      );
     } catch (e) {
       if (!mounted) return;
 

@@ -4,15 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
 import 'package:flutter_application_1/screens/game/service/tercer_nivel_service.dart';
+import 'package:flutter_application_1/services/salas_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 
 class ThirdFillPage extends StatefulWidget {
-  const ThirdFillPage({super.key, required this.datosPartida});
+  final DatosPartida datosPartida;
+  final int salaId;
+
+  const ThirdFillPage({
+    super.key,
+    required this.datosPartida,
+    required this.salaId,
+  });
   @override
   State<ThirdFillPage> createState() => _ThirdPageState();
-  final DatosPartida datosPartida;
 }
 
 class _ThirdPageState extends State<ThirdFillPage> {
@@ -24,6 +31,8 @@ class _ThirdPageState extends State<ThirdFillPage> {
   int indiceObjetoActual = 0;
 
   final Map<int, String> respuestasCorrectas = {};
+
+  final SalasService salasService = SalasService();
 
   String? respuestaIncorrecta;
   bool respuestaCorrectaMostrada = false;
@@ -58,7 +67,8 @@ class _ThirdPageState extends State<ThirdFillPage> {
 
     if (contenedor == contenedorCorrecto) {
       final int puntosRespuesta = tercerNivel.sumarPuntosRespuestaCorrecta();
-      final int puntosRespuestaIncorrecta = tercerNivel.restarPuntosRespuestaIncorrecta();
+      final int puntosRespuestaIncorrecta = tercerNivel
+          .restarPuntosRespuestaIncorrecta();
 
       widget.datosPartida.puntos += puntosRespuesta;
 
@@ -70,14 +80,25 @@ class _ThirdPageState extends State<ThirdFillPage> {
         puntosPerdidosActuales = puntosRespuestaIncorrecta;
       });
 
-      Future.delayed(const Duration(milliseconds: 1000), () {
+      Future.delayed(const Duration(milliseconds: 1000), () async {
         if (!mounted) return;
 
         final int siguienteIndice = indiceObjetoActual + 1;
 
+
         if (siguienteIndice >= objetos.length) {
+          final tiempoSegundos = widget.datosPartida.cronometro.elapsed.inSeconds;
           widget.datosPartida.cronometro.stop();
-          context.go('/mygame', extra: widget.datosPartida);
+          await salasService.guardarResultado(
+            salaId: widget.salaId,
+            puntos: widget.datosPartida.puntos < 0
+                ? 0
+                : widget.datosPartida.puntos,
+            tiempoSegundos: tiempoSegundos,
+            intentos: widget.datosPartida.intentos,
+          );
+          
+          _irAClasificacion();
           return;
         }
 
@@ -100,6 +121,17 @@ class _ThirdPageState extends State<ThirdFillPage> {
         puntosPerdidosActuales = puntosPerdidos;
       });
     }
+  }
+
+  void _irAClasificacion(){
+    context.go(
+            '/clasificacion',
+            extra: {
+              'salaId': widget.salaId,
+              'esAnfitrion': false,
+              'datosPartida': widget.datosPartida,
+            },
+          );
   }
 
   // TARJETA DEL OBJETO Y FRASE ACTUAL

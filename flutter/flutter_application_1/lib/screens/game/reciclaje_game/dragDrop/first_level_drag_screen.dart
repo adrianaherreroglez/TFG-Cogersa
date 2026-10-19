@@ -89,7 +89,7 @@ class _FirstPageState extends State<FirstPage> {
     } else {
       datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
 
-      setState(() {
+      setState(() { 
         objetoVisible = true;
       });
     }
