@@ -32,7 +32,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
   bool _cargando = true;
   bool _iniciando = false;
   bool _navegando = false;
- 
+
   String? _error;
   String _estado = 'esperando';
   String _codigo = '';
@@ -163,7 +163,11 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
     context.go(
       widget.rutaJuego,
-      extra: {'salaId': widget.salaId, 'datosPartida': datosPartida},
+      extra: {
+        'salaId': widget.salaId,
+        'esAnfitrion': _esAnfitrion,
+        'datosPartida': datosPartida,
+      },
     );
   }
 

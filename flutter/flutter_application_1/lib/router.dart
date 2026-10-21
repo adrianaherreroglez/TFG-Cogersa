@@ -1,5 +1,6 @@
 // Clase que contiene todas las redirecciones de la aplicación
 
+import 'package:flutter_application_1/screens/game/cartas/juego_cartas.dart';
 import 'package:flutter_application_1/screens/game/codeGame/code_page.dart';
 import 'package:flutter_application_1/screens/game/codeGame/list_players_game.dart';
 import 'package:flutter_application_1/screens/results/clasificacion_page.dart';
@@ -80,6 +81,22 @@ final GoRouter router = GoRouter(
       },
     ),
 
+    // ----------------------------
+    // JUEGO DE CARTAS
+    // ----------------------------
+    GoRoute(
+      path: '/juegoCartas',
+      builder: (context, state) {
+        final datos = state.extra as Map<String, dynamic>;
+
+        return JuegoCartas(
+          salaId: datos['salaId'] as int,
+          esAnfitrion: datos['esAnfitrion'] as bool,
+          datosPartida: datos['datosPartida'] as DatosPartida?,
+        );
+      },
+    ),
+
     // ------------------------------
     // RECICLAJE - DRAG & DROP
     // ------------------------------
@@ -122,7 +139,6 @@ final GoRouter router = GoRouter(
     // ----------------------------
     // RECICLAJE - FILL IN THE GAPS
     // ----------------------------
-
     GoRoute(
       path: '/fillGaps/first',
       builder: (context, state) {
@@ -162,7 +178,6 @@ final GoRouter router = GoRouter(
     // --------------------------
     // PUNTO LIMPIO - DRAG & DROP
     // --------------------------
-
     GoRoute(
       path: '/puntolimpio/firstlevel',
       builder: (context, state) {
@@ -190,7 +205,6 @@ final GoRouter router = GoRouter(
     // -------------------------------
     // PUNTO LIMPIO - FILL IN THE GAPS
     // -------------------------------
-
     GoRoute(
       path: '/puntolimpio/fillGaps/firstlevel',
       builder: (context, state) {

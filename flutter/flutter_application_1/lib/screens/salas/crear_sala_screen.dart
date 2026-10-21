@@ -99,6 +99,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       2: '/fillGaps/first',
       3: '/puntolimpio/firstlevel',
       4: '/puntolimpio/fillGaps/firstlevel', 
+      5: '/juegoCartas', 
     };
 
     final rutaJuego = rutasJuegos[juegoSeleccionado];
@@ -140,8 +141,6 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
             Expanded(
               child: Stack(
                 children: [
-                  // Contenido desplazable.
-                  // El formulario permanece centrado.
                   Positioned.fill(
                     child: SingleChildScrollView(
                       controller: _scrollController,
@@ -305,6 +304,12 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           value: 4,
                                           child: Text(
                                             'Punto Limpio - Fill in the Gaps',
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 5,
+                                          child: Text(
+                                            'Cartas - Juego de Memoria',
                                           ),
                                         ),
                                       ],

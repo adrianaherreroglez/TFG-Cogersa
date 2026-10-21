@@ -149,3 +149,8 @@ CREATE INDEX IF NOT EXISTS idx_resultados_sala_puntos
 
 CREATE INDEX IF NOT EXISTS idx_resultados_sala_tiempo
     ON resultados_partida (sala_id, tiempo_segundos ASC);
+
+-- Insertar nuevo juego de cartas
+INSERT INTO juegos (nombre, tipo)
+VALUES
+    ('Cartas', 'Juego de Memoria');

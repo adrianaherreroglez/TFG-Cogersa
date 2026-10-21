@@ -111,6 +111,22 @@ class GameService {
     }
   }
 
+  Color obtenerColorContenedor(String imagen) {
+    if (imagen.contains('/amarillo/')) {
+      return const Color(0xFFFFE082);
+    } else if (imagen.contains('/azul/')) {
+      return const Color(0xFF90CAF9);
+    } else if (imagen.contains('/gris/')) {
+      return const Color(0xFFBDBDBD);
+    } else if (imagen.contains('/marron/')) {
+      return const Color(0xFFD7B899);
+    } else if (imagen.contains('/verde/')) {
+      return const Color(0xFFA5D6A7);
+    }
+
+    return const Color(0xFFD8EDD5);
+  }
+
   List<Map<String, String>> getObjetosPrimerNivel() {
     return [
       {

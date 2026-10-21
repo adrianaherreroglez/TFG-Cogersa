@@ -92,6 +92,16 @@ class _ListGameState extends State<ListGame> {
                             context.go('/code',extra: '/puntolimpio/fillGaps/firstlevel');
                           },
                         ),
+
+                        GameCard(
+                          image: 'assets/icons/app/juegos-de-cartas.png',
+                          title: 'CARTAS',
+                          gameType: 'Juego de Memoria',
+                          onTap: () {
+                            context.go('/code', extra: '/juegoCartas');
+                          },
+                        ),
+
                       ],
                     ),
                   ],
