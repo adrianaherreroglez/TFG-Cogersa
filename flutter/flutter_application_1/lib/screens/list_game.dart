@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,14 @@ class ListGame extends StatefulWidget {
 }
 
 class _ListGameState extends State<ListGame> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,92 +30,148 @@ class _ListGameState extends State<ListGame> {
           const NavBar(),
 
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
-                  vertical: 45,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '¿A qué contenedor lo tirarías?',
-                      style: GoogleFonts.quicksand(
-                        fontSize: 38,
-                        fontWeight: FontWeight.w800,
-                        color: const Color(0xFF298133),
-                        height: 1.1,
+            child: Stack(
+              children: [
+                // Contenido desplazable.
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 50,
+                        right: 8,
+                        top: 45,
+                        bottom: 45,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Juegos',
+                            style: GoogleFonts.quicksand(
+                              fontSize: 38,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF298133),
+                              height: 1.1,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Text(
+                            '¡Elige un juego y demuestra cuánto sabes reciclar!',
+                            style: GoogleFonts.quicksand(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF5D7A61),
+                            ),
+                          ),
+
+                          const SizedBox(height: 35),
+
+                          Wrap(
+                            spacing: 20,
+                            runSpacing: 25,
+                            children: [
+                              GameCard(
+                                image: 'assets/icons/app/reciclaje.png',
+                                title: 'RECICLAJE',
+                                gameType: 'Drag & Drop',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra: '/first',
+                                  );
+                                },
+                              ),
+
+                              GameCard(
+                                image: 'assets/icons/app/reciclaje.png',
+                                title: 'RECICLAJE',
+                                gameType: 'Fill in the Gaps',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra: '/fillGaps/first',
+                                  );
+                                },
+                              ),
+
+                              GameCard(
+                                image: 'assets/icons/app/punto-limpio.png',
+                                title: 'PUNTO LIMPIO',
+                                gameType: 'Drag & Drop',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra: '/puntolimpio/firstlevel',
+                                  );
+                                },
+                              ),
+
+                              GameCard(
+                                image: 'assets/icons/app/punto-limpio.png',
+                                title: 'PUNTO LIMPIO',
+                                gameType: 'Fill in the Gaps',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra:
+                                        '/puntolimpio/fillGaps/firstlevel',
+                                  );
+                                },
+                              ),
+
+                              GameCard(
+                                image:
+                                    'assets/icons/app/juegos-de-cartas.png',
+                                title: 'CARTAS',
+                                gameType: 'Juego de Memoria',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra: '/juegoCartas',
+                                  );
+                                },
+                              ),
+
+                              GameCard(
+                                image: 'assets/icons/app/cuestionario.png',
+                                title: 'CUESTIONARIO',
+                                gameType: 'Test sobre Reciclaje',
+                                onTap: () {
+                                  context.go(
+                                    '/code',
+                                    extra: '/juegoTest',
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      '¡Elige un juego y demuestra cuánto sabes reciclar!',
-                      style: GoogleFonts.quicksand(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF5D7A61),
-                      ),
-                    ),
-
-                    const SizedBox(height: 35),
-
-                    Wrap(
-                      spacing: 30,
-                      runSpacing: 30,
-                      children: [
-                        GameCard(
-                          image: 'assets/icons/app/reciclaje.png',
-                          title: 'RECICLAJE',
-                          gameType: 'Drag & Drop',
-                          onTap: () {
-                            context.go('/code', extra: '/first');
-                          },
-                        ),
-
-                        GameCard(
-                          image: 'assets/icons/app/reciclaje.png',
-                          title: 'RECICLAJE',
-                          gameType: 'Fill in the Gaps',
-                          onTap: () {
-                            context.go('/code', extra: '/fillGaps/first');
-                          },
-                        ),
-
-                        GameCard(
-                          image: 'assets/icons/app/punto-limpio.png',
-                          title: 'PUNTO LIMPIO',
-                          gameType: 'Drag & Drop',
-                          onTap: () {
-                            context.go('/code', extra: '/puntolimpio/firstlevel');
-                          },
-                        ),
-
-                        GameCard(
-                          image: 'assets/icons/app/punto-limpio.png',
-                          title: 'PUNTO LIMPIO',
-                          gameType: 'Fill in the Gaps',
-                          onTap: () {
-                            context.go('/code',extra: '/puntolimpio/fillGaps/firstlevel');
-                          },
-                        ),
-
-                        GameCard(
-                          image: 'assets/icons/app/juegos-de-cartas.png',
-                          title: 'CARTAS',
-                          gameType: 'Juego de Memoria',
-                          onTap: () {
-                            context.go('/code', extra: '/juegoCartas');
-                          },
-                        ),
-
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+
+                // Barra de desplazamiento en el extremo derecho.
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: SizedBox(
+                    width: 14,
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      interactive: true,
+                      thickness: 6,
+                      radius: const Radius.circular(10),
+                      child: const SizedBox.expand(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -154,13 +219,20 @@ class _GameCardState extends State<GameCard> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          width: 230,
+          width: 260,
           height: 260,
-          transform: Matrix4.translationValues(0, isHovered ? -6 : 0, 0),
+          transform: Matrix4.translationValues(
+            0,
+            isHovered ? -6 : 0,
+            0,
+          ),
           decoration: BoxDecoration(
             color: const Color(0xFFE8F5E9),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFD8EDD5), width: 1.5),
+            border: Border.all(
+              color: const Color(0xFFD8EDD5),
+              width: 1.5,
+            ),
             boxShadow: isHovered
                 ? [
                     BoxShadow(
@@ -178,7 +250,10 @@ class _GameCardState extends State<GameCard> {
                   ],
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 18,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

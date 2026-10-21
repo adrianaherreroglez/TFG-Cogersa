@@ -3,6 +3,7 @@
 import 'package:flutter_application_1/screens/game/cartas/juego_cartas.dart';
 import 'package:flutter_application_1/screens/game/codeGame/code_page.dart';
 import 'package:flutter_application_1/screens/game/codeGame/list_players_game.dart';
+import 'package:flutter_application_1/screens/game/test/juego_test.dart';
 import 'package:flutter_application_1/screens/results/clasificacion_page.dart';
 
 import 'screens/amigos/chat_screen.dart';
@@ -90,6 +91,22 @@ final GoRouter router = GoRouter(
         final datos = state.extra as Map<String, dynamic>;
 
         return JuegoCartas(
+          salaId: datos['salaId'] as int,
+          esAnfitrion: datos['esAnfitrion'] as bool,
+          datosPartida: datos['datosPartida'] as DatosPartida?,
+        );
+      },
+    ),
+
+    // ----------------------------
+    // TEST SOBRE RECICLAJE
+    // ----------------------------
+    GoRoute(
+      path: '/juegoTest',
+      builder: (context, state) {
+        final datos = state.extra as Map<String, dynamic>;
+
+        return JuegoTest(
           salaId: datos['salaId'] as int,
           esAnfitrion: datos['esAnfitrion'] as bool,
           datosPartida: datos['datosPartida'] as DatosPartida?,

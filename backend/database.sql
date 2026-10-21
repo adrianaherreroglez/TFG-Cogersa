@@ -154,3 +154,8 @@ CREATE INDEX IF NOT EXISTS idx_resultados_sala_tiempo
 INSERT INTO juegos (nombre, tipo)
 VALUES
     ('Cartas', 'Juego de Memoria');
+
+-- Insertar nuevo juego de test
+INSERT INTO juegos (nombre, tipo)
+VALUES
+    ('Cuestionarios', 'Test sobre Reciclaje');

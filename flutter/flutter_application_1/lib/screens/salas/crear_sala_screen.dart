@@ -100,6 +100,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       3: '/puntolimpio/firstlevel',
       4: '/puntolimpio/fillGaps/firstlevel', 
       5: '/juegoCartas', 
+      6: '/juegoTest', 
     };
 
     final rutaJuego = rutasJuegos[juegoSeleccionado];
@@ -310,6 +311,12 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           value: 5,
                                           child: Text(
                                             'Cartas - Juego de Memoria',
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 6,
+                                          child: Text(
+                                            'Cuestionarios - Test sobre Reciclaje',
                                           ),
                                         ),
                                       ],
