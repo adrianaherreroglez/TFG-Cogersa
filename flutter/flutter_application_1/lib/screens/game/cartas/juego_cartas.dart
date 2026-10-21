@@ -4,7 +4,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
 import 'package:flutter_application_1/screens/game/service/game_service.dart';
+import 'package:flutter_application_1/screens/game/service/nivel_juego_cartas.dart';
+import 'package:flutter_application_1/services/salas_service.dart';
 import 'package:flutter_application_1/widgets/nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class JuegoCartas extends StatefulWidget {
   final int salaId;
@@ -32,11 +36,14 @@ class _Carta {
 
 class _JuegoCartasState extends State<JuegoCartas> {
   static const Color fondo = Color(0xFFF6FBF5);
-  // static const Color verdePastel = Color(0xFFB9E4D0);
   static const Color verdeOscuro = Color(0xFF347653);
   static const Color crema = Color(0xFFFFF8E7);
 
   final GameService gameService = GameService();
+  final NivelJuegoCartas _nivel = NivelJuegoCartas();
+
+  final SalasService salasService = SalasService();
+  bool _guardandoResultado = false;
 
   final List<String> _imagenes = [
     'assets/icons/objetos/amarillo/botella-de-plastico.png',
@@ -54,13 +61,18 @@ class _JuegoCartasState extends State<JuegoCartas> {
   late List<_Carta> _cartas;
 
   int _parejasEncontradas = 0;
-  int _movimientos = 0;
+  int _intentos = 0;
+  int _puntos = 0;
+  int _puntosFinales = 0;
+
   bool _bloqueado = false;
+  bool _datosPartidaTerminada = false;
 
   @override
   void initState() {
     super.initState();
     _prepararCartas();
+    widget.datosPartida?.cronometro.start();
   }
 
   void _prepararCartas() {
@@ -70,17 +82,73 @@ class _JuegoCartasState extends State<JuegoCartas> {
     _cartas = lista.map((imagen) => _Carta(imagen: imagen)).toList();
   }
 
-  void _reiniciarJuego() {
+  // Bonus por completar el juego con pocos intentos.
+  int _calcularBonusIntentos(int intentos) {
+    if (intentos <= 12) return 100;
+    if (intentos <= 16) return 60;
+    if (intentos <= 20) return 30;
+    return 0;
+  }
+
+  int _calcularPuntuacionFinal() {
+    return _puntos +
+        _calcularBonusIntentos(_intentos) +
+        50; // Bonus por terminar el juego.
+  }
+
+  Future<void> _guardarYMostrarClasificacion(BuildContext dialogContext) async {
+    if (_guardandoResultado) return;
+
     setState(() {
-      _prepararCartas();
-      _parejasEncontradas = 0;
-      _movimientos = 0;
-      _bloqueado = false;
+      _guardandoResultado = true;
     });
+
+    try {
+      final partida = widget.datosPartida;
+      final tiempoSegundos = partida?.cronometro.elapsed.inSeconds ?? 0;
+
+      if (partida != null) {
+        partida.puntos = _puntosFinales;
+        partida.intentos = _intentos;
+      }
+
+      await salasService.guardarResultado(
+        salaId: widget.salaId,
+        puntos: _puntosFinales < 0 ? 0 : _puntosFinales,
+        tiempoSegundos: tiempoSegundos,
+        intentos: _intentos,
+      );
+
+      if (!mounted) return;
+
+      Navigator.of(dialogContext).pop();
+
+      context.go(
+        '/clasificacion',
+        extra: {
+          'salaId': widget.salaId,
+          'esAnfitrion': widget.esAnfitrion,
+          'datosPartida': partida,
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo guardar la puntuación: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _guardandoResultado = false;
+        });
+      }
+    }
   }
 
   Future<void> _seleccionarCarta(int indice) async {
     if (_bloqueado ||
+        _datosPartidaTerminada ||
         _cartas[indice].descubierta ||
         _cartas[indice].encontrada) {
       return;
@@ -104,7 +172,7 @@ class _JuegoCartasState extends State<JuegoCartas> {
     final segunda = descubiertas[1];
 
     setState(() {
-      _movimientos++;
+      _intentos++;
       _bloqueado = true;
     });
 
@@ -116,11 +184,21 @@ class _JuegoCartasState extends State<JuegoCartas> {
       setState(() {
         _cartas[primera].encontrada = true;
         _cartas[segunda].encontrada = true;
+
         _parejasEncontradas++;
+
+        // Puntos por encontrar una pareja correcta.
+        _puntos += _nivel.sumarPuntosRespuestaCorrecta();
+
         _bloqueado = false;
       });
 
       if (_parejasEncontradas == _imagenes.length) {
+        _datosPartidaTerminada = true;
+        _puntosFinales = _calcularPuntuacionFinal();
+
+        widget.datosPartida?.cronometro.stop();
+
         _mostrarVictoria();
       }
     } else {
@@ -131,6 +209,8 @@ class _JuegoCartasState extends State<JuegoCartas> {
       setState(() {
         _cartas[primera].descubierta = false;
         _cartas[segunda].descubierta = false;
+
+        // Los errores no restan puntos.
         _bloqueado = false;
       });
     }
@@ -140,7 +220,7 @@ class _JuegoCartasState extends State<JuegoCartas> {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: fondo,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         content: Column(
@@ -152,10 +232,10 @@ class _JuegoCartasState extends State<JuegoCartas> {
               color: Color(0xFFFFC857),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               '¡Lo has conseguido!',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.quicksand(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: verdeOscuro,
@@ -163,24 +243,88 @@ class _JuegoCartasState extends State<JuegoCartas> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Has encontrado todas las parejas en $_movimientos movimientos.',
+              'Has encontrado todas las parejas en $_intentos intentos.',
               textAlign: TextAlign.center,
+              style: GoogleFonts.quicksand(fontSize: 14),
             ),
-            const SizedBox(height: 18),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: verdeOscuro,
-                foregroundColor: Colors.white,
+            const SizedBox(height: 16),
+
+            // Desglose de puntuación.
+            _filaPuntuacion('Puntos por parejas', '$_puntos'),
+            const SizedBox(height: 6),
+            _filaPuntuacion(
+              'Bonus por intentos',
+              '+${_calcularBonusIntentos(_intentos)}',
+            ),
+            const SizedBox(height: 6),
+            _filaPuntuacion('Bonus por completar', '+50'),
+            const Divider(height: 24),
+            Text(
+              'PUNTUACIÓN FINAL',
+              style: GoogleFonts.quicksand(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: verdeOscuro,
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _reiniciarJuego();
-              },
-              child: const Text('Volver a jugar'), // cambiar a ir a clasificacion
+            ),
+            Text(
+              '$_puntosFinales puntos',
+              style: GoogleFonts.quicksand(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: verdeOscuro,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: verdeOscuro,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: _guardandoResultado
+                    ? null
+                    : () => _guardarYMostrarClasificacion(dialogContext),
+                icon: const Icon(Icons.emoji_events_rounded),
+                label: Text(
+                  'Ver clasificación',
+                  style: GoogleFonts.quicksand(fontWeight: FontWeight.w700),
+                ),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _filaPuntuacion(String titulo, String valor) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            titulo,
+            style: GoogleFonts.quicksand(fontSize: 13, color: Colors.black87),
+          ),
+        ),
+        Text(
+          valor,
+          style: GoogleFonts.quicksand(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: verdeOscuro,
+          ),
+        ),
+      ],
     );
   }
 
@@ -192,26 +336,60 @@ class _JuegoCartasState extends State<JuegoCartas> {
         child: Column(
           children: [
             const NavBar(),
-
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _indicador(
-                    Icons.touch_app_rounded,
-                    'Movimientos',
-                    '$_movimientos',
+                  Expanded(
+                    flex: 2,
+                    child: _indicador(
+                      Icons.touch_app_rounded,
+                      'Intentos',
+                      '$_intentos',
+                    ),
                   ),
-                  const Spacer(),
-                  _indicador(
-                    Icons.favorite_rounded,
-                    'Parejas',
-                    '$_parejasEncontradas/${_imagenes.length}',
+                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '¡ENCUENTRA LAS PAREJAS!',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.quicksand(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF298133),
+                            height: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'Une las cartas iguales y descubre el color de cada residuo.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.quicksand(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFF5D7A61),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 2,
+                    child: _indicador(
+                      Icons.stars_rounded,
+                      'Puntos',
+                      '$_puntos',
+                    ),
                   ),
                 ],
               ),
             ),
-
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -221,18 +399,15 @@ class _JuegoCartasState extends State<JuegoCartas> {
                   const margen = 12.0;
 
                   final anchoDisponible = constraints.maxWidth - margen * 2;
-
                   final altoDisponible = constraints.maxHeight - margen * 2;
 
                   final anchoCarta =
                       (anchoDisponible - separacion * (columnas - 1)) /
                       columnas;
-
                   final altoCarta =
                       (altoDisponible - separacion * (filas - 1)) / filas;
 
                   final anchoFinal = min(anchoCarta, altoCarta * 0.9);
-
                   final altoFinal = anchoFinal / 0.9;
 
                   return Center(
@@ -278,7 +453,6 @@ class _JuegoCartasState extends State<JuegoCartas> {
                 },
               ),
             ),
-
             const SizedBox(height: 8),
           ],
         ),

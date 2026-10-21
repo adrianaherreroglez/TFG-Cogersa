@@ -202,7 +202,7 @@ class _MyGameState extends State<MyGame> {
 
           const SizedBox(height: 20),
 
-          // VOLVER A JUEGOS: AL FINAL Y CENTRADO
+          // VOLVER A JUEGOS
           Center(
             child: TextButton.icon(
               onPressed: () {
