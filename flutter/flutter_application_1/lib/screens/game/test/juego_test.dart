@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -97,11 +96,11 @@ class _JuegoTestState extends State<JuegoTest> {
       respuestaCorrecta: 1,
     ),
     PreguntaTest(
-      pregunta: '¿Qué significa reutilizar un objeto?',
+      pregunta: '¿A dónde llevamos un juguete roto?',
       opciones: [
-        'Usarlo una sola vez',
-        'Tirarlo inmediatamente',
-        'Volver a utilizarlo',
+        'Al contenedor amarillo',
+        'Al contenedor verde',
+        'A un punto limpio',
       ],
       respuestaCorrecta: 2,
     ),
@@ -115,22 +114,18 @@ class _JuegoTestState extends State<JuegoTest> {
       respuestaCorrecta: 0,
     ),
     PreguntaTest(
-      pregunta: '¿Qué podemos hacer para generar menos residuos?',
+      pregunta: '¿Dónde podemos reciclar una bombilla?',
       opciones: [
-        'Comprar productos con mucho embalaje',
-        'Usar una botella reutilizable',
-        'Utilizar siempre bolsas desechables',
+        'No se puede reciclar una bombilla',
+        'En su correspondiente contenedor del punto limpio',
+        'En el contenedor gris',
       ],
       respuestaCorrecta: 1,
     ),
     PreguntaTest(
-      pregunta: '¿Dónde se tira una caja de cartón limpia?',
-      opciones: [
-        'Al contenedor verde',
-        'Al contenedor marrón',
-        'Al contenedor azul',
-      ],
-      respuestaCorrecta: 2,
+      pregunta: '¿Qué objeto podemos reciclar en el contenedor gris?',
+      opciones: ['Una revista', 'Un plato de cerámica', 'Un trozo de plástico'],
+      respuestaCorrecta: 1,
     ),
     PreguntaTest(
       pregunta: '¿Qué debemos hacer con un aparato electrónico viejo?',
@@ -152,8 +147,6 @@ class _JuegoTestState extends State<JuegoTest> {
 
   bool _procesando = false;
   bool _terminado = false;
-
-  int get _preguntasCompletadas => _indicePregunta;
 
   @override
   void initState() {
@@ -230,8 +223,7 @@ class _JuegoTestState extends State<JuegoTest> {
 
       partida?.cronometro.stop();
 
-      final tiempoSegundos =
-          partida?.cronometro.elapsed.inSeconds ?? 0;
+      final tiempoSegundos = partida?.cronometro.elapsed.inSeconds ?? 0;
 
       if (partida != null) {
         partida.puntos = _puntos;
@@ -259,9 +251,7 @@ class _JuegoTestState extends State<JuegoTest> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('No se pudo guardar el resultado: $e'),
-        ),
+        SnackBar(content: Text('No se pudo guardar el resultado: $e')),
       );
     } finally {
       if (mounted) {
@@ -281,9 +271,7 @@ class _JuegoTestState extends State<JuegoTest> {
           children: [
             const NavBar(),
             Expanded(
-              child: _terminado
-                  ? _pantallaFinal()
-                  : _pantallaPregunta(),
+              child: _terminado ? _pantallaFinal() : _pantallaPregunta(),
             ),
           ],
         ),
@@ -295,165 +283,98 @@ class _JuegoTestState extends State<JuegoTest> {
     final pregunta = _preguntas[_indicePregunta];
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 24,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 850),
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                '¡PON A PRUEBA TUS CONOCIMIENTOS!',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.quicksand(
-                  fontSize: 27,
-                  fontWeight: FontWeight.w800,
-                  color: verde,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              Text(
-                'Responde las preguntas y demuestra cuánto sabes reciclar.',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.quicksand(
-                  fontSize: 15,
-                  color: const Color(0xFF5D7A61),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Indicadores de puntuación e intentos.
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                alignment: WrapAlignment.center,
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _indicador(
-                    Icons.stars_rounded,
-                    'Puntuación',
-                    '$_puntos puntos',
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: _indicador(
+                        Icons.stars_rounded,
+                        'PUNTOS',
+                        '$_puntos',
+                      ),
+                    ),
                   ),
-                  _indicador(
-                    Icons.replay_rounded,
-                    'Intentos',
-                    '$_fallos fallos',
+
+                  const SizedBox(width: 20),
+
+                  Expanded(
+                    flex: 6,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 35,
+                      ),
+                      decoration: BoxDecoration(
+                        color: verdeClaro,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFFD8EDD5),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const Icon(
+                            Icons.recycling_rounded,
+                            size: 48,
+                            color: verde,
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          Text(
+                            pregunta.pregunta,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.quicksand(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w800,
+                              color: verdeOscuro,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 20),
+
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: _indicador(
+                        Icons.replay_rounded,
+                        'INTENTOS',
+                        '$_fallos',
+                      ),
+                    ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 25),
-
-              // Progreso del test.
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: verdeOscuro.withValues(alpha: 0.07),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Pregunta ${_indicePregunta + 1} de ${_preguntas.length}',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: verdeOscuro,
-                          ),
-                        ),
-                        Text(
-                          '$_preguntasCompletadas/${_preguntas.length} completadas',
-                          style: GoogleFonts.quicksand(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF5D7A61),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value:
-                            _preguntasCompletadas / _preguntas.length,
-                        minHeight: 10,
-                        backgroundColor: const Color(0xFFD8EDD5),
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(verde),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              // Pregunta actual.
-              Container(
-                padding: const EdgeInsets.all(28),
-                decoration: BoxDecoration(
-                  color: verdeClaro,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFD8EDD5),
-                    width: 1.5,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.recycling_rounded,
-                      size: 48,
-                      color: verde,
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    Text(
-                      pregunta.pregunta,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.quicksand(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: verdeOscuro,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 22),
+              const SizedBox(height: 30),
 
               Text(
                 'ELIGE UNA RESPUESTA',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.quicksand(
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1,
                   color: verdeOscuro,
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 18),
 
               ...List.generate(
                 pregunta.opciones.length,
@@ -472,18 +393,11 @@ class _JuegoTestState extends State<JuegoTest> {
     );
   }
 
-  // Indicador reutilizable para puntuación e intentos.
-  Widget _indicador(
-    IconData icono,
-    String titulo,
-    String valor,
-  ) {
+  // Indicador de puntuación e intentos
+  Widget _indicador(IconData icono, String titulo, String valor) {
     return Container(
       constraints: const BoxConstraints(minWidth: 135),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -505,10 +419,7 @@ class _JuegoTestState extends State<JuegoTest> {
             children: [
               Text(
                 titulo,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.black54,
-                ),
+                style: const TextStyle(fontSize: 11, color: Colors.black54),
               ),
               Text(
                 valor,
@@ -525,10 +436,7 @@ class _JuegoTestState extends State<JuegoTest> {
     );
   }
 
-  Widget _opcionRespuesta({
-    required String texto,
-    required int indice,
-  }) {
+  Widget _opcionRespuesta({required String texto, required int indice}) {
     final esIncorrecta = _opcionIncorrecta == indice;
     final esCorrecta = _opcionCorrecta == indice;
 
@@ -551,23 +459,15 @@ class _JuegoTestState extends State<JuegoTest> {
       decoration: BoxDecoration(
         color: colorFondo,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: colorBorde,
-          width: 2,
-        ),
+        border: Border.all(color: colorBorde, width: 2),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(18),
-          onTap: _procesando
-              ? null
-              : () => _responder(indice),
+          onTap: _procesando ? null : () => _responder(indice),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 18,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: Row(
               children: [
                 Container(
@@ -601,17 +501,10 @@ class _JuegoTestState extends State<JuegoTest> {
                   ),
                 ),
 
-                if (esIncorrecta)
-                  const Icon(
-                    Icons.close_rounded,
-                    color: rojo,
-                  ),
+                if (esIncorrecta) const Icon(Icons.close_rounded, color: rojo),
 
                 if (esCorrecta)
-                  const Icon(
-                    Icons.check_circle_rounded,
-                    color: verde,
-                  ),
+                  const Icon(Icons.check_circle_rounded, color: verde),
               ],
             ),
           ),
@@ -711,23 +604,17 @@ class _JuegoTestState extends State<JuegoTest> {
                               color: Colors.white,
                             ),
                           )
-                        : const Icon(
-                            Icons.emoji_events_rounded,
-                          ),
+                        : const Icon(Icons.emoji_events_rounded),
                     label: Text(
                       _guardandoResultado
                           ? 'Guardando resultado...'
                           : 'Ver clasificación',
-                      style: GoogleFonts.quicksand(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: GoogleFonts.quicksand(fontWeight: FontWeight.w700),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: verdeOscuro,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
