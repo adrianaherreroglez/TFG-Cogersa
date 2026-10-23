@@ -121,7 +121,9 @@ class _JuegoCartasState extends State<JuegoCartas> {
 
       if (!mounted) return;
 
-      Navigator.of(dialogContext).pop();
+      if (dialogContext.mounted) {
+        Navigator.of(dialogContext).pop();
+      }
 
       context.go(
         '/clasificacion',

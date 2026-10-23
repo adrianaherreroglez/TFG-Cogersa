@@ -38,7 +38,6 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
   String _codigo = '';
 
   bool _esAnfitrion = false;
-  int _juegoId = 0;
   int _maxJugadores = 10;
 
   List<Map<String, dynamic>> _miembros = [];
@@ -88,7 +87,6 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
       setState(() {
         _codigo = sala['codigo']?.toString() ?? '';
         _estado = estado;
-        _juegoId = int.tryParse(sala['juego_id']?.toString() ?? '') ?? 0;
 
         _maxJugadores = maxJugadores ?? _maxJugadores;
         _esAnfitrion = data['es_anfitrion'] == true;
