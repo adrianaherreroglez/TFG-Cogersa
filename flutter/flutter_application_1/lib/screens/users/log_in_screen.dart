@@ -1,19 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
 
   @override
-  State<LogInPage> createState() => _LoginPageState();
+  State<LogInPage> createState() => _LogInPageState();
 }
 
-class _LoginPageState extends State<LogInPage> {
+class _LogInPageState extends State<LogInPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -33,7 +30,7 @@ class _LoginPageState extends State<LogInPage> {
     final password = passwordController.text;
 
     if (username.isEmpty || password.isEmpty) {
-      _showMessage('Introduce usuario y contraseña');
+      _showMessage('Rellena todos los campos');
       return;
     }
 
@@ -50,14 +47,12 @@ class _LoginPageState extends State<LogInPage> {
       if (!mounted) return;
 
       context.go('/listgame');
-
     } catch (e) {
       if (!mounted) return;
 
       _showMessage(
         e.toString().replaceFirst('Exception: ', ''),
       );
-
     } finally {
       if (mounted) {
         setState(() {
@@ -69,41 +64,37 @@ class _LoginPageState extends State<LogInPage> {
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
+      SnackBar(content: Text(message)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeGreen = const Color(0xFF298133);
-    final lightGreen = const Color(0xFFE8F5E9);
+    const themeGreen = Color(0xFF298133);
+    const lightGreen = Color(0xFFE8F5E9);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFDF4),
-
       body: SafeArea(
-        child: Center(
+        child: SizedBox(
+          width: double.infinity,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
               horizontal: 24,
               vertical: 30,
             ),
-
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-
               children: [
                 Container(
                   width: 100,
                   height: 100,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.eco_rounded,
                     size: 60,
                     color: themeGreen,
@@ -208,7 +199,11 @@ class _LoginPageState extends State<LogInPage> {
 
                 TextButton(
                   onPressed: () {
-                    // Más adelante hacemos recuperación de contraseña.
+                    // Sustituye esta ruta por la de recuperación
+                    // de contraseña si ya la tienes implementada.
+                    _showMessage(
+                      'Función de recuperación no disponible',
+                    );
                   },
                   child: Text(
                     'He olvidado mi contraseña',
@@ -239,5 +234,3 @@ class _LoginPageState extends State<LogInPage> {
     );
   }
 }
-
-
