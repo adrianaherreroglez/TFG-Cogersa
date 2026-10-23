@@ -7,7 +7,7 @@ import '../models/friend.dart';
 
 class FriendsService {
   static const String baseUrl =
-      'http://localhost:3000';
+      'https://ecokids-gt1y.onrender.com';
 
   final FlutterSecureStorage _storage =
       const FlutterSecureStorage();

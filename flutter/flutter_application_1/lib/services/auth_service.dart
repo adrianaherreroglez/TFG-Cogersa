@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class AuthService {
   // URL
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://ecokids-gt1y.onrender.com';
 
   // Si ejecutas Flutter Web o usas un dispositivo físico,
   // esta dirección puede ser diferente.
