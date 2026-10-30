@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 
+import 'package:flutter_application_1/app_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
   // URL
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = AppConfig.baseUrl;
+  
 
   // Si ejecutas Flutter Web o usas un dispositivo físico,
   // esta dirección puede ser diferente.

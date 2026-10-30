@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_application_1/app_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -7,7 +8,7 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 import '../models/message.dart';
 
 class MessagesService {
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = AppConfig.baseUrl;
 
   final FlutterSecureStorage _storage =
       const FlutterSecureStorage();
