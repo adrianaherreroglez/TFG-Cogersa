@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/friend.dart';
 
 class FriendsService {
-  static const String baseUrl =
-      'https://ecokids-gt1y.onrender.com';
+  static const String baseUrl = 'http://localhost:3000';
 
   final FlutterSecureStorage _storage =
       const FlutterSecureStorage();
