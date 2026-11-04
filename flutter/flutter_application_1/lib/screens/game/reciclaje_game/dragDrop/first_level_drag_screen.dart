@@ -363,7 +363,7 @@ class _FirstPageState extends State<FirstPage> {
                                     const SizedBox(height: 30),
                                     _objeto(tamanoObjeto, esMovil),
                                     // Espacio entre el objeto y los contenedores
-                                    const SizedBox(height: 86),
+                                    const SizedBox(height: 102),
                                     _filaContenedores(
                                       anchoContenedor,
                                       separacion,
