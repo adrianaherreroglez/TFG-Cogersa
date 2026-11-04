@@ -86,219 +86,327 @@ class _FirstPageState extends State<FirstPage> {
           extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida},
         );
       }
-    } else { 
+    } else {
       datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
 
-      setState(() { 
+      setState(() {
         objetoVisible = true;
       });
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // WIDGETS DE LA CABECERA
+  // ---------------------------------------------------------------------------
+
+  Widget _chipNivel(bool esMovil) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: esMovil ? 12 : 22,
+        vertical: esMovil ? 7 : 10,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFD8EDD5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.flag_rounded,
+            color: const Color(0xFF298133),
+            size: esMovil ? 18 : 22,
+          ),
+          SizedBox(width: esMovil ? 5 : 8),
+          Text(
+            'NIVEL 1',
+            style: GoogleFonts.quicksand(
+              fontSize: esMovil ? 14 : 18,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF298133),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _chipPuntos(bool esMovil) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: esMovil ? 12 : 22,
+        vertical: esMovil ? 7 : 10,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.star_rounded,
+            color: const Color(0xFFFFB300),
+            size: esMovil ? 20 : 25,
+          ),
+          SizedBox(width: esMovil ? 5 : 7),
+          Text(
+            '${datosPartida.puntos} puntos',
+            style: GoogleFonts.quicksand(
+              fontSize: esMovil ? 14 : 18,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF5D7A61),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _titulo(bool esMovil) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          '¡RECICLA ESTE OBJETO!',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.quicksand(
+            fontSize: esMovil ? 26 : 32,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF298133),
+            height: 1,
+          ),
+        ),
+        SizedBox(height: esMovil ? 4 : 5),
+        Text(
+          'Arrastra el objeto hasta el contenedor correcto',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.quicksand(
+            fontSize: esMovil ? 14 : 15,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF5D7A61),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _cabecera(bool esMovil) {
+    if (esMovil) {
+      // Móvil: nivel y puntos arriba, título debajo
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [_chipNivel(true), _chipPuntos(true)],
+          ),
+          const SizedBox(height: 26),
+          _titulo(true),
+        ],
+      );
+    }
+
+    // Pantalla grande: todo en una fila
+    return SizedBox(
+      height: 70,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _chipNivel(false),
+          const SizedBox(width: 28),
+          Expanded(child: Center(child: _titulo(false))),
+          const SizedBox(width: 28),
+          _chipPuntos(false),
+        ],
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // OBJETO Y CONTENEDORES
+  // ---------------------------------------------------------------------------
+
+  // Objeto con altura fija para que el diseño no "salte" al desaparecer
+  Widget _objeto(double tamano, bool esMovil) {
+    return SizedBox(
+      height: tamano,
+      child: objetoVisible && indiceObjetoActual < objetos.length
+          ? _ObjetoArrastrable(
+              imagen: objetoActual['imagen']!,
+              tamano: tamano,
+              esMovil: esMovil,
+            )
+          : null,
+    );
+  }
+
+  Widget _filaContenedores(double ancho, double separacion) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _ContenedorReciclaje(
+          ancho: ancho,
+          color: const Color(0xFFFFD740),
+          imagen: 'assets/icons/contenedores/basura-amarilla.png',
+          nombre: 'AMARILLO',
+          objetos: objetosAmarillos,
+          gameService: gameService,
+          todosLosObjetos: objetos,
+          onAccept: () {
+            comprobarRespuesta('amarillo');
+          },
+        ),
+
+        SizedBox(width: separacion),
+
+        _ContenedorReciclaje(
+          ancho: ancho,
+          color: const Color(0xFF42A5F5),
+          imagen: 'assets/icons/contenedores/basura-azul.png',
+          nombre: 'AZUL',
+          objetos: objetosAzules,
+          gameService: gameService,
+          todosLosObjetos: objetos,
+          onAccept: () {
+            comprobarRespuesta('azul');
+          },
+        ),
+
+        SizedBox(width: separacion),
+
+        _ContenedorReciclaje(
+          ancho: ancho,
+          color: const Color(0xFF66BB6A),
+          imagen: 'assets/icons/contenedores/basura-verde.png',
+          nombre: 'VERDE',
+          objetos: objetosVerdes,
+          gameService: gameService,
+          todosLosObjetos: objetos,
+          onAccept: () {
+            comprobarRespuesta('verde');
+          },
+        ),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // BUILD
+  // ---------------------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFDF4),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final ancho = constraints.maxWidth;
+            final alto = constraints.maxHeight;
 
-      body: Column(
-        children: [
-          const NavBar(),
+            // Móvil en vertical o en horizontal (poca altura)
+            final esMovil = ancho < 700 || alto < 500;
 
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 10),
+            final paddingH = esMovil ? 14.0 : 45.0;
+            final separacion = esMovil ? 8.0 : 35.0;
 
-              child: Column(
-                children: [
-                  // CABECERA
-                  SizedBox(
-                    height: 70,
+            // Los 3 contenedores deben caber en el ancho de la pantalla
+            // y no ocupar más de ~38 % del alto.
+            final anchoPorPantalla =
+                (ancho - paddingH * 2 - separacion * 2) / 3;
+            final anchoPorAlto = alto * 0.38 * 205 / 245;
+            final anchoContenedor = min(
+              205.0,
+              min(anchoPorPantalla, anchoPorAlto),
+            );
 
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+            final tamanoObjeto = esMovil
+                ? min(ancho * 0.38, alto * 0.2).clamp(80.0, 160.0).toDouble()
+                : 140.0;
+
+            return Column(
+              children: [
+                const NavBar(),
+
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: paddingH,
+                      vertical: 10,
+                    ),
+                    child: Column(
                       children: [
-                        // NIVEL
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 22,
-                            vertical: 10,
-                          ),
+                        // CABECERA
+                        _cabecera(esMovil),
 
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD8EDD5),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.flag_rounded,
-                                color: Color(0xFF298133),
-                                size: 22,
-                              ),
-
-                              const SizedBox(width: 8),
-
-                              Text(
-                                'NIVEL 1',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF298133),
+                        if (esMovil)
+                          // MÓVIL: objeto y contenedores juntos y centrados
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Espacio entre el título y el objeto
+                                    const SizedBox(height: 30),
+                                    _objeto(tamanoObjeto, esMovil),
+                                    // Espacio entre el objeto y los contenedores
+                                    const SizedBox(height: 86),
+                                    _filaContenedores(
+                                      anchoContenedor,
+                                      separacion,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(width: 28),
-
-                        // TÍTULO Y SUBTÍTULO
-                        Expanded(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '¡RECICLA ESTE OBJETO!',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF298133),
-                                    height: 1,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 5),
-
-                                Text(
-                                  'Arrastra el objeto hasta el contenedor correcto',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF5D7A61),
-                                  ),
-                                ),
-                              ],
+                            ),
+                          )
+                        else ...[
+                          // PANTALLA GRANDE: objeto en el centro, contenedores abajo
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child:
+                                  objetoVisible &&
+                                      indiceObjetoActual < objetos.length
+                                  ? _ObjetoArrastrable(
+                                      imagen: objetoActual['imagen']!,
+                                      tamano: tamanoObjeto,
+                                      esMovil: esMovil,
+                                    )
+                                  : const SizedBox(),
                             ),
                           ),
-                        ),
-
-                        const SizedBox(width: 28),
-
-                        // PUNTOS
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 22,
-                            vertical: 10,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: _filaContenedores(
+                              anchoContenedor,
+                              separacion,
+                            ),
                           ),
+                        ],
 
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.star_rounded,
-                                color: Color(0xFFFFB300),
-                                size: 25,
-                              ),
-
-                              const SizedBox(width: 7),
-
-                              Text(
-                                '${datosPartida.puntos} puntos',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF5D7A61),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
-
-                  // OBJETO
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child:
-                          objetoVisible && indiceObjetoActual < objetos.length
-                          ? _ObjetoArrastrable(imagen: objetoActual['imagen']!)
-                          : const SizedBox(),
-                    ),
-                  ),
-
-                  // CONTENEDORES
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _ContenedorReciclaje(
-                        color: const Color(0xFFFFD740),
-                        imagen: 'assets/icons/contenedores/basura-amarilla.png',
-                        nombre: 'AMARILLO',
-                        objetos: objetosAmarillos,
-                        gameService: gameService,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('amarillo');
-                        },
-                      ),
-
-                      const SizedBox(width: 35),
-
-                      _ContenedorReciclaje(
-                        color: const Color(0xFF42A5F5),
-                        imagen: 'assets/icons/contenedores/basura-azul.png',
-                        nombre: 'AZUL',
-                        objetos: objetosAzules,
-                        gameService: gameService,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('azul');
-                        },
-                      ),
-
-                      const SizedBox(width: 35),
-
-                      _ContenedorReciclaje(
-                        color: const Color(0xFF66BB6A),
-                        imagen: 'assets/icons/contenedores/basura-verde.png',
-                        nombre: 'VERDE',
-                        objetos: objetosVerdes,
-                        gameService: gameService,
-                        todosLosObjetos: objetos,
-                        onAccept: () {
-                          comprobarRespuesta('verde');
-                        },
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-          ),
-        ],
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -307,33 +415,46 @@ class _FirstPageState extends State<FirstPage> {
 // OBJETO ARRASTRABLE
 class _ObjetoArrastrable extends StatelessWidget {
   final String imagen;
+  final double tamano;
+  final bool esMovil;
 
-  const _ObjetoArrastrable({required this.imagen});
+  const _ObjetoArrastrable({
+    required this.imagen,
+    required this.tamano,
+    required this.esMovil,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final tamanoFeedback = tamano * 0.72;
+
+    // En móvil el objeto se muestra encima del dedo para que no lo tape.
+    final DragAnchorStrategy estrategia = esMovil
+        ? (draggable, context, position) =>
+              Offset(tamanoFeedback / 2, tamanoFeedback + 10)
+        : childDragAnchorStrategy;
+
     return Draggable<String>(
       data: imagen,
+      dragAnchorStrategy: estrategia,
 
       // Tamaño del objeto cuando lo estamos arrastrando
       feedback: Material(
         color: Colors.transparent,
-
         child: Image.asset(
           imagen,
-          width: 100,
-          height: 100,
+          width: tamanoFeedback,
+          height: tamanoFeedback,
           fit: BoxFit.contain,
         ),
       ),
 
       childWhenDragging: Opacity(
         opacity: 0.2,
-
-        child: _ObjetoVisual(imagen: imagen),
+        child: _ObjetoVisual(imagen: imagen, tamano: tamano),
       ),
 
-      child: _ObjetoVisual(imagen: imagen),
+      child: _ObjetoVisual(imagen: imagen, tamano: tamano),
     );
   }
 }
@@ -341,19 +462,18 @@ class _ObjetoArrastrable extends StatelessWidget {
 // VISUAL DEL OBJETO
 class _ObjetoVisual extends StatelessWidget {
   final String imagen;
+  final double tamano;
 
-  const _ObjetoVisual({required this.imagen});
+  const _ObjetoVisual({required this.imagen, required this.tamano});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 140,
-      height: 140,
-
+      width: tamano,
+      height: tamano,
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
-
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.10),
@@ -362,16 +482,20 @@ class _ObjetoVisual extends StatelessWidget {
           ),
         ],
       ),
-
-      padding: const EdgeInsets.all(32),
-
-      child: Image.asset(imagen, width: 115, height: 115, fit: BoxFit.contain),
+      padding: EdgeInsets.all(tamano * 0.23),
+      child: Image.asset(
+        imagen,
+        width: tamano * 0.82,
+        height: tamano * 0.82,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }
 
 // CONTENEDOR DE RECICLAJE
 class _ContenedorReciclaje extends StatefulWidget {
+  final double ancho;
   final Color color;
   final String imagen;
   final String nombre;
@@ -384,6 +508,7 @@ class _ContenedorReciclaje extends StatefulWidget {
   final VoidCallback onAccept;
 
   const _ContenedorReciclaje({
+    required this.ancho,
     required this.color,
     required this.imagen,
     required this.nombre,
@@ -402,6 +527,13 @@ class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
 
   @override
   Widget build(BuildContext context) {
+    // Todo se calcula a partir del ancho (proporciones del diseño original: 205 px)
+    final ancho = widget.ancho;
+    final alto = ancho * 245 / 205;
+    final tamanoImagen = ancho * 180 / 205;
+    final tamanoObjetoDentro = ancho * 55 / 205;
+    final tamanoTexto = ancho < 150 ? 12.0 : 17.0;
+
     return DragTarget<String>(
       onWillAcceptWithDetails: (details) {
         setState(() {
@@ -436,8 +568,8 @@ class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
 
               transform: Matrix4.translationValues(0, isHovering ? -8 : 0, 0),
 
-              width: 205,
-              height: 245,
+              width: ancho,
+              height: alto,
 
               decoration: BoxDecoration(
                 color: isHovering
@@ -464,20 +596,17 @@ class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
 
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-
                 children: [
                   SizedBox(
-                    width: 180,
-                    height: 180,
-
+                    width: tamanoImagen,
+                    height: tamanoImagen,
                     child: Stack(
                       alignment: Alignment.center,
-
                       children: [
                         Image.asset(
                           widget.imagen,
-                          width: 180,
-                          height: 180,
+                          width: tamanoImagen,
+                          height: tamanoImagen,
                           fit: BoxFit.contain,
                         ),
 
@@ -495,8 +624,8 @@ class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
 
                             return Image.asset(
                               imagenObjeto,
-                              width: 55,
-                              height: 55,
+                              width: tamanoObjetoDentro,
+                              height: tamanoObjetoDentro,
                               fit: BoxFit.contain,
                             );
                           }),
@@ -506,12 +635,15 @@ class _ContenedorReciclajeState extends State<_ContenedorReciclaje> {
 
                   const SizedBox(height: 3),
 
-                  Text(
-                    widget.nombre,
-                    style: GoogleFonts.quicksand(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF298133),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      widget.nombre,
+                      style: GoogleFonts.quicksand(
+                        fontSize: tamanoTexto,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF298133),
+                      ),
                     ),
                   ),
                 ],
