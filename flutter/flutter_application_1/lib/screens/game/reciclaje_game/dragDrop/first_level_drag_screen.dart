@@ -331,7 +331,7 @@ class _FirstPageState extends State<FirstPage> {
             );
 
             final tamanoObjeto = esMovil
-                ? min(ancho * 0.38, alto * 0.2).clamp(80.0, 160.0).toDouble()
+                ? min(ancho * 0.30, alto * 0.16).clamp(70.0, 120.0).toDouble()
                 : 140.0;
 
             return Column(
@@ -363,7 +363,7 @@ class _FirstPageState extends State<FirstPage> {
                                     const SizedBox(height: 30),
                                     _objeto(tamanoObjeto, esMovil),
                                     // Espacio entre el objeto y los contenedores
-                                    const SizedBox(height: 102),
+                                    const SizedBox(height: 160),
                                     _filaContenedores(
                                       anchoContenedor,
                                       separacion,
