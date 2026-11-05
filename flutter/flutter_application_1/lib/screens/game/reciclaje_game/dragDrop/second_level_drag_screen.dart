@@ -251,68 +251,91 @@ class _SecondPageState extends State<SecondPage> {
     );
   }
 
-  Widget _filaContenedores(double ancho, double separacion) {
+  // Los 4 contenedores, en el orden: amarillo, azul, verde, marrón
+  List<Widget> _contenedores(double ancho) {
+    return [
+      _ContenedorReciclaje(
+        ancho: ancho,
+        color: const Color(0xFFFFD740),
+        imagen: 'assets/icons/contenedores/basura-amarilla.png',
+        nombre: 'AMARILLO',
+        objetos: objetosAmarillos,
+        gameService: gameService,
+        todosLosObjetos: objetos,
+        onAccept: () {
+          comprobarRespuesta('amarillo');
+        },
+      ),
+      _ContenedorReciclaje(
+        ancho: ancho,
+        color: const Color(0xFF42A5F5),
+        imagen: 'assets/icons/contenedores/basura-azul.png',
+        nombre: 'AZUL',
+        objetos: objetosAzules,
+        gameService: gameService,
+        todosLosObjetos: objetos,
+        onAccept: () {
+          comprobarRespuesta('azul');
+        },
+      ),
+      _ContenedorReciclaje(
+        ancho: ancho,
+        color: const Color(0xFF66BB6A),
+        imagen: 'assets/icons/contenedores/basura-verde.png',
+        nombre: 'VERDE',
+        objetos: objetosVerdes,
+        gameService: gameService,
+        todosLosObjetos: objetos,
+        onAccept: () {
+          comprobarRespuesta('verde');
+        },
+      ),
+      _ContenedorReciclaje(
+        ancho: ancho,
+        color: const Color.fromARGB(255, 146, 100, 71),
+        imagen: 'assets/icons/contenedores/basura-marron.png',
+        nombre: 'MARRÓN',
+        objetos: objetosMarrones,
+        gameService: gameService,
+        todosLosObjetos: objetos,
+        onAccept: () {
+          comprobarRespuesta('marrón');
+        },
+      ),
+    ];
+  }
+
+  // Une una lista de widgets en una fila, con separación entre ellos
+  Widget _fila(List<Widget> items, double separacion) {
+    final hijos = <Widget>[];
+
+    for (var i = 0; i < items.length; i++) {
+      if (i > 0) hijos.add(SizedBox(width: separacion));
+      hijos.add(items[i]);
+    }
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
+      children: hijos,
+    );
+  }
+
+  // Pantalla grande: los 4 contenedores en una sola fila
+  Widget _contenedoresEscritorio(double ancho, double separacion) {
+    return _fila(_contenedores(ancho), separacion);
+  }
+
+  // Móvil: 2 contenedores arriba y 2 debajo
+  Widget _contenedoresMovil(double ancho, double separacion) {
+    final c = _contenedores(ancho);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _ContenedorReciclaje(
-          ancho: ancho,
-          color: const Color(0xFFFFD740),
-          imagen: 'assets/icons/contenedores/basura-amarilla.png',
-          nombre: 'AMARILLO',
-          objetos: objetosAmarillos,
-          gameService: gameService,
-          todosLosObjetos: objetos,
-          onAccept: () {
-            comprobarRespuesta('amarillo');
-          },
-        ),
-
-        SizedBox(width: separacion),
-
-        _ContenedorReciclaje(
-          ancho: ancho,
-          color: const Color(0xFF42A5F5),
-          imagen: 'assets/icons/contenedores/basura-azul.png',
-          nombre: 'AZUL',
-          objetos: objetosAzules,
-          gameService: gameService,
-          todosLosObjetos: objetos,
-          onAccept: () {
-            comprobarRespuesta('azul');
-          },
-        ),
-
-        SizedBox(width: separacion),
-
-        _ContenedorReciclaje(
-          ancho: ancho,
-          color: const Color(0xFF66BB6A),
-          imagen: 'assets/icons/contenedores/basura-verde.png',
-          nombre: 'VERDE',
-          objetos: objetosVerdes,
-          gameService: gameService,
-          todosLosObjetos: objetos,
-          onAccept: () {
-            comprobarRespuesta('verde');
-          },
-        ),
-
-        SizedBox(width: separacion),
-
-        _ContenedorReciclaje(
-          ancho: ancho,
-          color: const Color.fromARGB(255, 146, 100, 71),
-          imagen: 'assets/icons/contenedores/basura-marron.png',
-          nombre: 'MARRÓN',
-          objetos: objetosMarrones,
-          gameService: gameService,
-          todosLosObjetos: objetos,
-          onAccept: () {
-            comprobarRespuesta('marrón');
-          },
-        ),
+        _fila([c[0], c[1]], separacion),
+        const SizedBox(height: 4),
+        _fila([c[2], c[3]], separacion),
       ],
     );
   }
@@ -335,13 +358,20 @@ class _SecondPageState extends State<SecondPage> {
             final esMovil = ancho < 700 || alto < 500;
 
             final paddingH = esMovil ? 14.0 : 45.0;
-            final separacion = esMovil ? 6.0 : 35.0;
+            final separacion = esMovil ? 8.0 : 35.0;
 
-            // Los 4 contenedores deben caber en el ancho de la pantalla
-            // y no ocupar más de ~38 % del alto.
-            final anchoPorPantalla =
-                (ancho - paddingH * 2 - separacion * 3) / 4;
-            final anchoPorAlto = alto * 0.38 * 205 / 245;
+            // Móvil: 2 contenedores por fila (2 filas).
+            // Pantalla grande: 4 contenedores en una sola fila.
+            final anchoPorPantalla = esMovil
+                ? (ancho - paddingH * 2 - separacion) / 2
+                : (ancho - paddingH * 2 - separacion * 3) / 4;
+
+            // Altura que pueden ocupar los contenedores:
+            // en móvil hay 2 filas, así que se deja sitio para el resto.
+            final alturaFila = max(110.0, (alto - 400) / 2);
+            final anchoPorAlto = esMovil
+                ? alturaFila * 205 / 245
+                : alto * 0.38 * 205 / 245;
             final anchoContenedor = min(
               205.0,
               min(anchoPorPantalla, anchoPorAlto),
@@ -380,8 +410,8 @@ class _SecondPageState extends State<SecondPage> {
                                     const SizedBox(height: 30),
                                     _objeto(tamanoObjeto, esMovil),
                                     // Espacio entre el objeto y los contenedores
-                                    const SizedBox(height: 160),
-                                    _filaContenedores(
+                                    const SizedBox(height: 24),
+                                    _contenedoresMovil(
                                       anchoContenedor,
                                       separacion,
                                     ),
@@ -408,7 +438,7 @@ class _SecondPageState extends State<SecondPage> {
                           ),
                           FittedBox(
                             fit: BoxFit.scaleDown,
-                            child: _filaContenedores(
+                            child: _contenedoresEscritorio(
                               anchoContenedor,
                               separacion,
                             ),
