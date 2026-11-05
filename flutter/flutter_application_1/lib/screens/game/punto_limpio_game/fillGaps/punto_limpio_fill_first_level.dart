@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/game/service/datos_partida.dart';
@@ -24,7 +23,8 @@ class PuntoLimpioFirstFillPage extends StatefulWidget {
       _PuntoLimpioFirstFillPageState();
 }
 
-class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
+class _PuntoLimpioFirstFillPageState
+    extends State<PuntoLimpioFirstFillPage> {
 
   final GameService gameService = GameService();
   final PrimerNivel primerNivel = PrimerNivel();
@@ -50,9 +50,8 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     super.initState();
 
     objetos = gameService.getObjetosPrimerNivelPuntoLimpio();
+    objetos.shuffle();
 
-    // Solo se barajan los objetos.
-    objetos.shuffle(Random());
     widget.datosPartida.cronometro.start();
   }
 
@@ -60,17 +59,17 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
     return objetos[indiceObjetoActual];
   }
 
+  // COMPROBAR RESPUESTA
   void comprobarRespuesta(String contenedor) {
-    if (respuestaCorrectaMostrada) {
-      return;
-    }
+    if (respuestaCorrectaMostrada) return;
 
     widget.datosPartida.intentos++;
 
     final String contenedorCorrecto = objetoActual['contenedor']!;
 
     if (contenedor == contenedorCorrecto) {
-      final int puntosRespuesta = primerNivel.sumarPuntosRespuestaCorrecta();
+      final int puntosRespuesta =
+          primerNivel.sumarPuntosRespuestaCorrecta();
 
       widget.datosPartida.puntos += puntosRespuesta;
 
@@ -79,6 +78,7 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         respuestaIncorrecta = null;
         respuestaCorrectaMostrada = true;
         puntosGanadosActuales = puntosRespuesta;
+        puntosPerdidosActuales = 0;
       });
 
       Future.delayed(const Duration(milliseconds: 1000), () {
@@ -87,7 +87,13 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         final int siguienteIndice = indiceObjetoActual + 1;
 
         if (siguienteIndice >= objetos.length) {
-          context.go('/puntolimpio/fillGaps/secondlevel', extra: {'salaId': widget.salaId, 'datosPartida': widget.datosPartida});
+          context.go(
+            '/puntolimpio/fillGaps/secondlevel',
+            extra: {
+              'salaId': widget.salaId,
+              'datosPartida': widget.datosPartida,
+            },
+          );
           return;
         }
 
@@ -100,12 +106,15 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
         });
       });
     } else {
+      final int puntosRestados =
+          primerNivel.restarPuntosRespuestaIncorrecta();
+
       setState(() {
         respuestaIncorrecta = contenedor;
-        widget.datosPartida.puntos -= primerNivel.restarPuntosRespuestaIncorrecta();
+        widget.datosPartida.puntos -= puntosRestados;
         respuestaCorrectaMostrada = false;
         puntosGanadosActuales = 0;
-        puntosPerdidosActuales = primerNivel.restarPuntosRespuestaIncorrecta();
+        puntosPerdidosActuales = puntosRestados;
       });
     }
   }
@@ -118,231 +127,300 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
     final bool completada = respuestaCorrectaMostrada;
 
-    final Color colorContenedor = gameService.colorContenedor(
-      contenedorCorrecto,
-    );
+    final Color colorContenedor =
+        gameService.colorContenedor(contenedorCorrecto);
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0.04, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          ),
-        );
-      },
-      child: Container(
-        key: ValueKey(indiceObjetoActual),
-        width: double.infinity,
-        height: 190,
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: completada
-                ? colorContenedor.withValues(alpha: 0.55)
-                : themeGreen.withValues(alpha: 0.20),
-            width: 2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.045),
-              blurRadius: 14,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // IMAGEN DEL OBJETO
-            Container(
-              width: 125,
-              height: 125,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: lightGreen,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: themeGreen.withValues(alpha: 0.12)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool esMovil = constraints.maxWidth < 600;
+
+        final double tamanoImagen = esMovil ? 95 : 125;
+        final double altoTarjeta = esMovil ? 290 : 190;
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (child, animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.04, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
               ),
-              child: Image.asset(objetoActual['imagen']!, fit: BoxFit.contain),
+            );
+          },
+          child: Container(
+            key: ValueKey(indiceObjetoActual),
+            width: double.infinity,
+            constraints: BoxConstraints(
+              minHeight: altoTarjeta,
             ),
-
-            const SizedBox(width: 28),
-
-            // FRASE
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '¿DÓNDE VA?',
-                    style: GoogleFonts.quicksand(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: secondaryText,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            padding: EdgeInsets.symmetric(
+              horizontal: esMovil ? 14 : 25,
+              vertical: esMovil ? 16 : 20,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: completada
+                    ? colorContenedor.withValues(alpha: 0.55)
+                    : themeGreen.withValues(alpha: 0.20),
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.045),
+                  blurRadius: 14,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: esMovil
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // ARTÍCULO
-                      Text(
-                        '$articulo ',
-                        style: GoogleFonts.quicksand(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF4F5951),
-                        ),
-                      ),
-
-                      // NOMBRE
-                      Text(
+                      _construirImagenObjeto(tamanoImagen),
+                      const SizedBox(height: 12),
+                      _construirTextoFrase(
                         nombre,
-                        style: GoogleFonts.quicksand(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w800,
-                          color: themeGreen,
-                        ),
+                        articulo,
+                        contenedorCorrecto,
+                        completada,
+                        colorContenedor,
+                        true,
                       ),
-
-                      // TEXTO
-                      Text(
-                        ' va en el contenedor de ',
-                        style: GoogleFonts.quicksand(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF4F5951),
-                        ),
-                      ),
-
-                      // HUECO
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        width: 180,
-                        height: 58,
-                        margin: const EdgeInsets.only(left: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: completada
-                              ? colorContenedor.withValues(alpha: 0.10)
-                              : const Color(0xFFF8FAF7),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: completada
-                                ? colorContenedor
-                                : themeGreen.withValues(alpha: 0.55),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: completada
-                              ? Text(
-                                  gameService.nombreContenedorPuntoLimpio(
-                                    contenedorCorrecto,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.visible,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
-                                  ),
-                                )
-                              : Text(
-                                  '...',
-                                  style: GoogleFonts.quicksand(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    color: themeGreen,
-                                  ),
-                                ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      _construirImagenObjeto(tamanoImagen),
+                      const SizedBox(width: 28),
+                      Expanded(
+                        child: _construirTextoFrase(
+                          nombre,
+                          articulo,
+                          contenedorCorrecto,
+                          completada,
+                          colorContenedor,
+                          false,
                         ),
                       ),
                     ],
                   ),
+          ),
+        );
+      },
+    );
+  }
 
-                  const SizedBox(height: 8),
+  // IMAGEN DEL OBJETO
+  Widget _construirImagenObjeto(double tamano) {
+    return Container(
+      width: tamano,
+      height: tamano,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: lightGreen,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: themeGreen.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Image.asset(
+        objetoActual['imagen']!,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
 
-                  // MENSAJE DE ESTADO
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: respuestaIncorrecta != null
-                        ? Row(
-                            key: const ValueKey('error'),
-                            children: [
-                              const Icon(
-                                Icons.cancel_rounded,
-                                color: Color(0xFFE53935),
-                                size: 18,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                '-$puntosPerdidosActuales puntos',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w800,
-                                  color: const Color(0xFFE53935),
-                                ),
-                              ),
-                            ],
-                          )
-                        : completada
-                        ? Row(
-                            key: const ValueKey('correcto'),
-                            children: [
-                              Container(
-                                width: 22,
-                                height: 22,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFE8F5E9),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check_rounded,
-                                  color: Color(0xFF298133),
-                                  size: 15,
-                                ),
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                '+$puntosGanadosActuales puntos',
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w800,
-                                  color: themeGreen,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
+  // TEXTO DE LA FRASE
+  Widget _construirTextoFrase(
+    String nombre,
+    String articulo,
+    String contenedorCorrecto,
+    bool completada,
+    Color colorContenedor,
+    bool esMovil,
+  ) {
+    final double tamanoTexto = esMovil ? 15 : 19;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: esMovil
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        Text(
+          '¿DÓNDE VA?',
+          textAlign: esMovil ? TextAlign.center : TextAlign.left,
+          style: GoogleFonts.quicksand(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: secondaryText,
+            letterSpacing: 0.6,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // FRASE Y HUECO
+        Wrap(
+          alignment: esMovil
+              ? WrapAlignment.center
+              : WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 3,
+          runSpacing: 7,
+          children: [
+            Text(
+              '$articulo ',
+              style: GoogleFonts.quicksand(
+                fontSize: tamanoTexto,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF4F5951),
+              ),
+            ),
+
+            Text(
+              nombre,
+              style: GoogleFonts.quicksand(
+                fontSize: tamanoTexto,
+                fontWeight: FontWeight.w800,
+                color: themeGreen,
+              ),
+            ),
+
+            Text(
+              ' va en el contenedor de ',
+              style: GoogleFonts.quicksand(
+                fontSize: tamanoTexto,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF4F5951),
+              ),
+            ),
+
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: esMovil ? 145 : 180,
+              height: esMovil ? 48 : 58,
+              margin: const EdgeInsets.only(left: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: completada
+                    ? colorContenedor.withValues(alpha: 0.10)
+                    : const Color(0xFFF8FAF7),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: completada
+                      ? colorContenedor
+                      : themeGreen.withValues(alpha: 0.55),
+                  width: 2,
+                ),
+              ),
+              child: Center(
+                child: completada
+                    ? Text(
+                        gameService.nombreContenedorPuntoLimpio(
+                          contenedorCorrecto,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.quicksand(
+                          fontSize: esMovil ? 10 : 12,
+                          fontWeight: FontWeight.w800,
+                          color: themeGreen,
+                        ),
+                      )
+                    : Text(
+                        '...',
+                        style: GoogleFonts.quicksand(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: themeGreen,
+                        ),
+                      ),
               ),
             ),
           ],
         ),
-      ),
+
+        const SizedBox(height: 8),
+
+        // MENSAJE DE ESTADO
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: respuestaIncorrecta != null
+              ? Row(
+                  key: const ValueKey('error'),
+                  mainAxisAlignment: esMovil
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.cancel_rounded,
+                      color: Color(0xFFE53935),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '-$puntosPerdidosActuales puntos',
+                      style: GoogleFonts.quicksand(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFFE53935),
+                      ),
+                    ),
+                  ],
+                )
+              : completada
+                  ? Row(
+                      key: const ValueKey('correcto'),
+                      mainAxisAlignment: esMovil
+                          ? MainAxisAlignment.center
+                          : MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 22,
+                          height: 22,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE8F5E9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check_rounded,
+                            color: Color(0xFF298133),
+                            size: 15,
+                          ),
+                        ),
+                        const SizedBox(width: 7),
+                        Text(
+                          '+$puntosGanadosActuales puntos',
+                          style: GoogleFonts.quicksand(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: themeGreen,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 
   // BOTÓN DEL CONTENEDOR
   Widget construirBotonContenedor(String contenedor) {
-    final bool esRespuestaIncorrecta = respuestaIncorrecta == contenedor;
+    final bool esRespuestaIncorrecta =
+        respuestaIncorrecta == contenedor;
 
     final bool esRespuestaCorrecta =
-        respuestaCorrectaMostrada && objetoActual['contenedor'] == contenedor;
+        respuestaCorrectaMostrada &&
+        objetoActual['contenedor'] == contenedor;
 
     final Color color = gameService.colorContenedor(contenedor);
 
@@ -354,20 +432,22 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        height: 50,
+        height: 55,
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           color: esRespuestaIncorrecta
               ? const Color(0xFFFFEBEE)
               : esRespuestaCorrecta
-              ? color.withValues(alpha: 0.15)
-              : Colors.black,
+                  ? color.withValues(alpha: 0.15)
+                  : Colors.black,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: esRespuestaIncorrecta
                 ? const Color(0xFFE53935)
                 : esRespuestaCorrecta
-                ? color
-                : Colors.black,
+                    ? color
+                    : Colors.black,
             width: esRespuestaCorrecta ? 3 : 1,
           ),
         ),
@@ -376,15 +456,15 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
             gameService.nombreContenedorPuntoLimpio(contenedor),
             textAlign: TextAlign.center,
             maxLines: 2,
-            overflow: TextOverflow.visible,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.quicksand(
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w800,
               color: esRespuestaIncorrecta
                   ? const Color(0xFFE53935)
                   : esRespuestaCorrecta
-                  ? color
-                  : Colors.white,
+                      ? color
+                      : Colors.white,
             ),
           ),
         ),
@@ -394,33 +474,184 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
 
   // TARJETA BLANCA CON LOS CONTENEDORES
   Widget construirTarjetaContenedores() {
-    final List<String> contenedoresBotones = gameService
-        .getContenedoresBotonesPrimerNivel();
+    final List<String> contenedoresBotones =
+        gameService.getContenedoresBotonesPrimerNivel();
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double ancho = constraints.maxWidth;
+
+        final int columnas;
+        if (ancho >= 1100) {
+          columnas = 6;
+        } else if (ancho >= 600) {
+          columnas = 3;
+        } else {
+          columnas = 2;
+        }
+
+        const double separacion = 10;
+        final double padding = ancho < 600 ? 12 : 20;
+
+        final double anchoInterior = ancho - (padding * 2);
+
+        final double anchoBoton = (
+          anchoInterior - separacion * (columnas - 1)
+        ) / columnas;
+
+        return Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(padding),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: const Color(0xFFE2E7E0),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: separacion,
+            runSpacing: 10,
+            children: contenedoresBotones.map((contenedor) {
+              return SizedBox(
+                width: anchoBoton,
+                child: construirBotonContenedor(contenedor),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  // CABECERA ADAPTABLE
+  Widget _construirCabecera(bool esMovil) {
+    final nivel = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 9,
+      ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E7E0), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
+        color: const Color(0xFFF0F5EE),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.flag_rounded,
+            color: themeGreen,
+            size: 20,
+          ),
+          const SizedBox(width: 7),
+          Text(
+            'NIVEL 1',
+            style: GoogleFonts.quicksand(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: themeGreen,
+            ),
           ),
         ],
       ),
+    );
+
+    final puntos = Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 9,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: const Color(0xFFE2E7E0),
+        ),
+      ),
       child: Row(
-        children: contenedoresBotones.map((contenedor) {
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
-              child: construirBotonContenedor(contenedor),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.star_rounded,
+            color: Color(0xFFFFB300),
+            size: 22,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '${widget.datosPartida.puntos} puntos',
+            style: GoogleFonts.quicksand(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: secondaryText,
             ),
-          );
-        }).toList(),
+          ),
+        ],
+      ),
+    );
+
+    final titulo = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '¡RELLENA LOS HUECOS!',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.quicksand(
+            fontSize: esMovil ? 22 : 29,
+            fontWeight: FontWeight.w800,
+            color: themeGreen,
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          'Completa cada frase eligiendo el contenedor correcto',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.quicksand(
+            fontSize: esMovil ? 11 : 14,
+            fontWeight: FontWeight.w500,
+            color: secondaryText,
+          ),
+        ),
+      ],
+    );
+
+    if (esMovil) {
+      return Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              nivel,
+              puntos,
+            ],
+          ),
+          const SizedBox(height: 14),
+          titulo,
+        ],
+      );
+    }
+
+    return SizedBox(
+      height: 72,
+      child: Row(
+        children: [
+          nivel,
+          const SizedBox(width: 15),
+          Expanded(
+            child: Center(child: titulo),
+          ),
+          const SizedBox(width: 15),
+          puntos,
+        ],
       ),
     );
   }
@@ -435,129 +666,36 @@ class _PuntoLimpioFirstFillPageState extends State<PuntoLimpioFirstFillPage> {
             const NavBar(),
 
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(55, 25, 55, 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // CABECERA
-                    SizedBox(
-                      height: 72,
-                      child: Stack(
-                        alignment: Alignment.topCenter,
-                        children: [
-                          // NIVEL 1
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 17,
-                                vertical: 9,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF0F5EE),
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.flag_rounded,
-                                    color: themeGreen,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 7),
-                                  Text(
-                                    'NIVEL 1',
-                                    style: GoogleFonts.quicksand(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: themeGreen,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final bool esMovil = constraints.maxWidth < 650;
 
-                          // TÍTULO + SUBTÍTULO
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '¡RELLENA LOS HUECOS!',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 29,
-                                  fontWeight: FontWeight.w800,
-                                  color: themeGreen,
-                                  height: 1,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Completa cada frase eligiendo el contenedor correcto',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.quicksand(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: secondaryText,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          // PUNTOS
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 9,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: const Color(0xFFE2E7E0),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.star_rounded,
-                                    color: Color(0xFFFFB300),
-                                    size: 22,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    '${widget.datosPartida.puntos} puntos',
-                                    style: GoogleFonts.quicksand(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: secondaryText,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      esMovil ? 12 : 35,
+                      esMovil ? 15 : 25,
+                      esMovil ? 12 : 35,
+                      25,
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // CABECERA
+                        _construirCabecera(esMovil),
 
-                    const SizedBox(height: 18),
+                        SizedBox(height: esMovil ? 18 : 20),
 
-                    // TARJETA DEL OBJETO
-                    construirTarjetaFrase(),
+                        // TARJETA DEL OBJETO
+                        construirTarjetaFrase(),
 
-                    const SizedBox(height: 20),
+                        SizedBox(height: esMovil ? 15 : 20),
 
-                    // TARJETA BLANCA DE CONTENEDORES
-                    construirTarjetaContenedores(),
-                  ],
-                ),
+                        // TARJETA DE CONTENEDORES
+                        construirTarjetaContenedores(),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ],
