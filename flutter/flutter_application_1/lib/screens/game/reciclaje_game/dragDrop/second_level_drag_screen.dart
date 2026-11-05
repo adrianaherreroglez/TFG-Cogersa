@@ -97,9 +97,6 @@ class _SecondPageState extends State<SecondPage> {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // WIDGETS DE LA CABECERA
-  // ---------------------------------------------------------------------------
 
   Widget _chipNivel(bool esMovil) {
     return Container(
@@ -233,10 +230,7 @@ class _SecondPageState extends State<SecondPage> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // OBJETO Y CONTENEDORES
-  // ---------------------------------------------------------------------------
-
+ 
   // Objeto con altura fija para que el diseño no "salte" al desaparecer
   Widget _objeto(double tamano, bool esMovil) {
     return SizedBox(
@@ -340,9 +334,6 @@ class _SecondPageState extends State<SecondPage> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // BUILD
-  // ---------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {

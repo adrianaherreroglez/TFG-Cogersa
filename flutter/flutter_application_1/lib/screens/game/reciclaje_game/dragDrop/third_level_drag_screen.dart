@@ -151,10 +151,6 @@ class _ThirdPageState extends State<ThirdPage> {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // WIDGETS DE LA CABECERA
-  // ---------------------------------------------------------------------------
-
   Widget _chipNivel(bool esMovil) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -287,10 +283,7 @@ class _ThirdPageState extends State<ThirdPage> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // OBJETO Y CONTENEDORES
-  // ---------------------------------------------------------------------------
-
+ 
   // Objeto con altura fija para que el diseño no "salte" al desaparecer
   Widget _objeto(double tamano, bool esMovil) {
     return SizedBox(
@@ -406,10 +399,7 @@ class _ThirdPageState extends State<ThirdPage> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // BUILD
-  // ---------------------------------------------------------------------------
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
