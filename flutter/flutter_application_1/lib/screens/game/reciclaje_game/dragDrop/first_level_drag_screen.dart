@@ -223,7 +223,15 @@ class _FirstPageState extends State<FirstPage> {
         children: [
           _chipNivel(false),
           const SizedBox(width: 28),
-          Expanded(child: Center(child: _titulo(false))),
+          Expanded(
+            child: Center(
+              // Si el título no cabe en una línea, se reduce en vez de desbordarse
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: _titulo(false),
+              ),
+            ),
+          ),
           const SizedBox(width: 28),
           _chipPuntos(false),
         ],
