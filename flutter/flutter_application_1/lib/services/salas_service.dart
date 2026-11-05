@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter_application_1/app_config.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_application_1/services/app_storage.dart';
 import 'package:http/http.dart' as http;
 
 class SalasService {
   static const String baseUrl =  AppConfig.baseUrl;
 
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  final AppStorage _storage = const AppStorage();
 
   Future<String> _getToken() async {
     final token = await _storage.read(key: 'token');
