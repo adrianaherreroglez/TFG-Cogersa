@@ -42,16 +42,19 @@ class NavBar extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 42,
-                    height: 42,
+                    width: 55,
+                    height: 55,
                     decoration: const BoxDecoration(
                       color: lightGreen,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.eco_rounded,
-                      color: themeGreen,
-                      size: 25,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/icons/app/icon.png',
+                        width: 55,
+                        height: 55,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),

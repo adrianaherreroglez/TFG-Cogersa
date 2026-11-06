@@ -19,6 +19,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   bool isLoading = false;
 
+  // true = la contraseña se ve como puntos; false = se ve el texto
+  bool _ocultarPassword = true;
+  bool _ocultarConfirmPassword = true;
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -33,9 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
-    if (username.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
+    if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       _showMessage('Rellena todos los campos');
       return;
     }
@@ -50,10 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      await _authService.register(
-        username: username,
-        password: password,
-      );
+      await _authService.register(username: username, password: password);
 
       if (!mounted) return;
 
@@ -76,10 +75,26 @@ class _RegisterPageState extends State<RegisterPage> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
+  // Botón del ojo para mostrar u ocultar una contraseña
+  Widget _botonOjo({
+    required bool oculto,
+    required VoidCallback onPressed,
+    required Color color,
+  }) {
+    return IconButton(
+      tooltip: oculto ? 'Mostrar contraseña' : 'Ocultar contraseña',
+      icon: Icon(
+        oculto ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+        color: color,
+      ),
+      onPressed: onPressed,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeGreen = const Color(0xFF298133);
-    final lightGreen = const Color(0xFFE8F5E9);
+    const  lightGreen = Color(0xFFE8F5E9);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFDF4),
@@ -96,15 +111,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
+                  width: 120,
+                  height: 120,
+                  decoration: const BoxDecoration(
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.eco_rounded, size: 60, color: themeGreen),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/icons/app/icon.png',
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-
                 const SizedBox(height: 20),
 
                 Text(
@@ -155,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 320,
                   child: TextField(
                     controller: passwordController,
-                    obscureText: true,
+                    obscureText: _ocultarPassword,
                     decoration: InputDecoration(
                       labelText: 'Contraseña',
                       hintText: 'Introduce tu contraseña',
@@ -165,6 +186,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: _botonOjo(
+                        oculto: _ocultarPassword,
+                        color: themeGreen,
+                        onPressed: () {
+                          setState(() {
+                            _ocultarPassword = !_ocultarPassword;
+                          });
+                        },
                       ),
                     ),
                   ),
@@ -176,7 +206,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   width: 320,
                   child: TextField(
                     controller: confirmPasswordController,
-                    obscureText: true,
+                    obscureText: _ocultarConfirmPassword,
+                    onSubmitted: (_) {
+                      if (!isLoading) _register();
+                    },
                     decoration: InputDecoration(
                       labelText: 'Confirmar contraseña',
                       hintText: 'Confirmar contraseña',
@@ -186,6 +219,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: _botonOjo(
+                        oculto: _ocultarConfirmPassword,
+                        color: themeGreen,
+                        onPressed: () {
+                          setState(() {
+                            _ocultarConfirmPassword = !_ocultarConfirmPassword;
+                          });
+                        },
                       ),
                     ),
                   ),

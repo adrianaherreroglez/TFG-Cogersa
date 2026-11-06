@@ -76,7 +76,6 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-
   InputDecoration _decoracionPerfil(String label) {
     return InputDecoration(
       labelText: label,
@@ -106,82 +105,77 @@ class _MyProfileState extends State<MyProfile> {
         children: [
           const NavBar(),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
-              child: Column(
-                children: [
-                  Text(
-                    'Mi Perfil',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.quicksand(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: verde,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Consulta tu perfil y tu historial en EcoKids',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.quicksand(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: marron,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  if (cargandoPerfil)
-                    const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: CircularProgressIndicator(color: verde),
-                    ),
-                  if (errorPerfil != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            'No se pudo cargar el perfil: $errorPerfil',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                cargandoPerfil = true;
-                                errorPerfil = null;
-                              });
-                              _cargarPerfil();
-                            },
-                            child: const Text('Reintentar'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      if (constraints.maxWidth < 950) {
-                        return Column(
-                          children: [
-                            _buildMyInfoCard(),
-                            const SizedBox(height: 30),
-                            _buildMyHistoryCard(),
-                          ],
-                        );
-                      }
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final bool movil = constraints.maxWidth < 600;
 
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: _buildMyInfoCard()),
-                          const SizedBox(width: 35),
-                          Expanded(child: _buildMyHistoryCard()),
-                        ],
-                      );
-                    },
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: movil ? 16 : 50,
+                    vertical: movil ? 16 : 28,
                   ),
-                ],
-              ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Mi Perfil',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.quicksand(
+                          fontSize: movil ? 32 : 42,
+                          fontWeight: FontWeight.w800,
+                          color: verde,
+                        ),
+                      ),
+                      SizedBox(height: movil ? 2 : 6),
+                      Text(
+                        'Consulta tu perfil',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.quicksand(
+                          fontSize: movil ? 15 : 18,
+                          fontWeight: FontWeight.w500,
+                          color: marron,
+                        ),
+                      ),
+                      SizedBox(height: movil ? 16 : 22),
+                      if (cargandoPerfil)
+                        const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: CircularProgressIndicator(color: verde),
+                        ),
+                      if (errorPerfil != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: Column(
+                            children: [
+                              Text(
+                                'No se pudo cargar el perfil: $errorPerfil',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    cargandoPerfil = true;
+                                    errorPerfil = null;
+                                  });
+                                  _cargarPerfil();
+                                },
+                                child: const Text('Reintentar'),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      // Tarjeta compacta y centrada
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 400),
+                          child: _buildMyInfoCard(movil),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -189,13 +183,13 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
-  Widget _buildMyInfoCard() {
+  Widget _buildMyInfoCard(bool movil) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 390),
-      padding: const EdgeInsets.all(30),
+      width: double.infinity,
+      padding: EdgeInsets.all(movil ? 20 : 26),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFFD8EDD5), width: 2),
         boxShadow: const [
           BoxShadow(
@@ -206,15 +200,12 @@ class _MyProfileState extends State<MyProfile> {
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
-            width: 75,
-            height: 75,
-            child: Icon(Icons.account_circle, size: 82, color: verde),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 320,
+          const Icon(Icons.account_circle, size: 64, color: verde),
+          const SizedBox(height: 14),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
             child: TextField(
               readOnly: true,
               controller: TextEditingController(text: nombreUsuario),
@@ -222,9 +213,9 @@ class _MyProfileState extends State<MyProfile> {
               decoration: _decoracionPerfil('Usuario'),
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: 320,
+          const SizedBox(height: 12),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
             child: TextField(
               readOnly: true,
               controller: TextEditingController(text: '********'),
@@ -233,129 +224,66 @@ class _MyProfileState extends State<MyProfile> {
               decoration: _decoracionPerfil('Contraseña'),
             ),
           ),
-          const SizedBox(height: 25),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 16,
-            runSpacing: 12,
-            children: [
-              SizedBox(
-                width: 140,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: cargandoPerfil ? null : _editarPerfil,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: verde,
-                    foregroundColor: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+          const SizedBox(height: 18),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 46,
+                    child: ElevatedButton(
+                      onPressed: cargandoPerfil ? null : _editarPerfil,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: verde,
+                        foregroundColor: Colors.white,
+                        elevation: 2,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text(
+                        'Editar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'Editar',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
                 ),
-              ),
-              SizedBox(
-                width: 160,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.go('/');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: marron,
-                    foregroundColor: Colors.white,
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: SizedBox(
+                    height: 46,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.go('/');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: marron,
+                        foregroundColor: Colors.white,
+                        elevation: 2,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Cerrar sesión',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'Cerrar sesión',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMyHistoryCard() {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 390),
-      padding: const EdgeInsets.all(30),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFD8EDD5), width: 2),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          const SizedBox(
-            width: 75,
-            height: 75,
-            child: Icon(Icons.history_rounded, size: 82, color: verde),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Tu historial en EcoKids',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.quicksand(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: marron,
-            ),
-          ),
-          const SizedBox(height: 30),
-          _buildHistoryItem('Experiencia', '0'),
-          const SizedBox(height: 25),
-          _buildHistoryItem('Puntos', '0'),
-          const SizedBox(height: 25),
-          _buildHistoryItem('Racha', '0'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHistoryItem(String title, String value) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF3FAEF),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.quicksand(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
-              color: marron,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            value,
-            style: GoogleFonts.quicksand(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: marron,
+              ],
             ),
           ),
         ],
@@ -363,7 +291,6 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 }
-
 
 class EditProfileDialog extends StatefulWidget {
   const EditProfileDialog({

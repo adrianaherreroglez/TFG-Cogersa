@@ -18,6 +18,9 @@ class _LogInPageState extends State<LogInPage> {
 
   bool isLoading = false;
 
+  // true = la contraseña se ve como puntos; false = se ve el texto
+  bool _ocultarPassword = true;
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -39,10 +42,7 @@ class _LogInPageState extends State<LogInPage> {
     });
 
     try {
-      await _authService.login(
-        username: username,
-        password: password,
-      );
+      await _authService.login(username: username, password: password);
 
       if (!mounted) return;
 
@@ -50,9 +50,7 @@ class _LogInPageState extends State<LogInPage> {
     } catch (e) {
       if (!mounted) return;
 
-      _showMessage(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      _showMessage(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) {
         setState(() {
@@ -63,9 +61,8 @@ class _LogInPageState extends State<LogInPage> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -79,25 +76,25 @@ class _LogInPageState extends State<LogInPage> {
         child: SizedBox(
           width: double.infinity,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 30,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 120,
+                  height: 120,
                   decoration: const BoxDecoration(
                     color: lightGreen,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.eco_rounded,
-                    size: 60,
-                    color: themeGreen,
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/icons/app/icon.png',
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
 
@@ -151,7 +148,10 @@ class _LogInPageState extends State<LogInPage> {
                   width: 320,
                   child: TextField(
                     controller: passwordController,
-                    obscureText: true,
+                    obscureText: _ocultarPassword,
+                    onSubmitted: (_) {
+                      if (!isLoading) _login();
+                    },
                     decoration: InputDecoration(
                       labelText: 'Contraseña',
                       hintText: 'Introduce tu contraseña',
@@ -161,6 +161,23 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      // OJO para mostrar u ocultar la contraseña
+                      suffixIcon: IconButton(
+                        tooltip: _ocultarPassword
+                            ? 'Mostrar contraseña'
+                            : 'Ocultar contraseña',
+                        icon: Icon(
+                          _ocultarPassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: themeGreen,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _ocultarPassword = !_ocultarPassword;
+                          });
+                        },
                       ),
                     ),
                   ),
@@ -184,35 +201,13 @@ class _LogInPageState extends State<LogInPage> {
                         ? const SizedBox(
                             width: 22,
                             height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(
-                            Icons.arrow_forward_rounded,
-                            size: 21,
-                          ),
+                        : const Icon(Icons.arrow_forward_rounded, size: 21),
                   ),
                 ),
 
                 const SizedBox(height: 16),
-
-                TextButton(
-                  onPressed: () {
-                    // Sustituye esta ruta por la de recuperación
-                    // de contraseña si ya la tienes implementada.
-                    _showMessage(
-                      'Función de recuperación no disponible',
-                    );
-                  },
-                  child: Text(
-                    'He olvidado mi contraseña',
-                    style: GoogleFonts.quicksand(
-                      fontSize: 16,
-                      color: themeGreen,
-                    ),
-                  ),
-                ),
 
                 TextButton(
                   onPressed: () {
