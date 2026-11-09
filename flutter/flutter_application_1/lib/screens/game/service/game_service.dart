@@ -143,7 +143,7 @@ class GameService {
       },
       {
         'articulo': 'El',
-        'nombre': 'avión de papel',
+        'nombre': 'papel',
         'imagen': 'assets/icons/objetos/azul/papel.png',
         'contenedor': 'azul', 
       },
