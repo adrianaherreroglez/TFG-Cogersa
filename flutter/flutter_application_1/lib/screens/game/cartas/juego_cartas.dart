@@ -82,17 +82,10 @@ class _JuegoCartasState extends State<JuegoCartas> {
     _cartas = lista.map((imagen) => _Carta(imagen: imagen)).toList();
   }
 
-  // Bonus por completar el juego con pocos intentos.
-  int _calcularBonusIntentos(int intentos) {
-    if (intentos <= 12) return 100;
-    if (intentos <= 16) return 60;
-    if (intentos <= 20) return 30;
-    return 0;
-  }
-
+  
   int _calcularPuntuacionFinal() {
     return _puntos +
-        _calcularBonusIntentos(_intentos) +
+        _nivel.calcularBonusIntentos(_intentos) +
         50; // Bonus por terminar el juego.
   }
 
@@ -256,7 +249,7 @@ class _JuegoCartasState extends State<JuegoCartas> {
             const SizedBox(height: 6),
             _filaPuntuacion(
               'Bonus por intentos',
-              '+${_calcularBonusIntentos(_intentos)}',
+              '+${_nivel.calcularBonusIntentos(_intentos)}',
             ),
             const SizedBox(height: 6),
             _filaPuntuacion('Bonus por completar', '+50'),

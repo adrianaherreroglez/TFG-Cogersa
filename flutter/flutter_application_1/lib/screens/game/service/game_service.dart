@@ -138,14 +138,14 @@ class GameService {
       {
         'articulo': 'La',
         'nombre': 'bolsa de plástico',
-        'imagen': 'assets/icons/objetos/amarillo/bolsa.png',
+        'imagen': 'assets/icons/objetos/amarillo/bolsa-de-plastico.png',
         'contenedor': 'amarillo',
       },
       {
         'articulo': 'El',
         'nombre': 'avión de papel',
-        'imagen': 'assets/icons/objetos/azul/avion-de-papel.png',
-        'contenedor': 'azul',
+        'imagen': 'assets/icons/objetos/azul/papel.png',
+        'contenedor': 'azul', 
       },
       {
         'articulo': 'La',
@@ -161,8 +161,8 @@ class GameService {
       },
       {
         'articulo': 'El',
-        'nombre': 'papel de regalo',
-        'imagen': 'assets/icons/objetos/azul/papel-de-regalo.png',
+        'nombre': 'sobre',
+        'imagen': 'assets/icons/objetos/azul/sobre.png',
         'contenedor': 'azul',
       },
     ];
@@ -402,12 +402,6 @@ class GameService {
         'articulo': 'La',
         'nombre': 'pintura',
         'imagen': 'assets/icons/puntolimpio/segundo_nivel/bote-de-pintura.png',
-        'contenedor': 'toxico',
-      },
-      {
-        'articulo': 'La',
-        'nombre': 'lejía',
-        'imagen': 'assets/icons/puntolimpio/segundo_nivel/lejia.png',
         'contenedor': 'toxico',
       },
     ];
