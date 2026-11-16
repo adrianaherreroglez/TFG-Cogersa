@@ -15,10 +15,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final themeGreen = const Color(0xFF298133);
-    const lightGreen = Color(0xFFE8F5E9);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor: const Color(0xFFF7F8F6),
 
       body: SafeArea(
         child: Padding(
@@ -32,24 +31,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
               children: [
                 // Icono
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: const BoxDecoration(
-                    color: lightGreen,
-                    shape: BoxShape.circle,
-                  ),
+                SizedBox(
                   child: ClipOval(
                     child: Image.asset(
                       'assets/icons/app/icon.png',
-                      width: 150,
-                      height: 150,
+                      width: 200,
+                      height: 200,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 28),
 
                 // TÍTULO
                 Text(

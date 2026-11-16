@@ -407,7 +407,7 @@ class _SecondPageState extends State<PuntoLimpioSecondPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor: const Color(0xFFF7F8F6),
       body: SafeArea(
         child: Column(
           children: [

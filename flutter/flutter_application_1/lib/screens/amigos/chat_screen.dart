@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 
 const Color themeGreen = Color(0xFF298133);
-const Color pageBackground = Color(0xFFFAFDF4);
+const Color pageBackground = Color(0xFFF7F8F6);
 const Color lightGreen = Color(0xFFE8F5E9);
 const Color borderGreen = Color(0xFFD8EDD5);
 

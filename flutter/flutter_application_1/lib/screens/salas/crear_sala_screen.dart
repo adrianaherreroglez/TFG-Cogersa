@@ -32,7 +32,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
   final Color verdePrincipal = const Color(0xFF4CAF50);
   final Color verdeClaro = const Color(0xFFE8F5E9);
-  final Color fondo = const Color(0xFFF7FAF3);
+  final Color fondo = const Color(0xFFF7F8F6);
 
   @override
   void initState() {

@@ -75,7 +75,7 @@ class _CodePageState extends State<CodePage> {
     const verdeClaro = Color(0xFFE8F5E9);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8F2),
+      backgroundColor: const Color(0xFFF7F8F6),
       body: SafeArea(
         child: Column(
           children: [

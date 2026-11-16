@@ -403,7 +403,7 @@ class _ThirdPageState extends State<ThirdPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor: const Color(0xFFF7F8F6),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

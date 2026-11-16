@@ -17,7 +17,7 @@ class MyGame extends StatefulWidget {
 class _MyGameState extends State<MyGame> {
   static const Color _verde = Color(0xFF298133);
   static const Color _marron = Color(0xFF644633);
-  static const Color _fondo = Color(0xFFFAFDF4);
+  static const Color _fondo = Color(0xFFF7F8F6);
   static const Color _verdeClaro = Color(0xFFF3FAEF);
   static const Color _borde = Color(0xFFD8EDD5);
 

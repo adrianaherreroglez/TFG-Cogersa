@@ -38,7 +38,7 @@ class PreguntaTest {
 }
 
 class _JuegoTestState extends State<JuegoTest> {
-  static const Color fondo = Color(0xFFFAFDF4);
+  static const Color fondo = Color(0xFFF7F8F6);
   static const Color verde = Color(0xFF298133);
   static const Color verdeOscuro = Color(0xFF347653);
   static const Color verdeClaro = Color(0xFFE8F5E9);

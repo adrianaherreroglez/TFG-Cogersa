@@ -44,7 +44,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   static const Color verdeOscuro = Color(0xFF285C32);
   static const Color verdeClaro = Color(0xFFE8F5E9);
   static const Color verdeSuave = Color(0xFFF1F8EC);
-  static const Color fondo = Color(0xFFFAFDF4);
+  static const Color fondo = Color(0xFFF7F8F6);
   static const Color borde = Color(0xFFDDEEDB);
   static const Color textoSecundario = Color(0xFF69806A);
   static const Color amarillo = Color(0xFFFFF0C2);

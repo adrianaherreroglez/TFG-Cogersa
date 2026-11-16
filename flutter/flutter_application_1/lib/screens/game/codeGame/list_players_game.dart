@@ -183,7 +183,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
     const verde = Color(0xFF298133);
     const verdeOscuro = Color(0xFF285C32);
     const verdeClaro = Color(0xFFE8F5E9);
-    const fondo = Color(0xFFFAFDF4);
+    const fondo = Color(0xFFF7F8F6);
 
     return Scaffold(
       backgroundColor: fondo,

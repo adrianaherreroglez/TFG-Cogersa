@@ -323,7 +323,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
   static const verde = Color(0xFF298133);
   static const marron = Color(0xFF644633);
-  static const fondo = Color(0xFFFAFDF4);
+  static const fondo = Color(0xFFF7F8F6);
 
   @override
   void initState() {

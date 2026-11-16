@@ -68,10 +68,9 @@ class _LogInPageState extends State<LogInPage> {
   @override
   Widget build(BuildContext context) {
     const themeGreen = Color(0xFF298133);
-    const lightGreen = Color(0xFFE8F5E9);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFDF4),
+      backgroundColor: const Color(0xFFF7F8F6),
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
@@ -81,24 +80,16 @@ class _LogInPageState extends State<LogInPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 120,
-                  height: 120,
-                  decoration: const BoxDecoration(
-                    color: lightGreen,
-                    shape: BoxShape.circle,
-                  ),
+                SizedBox(
                   child: ClipOval(
                     child: Image.asset(
                       'assets/icons/app/icon.png',
-                      width: 120,
-                      height: 120,
+                      width: 180,
+                      height: 180,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 20),
 
                 Text(
                   'EcoKids',

@@ -35,7 +35,7 @@ class _Carta {
 }
 
 class _JuegoCartasState extends State<JuegoCartas> {
-  static const Color fondo = Color(0xFFF6FBF5);
+  static const Color fondo = Color(0xFFF7F8F6);
   static const Color verdeOscuro = Color(0xFF347653);
   static const Color crema = Color(0xFFFFF8E7);
 
