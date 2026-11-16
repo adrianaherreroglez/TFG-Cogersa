@@ -274,7 +274,7 @@ final GoRouter router = GoRouter(
     // -------------------------------------------
     // CREACIÓN DE PARTIDAS POR PARTE DEL PROFESOR
     // --------------------------------------------
-    GoRoute(
+    GoRoute( 
       path: '/crearSala',
       builder: (context, state) => const CrearSalaPage(),
     ),

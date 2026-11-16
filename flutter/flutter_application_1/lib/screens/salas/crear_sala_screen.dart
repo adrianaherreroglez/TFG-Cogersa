@@ -23,7 +23,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
   late final TextEditingController _jugadoresController;
 
   // Límites de jugadores permitidos.
-  static const int _minJugadores = 1;
+  static const int _minJugadores = 2;
   static const int _maxJugadores = 100;
 
   // Juego seleccionado. Coincide con un ID real de la tabla juegos.
@@ -455,7 +455,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '$_minJugadores jugador',
+                                          '$_minJugadores jugadores',
                                           style: GoogleFonts.quicksand(
                                             fontSize: 12,
                                             color: Colors.black54,
