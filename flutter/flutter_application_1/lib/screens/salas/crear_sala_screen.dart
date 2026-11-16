@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,6 +20,12 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
   final ScrollController _scrollController = ScrollController();
 
+  late final TextEditingController _jugadoresController;
+
+  // Límites de jugadores permitidos.
+  static const int _minJugadores = 1;
+  static const int _maxJugadores = 100;
+
   // Juego seleccionado. Coincide con un ID real de la tabla juegos.
   int juegoSeleccionado = 1;
 
@@ -38,21 +45,38 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
   void initState() {
     super.initState();
 
-    // Generamos el código al entrar en la página.
+    // Generamos el código al entrar en la página
     _codigoController.text = _salasService.generarCodigo();
+
+    // El usuario podrá introducir el número máximo de jugadores a mano
+    _jugadoresController = TextEditingController(text: '$numJugadores');
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     _codigoController.dispose();
+    _jugadoresController.dispose();
     super.dispose();
   }
 
   Future<void> _crearSala() async {
     if (creandoSala) return;
 
+    FocusScope.of(context).unfocus();
+
+    // Validamos lo que hay escrito en el campo.
+    final n = int.tryParse(_jugadoresController.text);
+    if (n == null || n < _minJugadores || n > _maxJugadores) {
+      setState(() {
+        salaCreadaCorrectamente = false;
+        mensajeResultado = 'Número de jugadores incorrecto';
+      });
+      return;
+    }
+
     setState(() {
+      numJugadores = n;
       creandoSala = true;
       mensajeResultado = null;
     });
@@ -69,10 +93,6 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       setState(() {
         salaCreadaCorrectamente = true;
         salaIdCreada = int.parse(sala['id'].toString());
-
-        mensajeResultado =
-            '¡Sala creada! Código: '
-            '${sala['codigo'] ?? _codigoController.text}';
       });
     } catch (e) {
       if (!mounted) return;
@@ -98,9 +118,9 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
       1: '/first',
       2: '/fillGaps/first',
       3: '/puntolimpio/firstlevel',
-      4: '/puntolimpio/fillGaps/firstlevel', 
-      5: '/juegoCartas', 
-      6: '/juegoTest', 
+      4: '/puntolimpio/fillGaps/firstlevel',
+      5: '/juegoCartas',
+      6: '/juegoTest',
     };
 
     final rutaJuego = rutasJuegos[juegoSeleccionado];
@@ -335,7 +355,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                     const Divider(color: Color(0xFFE8F0E6)),
                                     const SizedBox(height: 20),
 
-                                    // Número de jugadores.
+                                    // Número de jugadores
                                     _construirEtiqueta(
                                       'Número máximo de jugadores',
                                       Icons.people_alt_rounded,
@@ -354,6 +374,7 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           ),
                                         ),
                                         Container(
+                                          width: 90,
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 16,
                                             vertical: 8,
@@ -364,13 +385,45 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                               12,
                                             ),
                                           ),
-                                          child: Text(
-                                            '$numJugadores',
+                                          child: TextField(
+                                            controller: _jugadoresController,
+                                            enabled: !creandoSala,
+                                            keyboardType: TextInputType.number,
+                                            textAlign: TextAlign.center,
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly,
+                                              LengthLimitingTextInputFormatter(
+                                                3,
+                                              ),
+                                            ],
                                             style: GoogleFonts.quicksand(
                                               fontSize: 21,
                                               fontWeight: FontWeight.w800,
                                               color: const Color(0xFF2E7D32),
                                             ),
+                                            decoration: const InputDecoration(
+                                              isDense: true,
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                            ),
+                                            onChanged: (value) {
+                                              final n = int.tryParse(value);
+                                              setState(() {
+                                                if (n != null &&
+                                                    n >= _minJugadores &&
+                                                    n <= _maxJugadores) {
+                                                  numJugadores = n;
+                                                }
+                                                // Limpia el error al volver a escribir.
+                                                mensajeResultado = null;
+                                              });
+                                            },
+                                            onSubmitted: (_) => _crearSala(),
+                                            onTapOutside: (_) =>
+                                                FocusScope.of(
+                                                  context,
+                                                ).unfocus(),
                                           ),
                                         ),
                                       ],
@@ -378,9 +431,9 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
                                     Slider(
                                       value: numJugadores.toDouble(),
-                                      min: 2,
-                                      max: 100,
-                                      divisions: 98,
+                                      min: _minJugadores.toDouble(),
+                                      max: _maxJugadores.toDouble(),
+                                      divisions: _maxJugadores - _minJugadores,
                                       activeColor: verdePrincipal,
                                       inactiveColor: const Color(0xFFDDEEDB),
                                       label: '$numJugadores',
@@ -389,6 +442,10 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           : (valor) {
                                               setState(() {
                                                 numJugadores = valor.round();
+                                                // Mantiene el campo de texto sincronizado.
+                                                _jugadoresController.text =
+                                                    '$numJugadores';
+                                                mensajeResultado = null;
                                               });
                                             },
                                     ),
@@ -398,14 +455,14 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          '2 jugadores',
+                                          '$_minJugadores jugador',
                                           style: GoogleFonts.quicksand(
                                             fontSize: 12,
                                             color: Colors.black54,
                                           ),
                                         ),
                                         Text(
-                                          '100 jugadores',
+                                          '$_maxJugadores jugadores',
                                           style: GoogleFonts.quicksand(
                                             fontSize: 12,
                                             color: Colors.black54,
@@ -456,7 +513,23 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                       ),
                                     ),
 
-                                    // Mensaje de resultado.
+                                    // Mensaje de resultado (éxito o error).
+                                    if (mensajeResultado != null) ...[
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        mensajeResultado!,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.quicksand(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: salaCreadaCorrectamente
+                                              ? const Color(0xFF2E7D32)
+                                              : Colors.red.shade700,
+                                        ),
+                                      ),
+                                    ],
+
+                                    // Botón para ir a la sala.
                                     if (salaCreadaCorrectamente &&
                                         salaIdCreada != null) ...[
                                       const SizedBox(height: 16),
