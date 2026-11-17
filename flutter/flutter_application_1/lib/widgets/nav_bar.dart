@@ -122,7 +122,10 @@ class NavBar extends StatelessWidget {
                     _NavButton(
                       icon: Icons.meeting_room_rounded,
                       text: 'Salas',
-                      onPressed: () => context.go('/crearSala'),
+                      onPressed: () => context.go(
+                        '/crearSala',
+                        extra: {'juegoId': 1, 'mostrarSelectorJuego': true},
+                      ),
                     ),
                     const SizedBox(width: 10),
                     _NavButton(

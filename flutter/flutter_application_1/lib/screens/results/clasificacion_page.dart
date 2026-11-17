@@ -668,7 +668,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                       )
                     : const Icon(Icons.lock_rounded),
                 label: Text(
-                  _cerrando ? 'Cerrando sala…' : 'Cerrar sala',
+                  _cerrando ? 'Cerrando sala…' : 'Cerrar sala', 
                   style: GoogleFonts.quicksand(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,

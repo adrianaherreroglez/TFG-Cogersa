@@ -274,9 +274,16 @@ final GoRouter router = GoRouter(
     // -------------------------------------------
     // CREACIÓN DE PARTIDAS POR PARTE DEL PROFESOR
     // --------------------------------------------
-    GoRoute( 
+    GoRoute(
       path: '/crearSala',
-      builder: (context, state) => const CrearSalaPage(),
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+
+        return CrearSalaPage(
+          juegoId: extra['juegoId'] as int? ?? 1,
+          mostrarSelectorJuego: extra['mostrarSelectorJuego'] as bool? ?? false,
+        );
+      },
     ),
 
     // -------------------------------------

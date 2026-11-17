@@ -63,6 +63,31 @@ class _CodePageState extends State<CodePage> {
     }
   }
 
+  void _irACrearSala() {
+    final rutasJuegos = <String, int>{
+      '/first': 1,
+      '/fillGaps/first': 2,
+      '/puntolimpio/firstlevel': 3,
+      '/puntolimpio/fillGaps/firstlevel': 4,
+      '/juegoCartas': 5,
+      '/juegoTest': 6,
+    };
+
+    final juegoId = rutasJuegos[widget.rutaJuego];
+
+    if (juegoId == null) {
+      setState(() {
+        _error = 'No se ha podido identificar el juego seleccionado.';
+      });
+      return;
+    }
+
+    context.push(
+      '/crearSala',
+      extra: {'juegoId': juegoId, 'mostrarSelectorJuego': false},
+    );
+  }
+
   @override
   void dispose() {
     _codigoController.dispose();
@@ -217,6 +242,30 @@ class _CodePageState extends State<CodePage> {
                               backgroundColor: verde,
                               foregroundColor: Colors.white,
                               disabledBackgroundColor: Colors.green.shade300,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _cargando ? null : _irACrearSala,
+                            icon: const Icon(Icons.add_circle_outline_rounded),
+                            label: Text(
+                              'Crear una sala nueva',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: verde,
+                              side: const BorderSide(color: verde, width: 1.5),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),

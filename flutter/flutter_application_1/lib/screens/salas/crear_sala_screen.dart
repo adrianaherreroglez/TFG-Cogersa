@@ -7,7 +7,14 @@ import '../../widgets/nav_bar.dart';
 import '../../services/salas_service.dart';
 
 class CrearSalaPage extends StatefulWidget {
-  const CrearSalaPage({super.key});
+  final int juegoId;
+  final bool mostrarSelectorJuego;
+
+  const CrearSalaPage({
+    super.key,
+    required this.juegoId,
+    this.mostrarSelectorJuego = false,
+  });
 
   @override
   State<CrearSalaPage> createState() => _CrearSalaPageState();
@@ -22,14 +29,14 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
   late final TextEditingController _jugadoresController;
 
-  // Límites de jugadores permitidos.
+  // Límites de jugadores permitidos
   static const int _minJugadores = 2;
   static const int _maxJugadores = 100;
 
-  // Juego seleccionado. Coincide con un ID real de la tabla juegos.
-  int juegoSeleccionado = 1;
+  // juego seleccionado
+  late int juegoSeleccionado;
 
-  // Número máximo de jugadores.
+  // Número máximo de jugadores
   int numJugadores = 10;
 
   bool creandoSala = false;
@@ -44,6 +51,8 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
   @override
   void initState() {
     super.initState();
+
+    juegoSeleccionado = widget.juegoId;
 
     // Generamos el código al entrar en la página
     _codigoController.text = _salasService.generarCodigo();
@@ -275,81 +284,134 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                     const Divider(color: Color(0xFFE8F0E6)),
                                     const SizedBox(height: 20),
 
-                                    // Selección del juego.
+                                    // Selección del juego
                                     _construirEtiqueta(
-                                      'Selecciona un juego',
+                                      widget.mostrarSelectorJuego
+                                          ? 'Selecciona un juego'
+                                          : 'Juego seleccionado',
                                       Icons.sports_esports_rounded,
                                     ),
+
                                     const SizedBox(height: 12),
 
-                                    DropdownButtonFormField<int>(
-                                      initialValue: juegoSeleccionado,
-                                      isExpanded: true,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: const Color(0xFFF8FBF6),
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 14,
-                                              vertical: 14,
+                                    // Selector solamente cuando se accede desde el NavBar
+                                    if (widget.mostrarSelectorJuego) ...[
+                                      DropdownButtonFormField<int>(
+                                        initialValue: juegoSeleccionado,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: verdeClaro,
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                horizontal: 16,
+                                                vertical: 14,
+                                              ),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
                                             ),
-                                        border: OutlineInputBorder(
+                                            borderSide: const BorderSide(
+                                              color: Color(0xFFDDEEDB),
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            borderSide: const BorderSide(
+                                              color: Color(0xFFDDEEDB),
+                                            ),
+                                          ),
+                                        ),
+                                        items: const [
+                                          DropdownMenuItem(
+                                            value: 1,
+                                            child: Text(
+                                              'Reciclaje - Drag & Drop',
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 2,
+                                            child: Text(
+                                              'Reciclaje - Fill in the Gaps',
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 3,
+                                            child: Text(
+                                              'Punto Limpio - Drag & Drop',
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 4,
+                                            child: Text(
+                                              'Punto Limpio - Fill in the Gaps',
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 5,
+                                            child: Text(
+                                              'Cartas - Juego de Memoria',
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 6,
+                                            child: Text(
+                                              'Cuestionarios - Test sobre Reciclaje',
+                                            ),
+                                          ),
+                                        ],
+                                        onChanged: (valor) {
+                                          if (valor == null) return;
+
+                                          setState(() {
+                                            juegoSeleccionado = valor;
+                                          });
+                                        },
+                                      ),
+                                    ] else ...[
+                                      // Mostrar únicamente el juego seleccionado.
+                                      Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: verdeClaro,
                                           borderRadius: BorderRadius.circular(
                                             14,
                                           ),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xFFDDEEDB),
+                                          border: Border.all(
+                                            color: const Color(0xFFDDEEDB),
                                           ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.check_circle_rounded,
+                                              color: Color(0xFF2E7D32),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                {
+                                                      1: 'Reciclaje - Drag & Drop',
+                                                      2: 'Reciclaje - Fill in the Gaps',
+                                                      3: 'Punto Limpio - Drag & Drop',
+                                                      4: 'Punto Limpio - Fill in the Gaps',
+                                                      5: 'Cartas - Juego de Memoria',
+                                                      6: 'Cuestionarios - Test sobre Reciclaje',
+                                                    }[juegoSeleccionado] ??
+                                                    'Juego seleccionado',
+                                                style: GoogleFonts.quicksand(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: const Color(
+                                                    0xFF285C32,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      items: const [
-                                        DropdownMenuItem(
-                                          value: 1,
-                                          child: Text(
-                                            'Reciclaje - Drag & Drop',
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 2,
-                                          child: Text(
-                                            'Reciclaje - Fill in the Gaps',
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 3,
-                                          child: Text(
-                                            'Punto Limpio - Drag & Drop',
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 4,
-                                          child: Text(
-                                            'Punto Limpio - Fill in the Gaps',
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 5,
-                                          child: Text(
-                                            'Cartas - Juego de Memoria',
-                                          ),
-                                        ),
-                                        DropdownMenuItem(
-                                          value: 6,
-                                          child: Text(
-                                            'Cuestionarios - Test sobre Reciclaje',
-                                          ),
-                                        ),
-                                      ],
-                                      onChanged: creandoSala
-                                          ? null
-                                          : (valor) {
-                                              if (valor == null) return;
-
-                                              setState(() {
-                                                juegoSeleccionado = valor;
-                                              });
-                                            },
-                                    ),
+                                    ],
 
                                     const SizedBox(height: 24),
                                     const Divider(color: Color(0xFFE8F0E6)),
@@ -421,9 +483,8 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
                                             },
                                             onSubmitted: (_) => _crearSala(),
                                             onTapOutside: (_) =>
-                                                FocusScope.of(
-                                                  context,
-                                                ).unfocus(),
+                                                FocusScope.of(context)
+                                                    .unfocus(),
                                           ),
                                         ),
                                       ],
