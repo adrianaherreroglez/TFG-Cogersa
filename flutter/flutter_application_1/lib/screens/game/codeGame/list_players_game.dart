@@ -127,7 +127,9 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
 
       if (!mounted) return;
 
-      // El anfitrión no juega.
+      // El anfitrión va a la clasificación.
+      // Los jugadores accederán al juego al detectar
+      // que el estado de la sala es "jugando"
       _irAClasificacion();
     } catch (e) {
       if (!mounted) return;
@@ -179,10 +181,8 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
   }
 
   int get _numeroJugadores {
-  return _miembros
-      .where((miembro) => miembro['es_anfitrion'] != true)
-      .length;
-}
+    return _miembros.where((miembro) => miembro['es_anfitrion'] != true).length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -875,4 +875,3 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
     );
   }
 }
- 

@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -56,10 +55,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
     _actualizar();
 
-    _timer = Timer.periodic(
-      const Duration(seconds: 3),
-      (_) => _actualizar(),
-    );
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _actualizar());
   }
 
   @override
@@ -134,9 +130,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         SnackBar(
           content: Text(
             'No se pudo cerrar la sala: $_error',
-            style: GoogleFonts.quicksand(
-              fontWeight: FontWeight.w600,
-            ),
+            style: GoogleFonts.quicksand(fontWeight: FontWeight.w600),
           ),
           backgroundColor: verdeOscuro,
           behavior: SnackBarBehavior.floating,
@@ -193,10 +187,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     }
   }
 
-  Widget _construirJugadorCard(
-    Map<String, dynamic> jugador,
-    int index,
-  ) {
+  Widget _construirJugadorCard(Map<String, dynamic> jugador, int index) {
     final terminado = jugador['terminado'] == true;
     final nombre = jugador['nombre']?.toString() ?? 'Jugador';
     final intentos = jugador['intentos'] ?? 0;
@@ -204,8 +195,8 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
     final detalle = _orden == 'puntos'
         ? '${jugador['puntos'] ?? 0} puntos'
         : terminado
-            ? _formatearTiempo(jugador['tiempo_segundos'])
-            : 'Jugando…';
+        ? _formatearTiempo(jugador['tiempo_segundos'])
+        : 'Jugando…';
 
     final esPrimero = index == 0;
     final colorPosicion = _colorPosicion(index);
@@ -217,9 +208,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: esPrimero
-              ? const Color(0xFFEBD58B)
-              : borde,
+          color: esPrimero ? const Color(0xFFEBD58B) : borde,
           width: esPrimero ? 1.6 : 1,
         ),
         boxShadow: [
@@ -231,10 +220,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 15,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
         child: Row(
           children: [
             // Posición en la clasificación.
@@ -280,9 +266,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                             ? Icons.check_circle_rounded
                             : Icons.hourglass_top_rounded,
                         size: 14,
-                        color: terminado
-                            ? verde
-                            : const Color(0xFFB88726),
+                        color: terminado ? verde : const Color(0xFFB88726),
                       ),
                       const SizedBox(width: 5),
                       Flexible(
@@ -309,10 +293,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
             // Puntuación o tiempo.
             Container(
               constraints: const BoxConstraints(minWidth: 75),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: esPrimero ? amarillo : verdeSuave,
                 borderRadius: BorderRadius.circular(13),
@@ -326,9 +307,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                     style: GoogleFonts.quicksand(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: esPrimero
-                          ? const Color(0xFF8A6500)
-                          : verdeOscuro,
+                      color: esPrimero ? const Color(0xFF8A6500) : verdeOscuro,
                     ),
                   ),
                   if (_orden == 'tiempo' && terminado)
@@ -369,11 +348,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                   color: verdeClaro,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.tune_rounded,
-                  color: verde,
-                  size: 21,
-                ),
+                child: const Icon(Icons.tune_rounded, color: verde, size: 21),
               ),
               const SizedBox(width: 11),
               Expanded(
@@ -417,21 +392,12 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: verde,
-                  width: 1.5,
-                ),
+                borderSide: const BorderSide(color: verde, width: 1.5),
               ),
             ),
-            icon: const Icon(
-              Icons.expand_more_rounded,
-              color: verde,
-            ),
+            icon: const Icon(Icons.expand_more_rounded, color: verde),
             items: const [
-              DropdownMenuItem(
-                value: 'puntos',
-                child: Text('Puntuación'),
-              ),
+              DropdownMenuItem(value: 'puntos', child: Text('Puntuación')),
               DropdownMenuItem(
                 value: 'tiempo',
                 child: Text('Tiempo de finalización'),
@@ -465,9 +431,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
             border: Border.all(color: borde),
           ),
           child: Icon(
-            cerrada
-                ? Icons.emoji_events_rounded
-                : Icons.leaderboard_rounded,
+            cerrada ? Icons.emoji_events_rounded : Icons.leaderboard_rounded,
             size: 42,
             color: verde,
           ),
@@ -488,17 +452,11 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
               ? 'Estos son los resultados finales de tu equipo.'
               : 'Cada punto cuenta. ¡Descubre quién va ganando!',
           textAlign: TextAlign.center,
-          style: GoogleFonts.quicksand(
-            fontSize: 14,
-            color: textoSecundario,
-          ),
+          style: GoogleFonts.quicksand(fontSize: 14, color: textoSecundario),
         ),
         const SizedBox(height: 17),
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: cerrada ? naranja : verdeClaro,
             borderRadius: BorderRadius.circular(30),
@@ -507,13 +465,9 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                cerrada
-                    ? Icons.flag_rounded
-                    : Icons.autorenew_rounded,
+                cerrada ? Icons.flag_rounded : Icons.autorenew_rounded,
                 size: 16,
-                color: cerrada
-                    ? const Color(0xFF98552D)
-                    : verde,
+                color: cerrada ? const Color(0xFF98552D) : verde,
               ),
               const SizedBox(width: 7),
               Text(
@@ -521,9 +475,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                 style: GoogleFonts.quicksand(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: cerrada
-                      ? const Color(0xFF98552D)
-                      : verdeOscuro,
+                  color: cerrada ? const Color(0xFF98552D) : verdeOscuro,
                 ),
               ),
             ],
@@ -536,10 +488,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
   Widget _construirEstadoVacio() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 22,
-        vertical: 32,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 32),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
@@ -574,10 +523,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
             'Cuando los jugadores completen la partida, '
             'sus resultados aparecerán aquí.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.quicksand(
-              fontSize: 13,
-              color: textoSecundario,
-            ),
+            style: GoogleFonts.quicksand(fontSize: 13, color: textoSecundario),
           ),
         ],
       ),
@@ -599,10 +545,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Color(0xFFB3261E),
-          ),
+          const Icon(Icons.error_outline_rounded, color: Color(0xFFB3261E)),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -620,10 +563,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
               setState(() => _cargando = true);
               _actualizar();
             },
-            icon: const Icon(
-              Icons.refresh_rounded,
-              color: Color(0xFF9D2520),
-            ),
+            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF9D2520)),
           ),
         ],
       ),
@@ -652,6 +592,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Botón para cerrar la sala.
           if (widget.esAnfitrion && !cerrada)
             SizedBox(
               height: 52,
@@ -668,7 +609,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                       )
                     : const Icon(Icons.lock_rounded),
                 label: Text(
-                  _cerrando ? 'Cerrando sala…' : 'Cerrar sala', 
+                  _cerrando ? 'Cerrando sala…' : 'Cerrar sala',
                   style: GoogleFonts.quicksand(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
@@ -685,18 +626,37 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                 ),
               ),
             ),
-          if (widget.esAnfitrion && !cerrada &&
-              widget.datosPartida != null)
+
+          // Cuando la sala está cerrada, mostrar volver a juegos
+          if (widget.esAnfitrion && cerrada)
+            TextButton.icon(
+              onPressed: () {
+                context.go('/listgame');
+              },
+              icon: const Icon(Icons.arrow_back_rounded),
+              label: Text(
+                'Volver a juegos',
+                style: GoogleFonts.quicksand(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: verde,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+              ),
+            ),
+
+          if (widget.esAnfitrion && !cerrada && widget.datosPartida != null)
             const SizedBox(height: 10),
+
+          // Botón de mi partida, si corresponde.
           if (widget.datosPartida != null)
             SizedBox(
               height: 50,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  context.go(
-                    '/mygame',
-                    extra: widget.datosPartida,
-                  );
+                  context.go('/mygame', extra: widget.datosPartida);
                 },
                 icon: const Icon(Icons.sports_esports_rounded),
                 label: Text(
@@ -708,9 +668,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: verde,
-                  side: const BorderSide(
-                    color: Color(0xFFB8DAB8),
-                  ),
+                  side: const BorderSide(color: Color(0xFFB8DAB8)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -754,12 +712,9 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                         ),
                         child: Center(
                           child: ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              maxWidth: 760,
-                            ),
+                            constraints: const BoxConstraints(maxWidth: 760),
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.stretch,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 _construirEncabezado(cerrada),
                                 const SizedBox(height: 25),
@@ -808,19 +763,16 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
                                               children: [
                                                 Text(
                                                   'Clasificación',
-                                                  style:
-                                                      GoogleFonts.quicksand(
+                                                  style: GoogleFonts.quicksand(
                                                     fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w800,
+                                                    fontWeight: FontWeight.w800,
                                                     color: verdeOscuro,
                                                   ),
                                                 ),
                                                 Text(
                                                   '${_jugadores.length} '
                                                   '${_jugadores.length == 1 ? 'jugador' : 'jugadores'} en el ranking',
-                                                  style:
-                                                      GoogleFonts.quicksand(
+                                                  style: GoogleFonts.quicksand(
                                                     fontSize: 12,
                                                     color: textoSecundario,
                                                   ),
@@ -837,9 +789,7 @@ class _ClasificacionPageState extends State<ClasificacionPage> {
 
                                       if (_cargando)
                                         const Padding(
-                                          padding: EdgeInsets.only(
-                                            bottom: 16,
-                                          ),
+                                          padding: EdgeInsets.only(bottom: 16),
                                           child: LinearProgressIndicator(
                                             color: verde,
                                             backgroundColor: verdeClaro,

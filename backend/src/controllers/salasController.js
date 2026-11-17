@@ -86,6 +86,7 @@ const crearSala = async (req, res) => {
   }
 };
 
+
 // Unirse a una sala utilizando su código.
 const unirseSala = async (req, res) => {
   const client = await pool.connect();
@@ -104,6 +105,8 @@ const unirseSala = async (req, res) => {
 
     await client.query('BEGIN');
 
+    // Bloqueamos la sala para evitar que dos usuarios
+    // ocupen simultáneamente la última plaza.
     const resultado = await client.query(
       `SELECT *
        FROM salas
@@ -122,16 +125,17 @@ const unirseSala = async (req, res) => {
 
     const sala = resultado.rows[0];
 
-    if (sala.estado !== 'esperando') {
+    // Se permite entrar mientras espera o está jugando.
+    // Una sala cerrada no admite nuevas entradas.
+    if (!['esperando', 'jugando'].includes(sala.estado)) {
       await client.query('ROLLBACK');
 
       return res.status(400).json({
-        message: 'Esta sala ya ha comenzado o está cerrada',
+        message: 'Esta sala está cerrada y ya no admite jugadores',
       });
     }
 
     // Comprobar si el usuario ya pertenece a la sala.
-    // Esto permite al anfitrión entrar con su propio código.
     const miembroExistente = await client.query(
       `SELECT id
        FROM sala_miembros
@@ -139,13 +143,14 @@ const unirseSala = async (req, res) => {
       [sala.id, usuarioId]
     );
 
+    // Si todavía no pertenece, comprobamos las plazas disponibles.
     if (miembroExistente.rows.length === 0) {
       const total = await client.query(
         `SELECT COUNT(*)::int AS total
-          FROM sala_miembros sm
-          INNER JOIN salas s ON s.id = sm.sala_id
-          WHERE sm.sala_id = $1
-          AND sm.usuario_id <> s.creador_id`,
+         FROM sala_miembros sm
+         INNER JOIN salas s ON s.id = sm.sala_id
+         WHERE sm.sala_id = $1
+         AND sm.usuario_id <> s.creador_id`,
         [sala.id]
       );
 
@@ -167,11 +172,13 @@ const unirseSala = async (req, res) => {
     await client.query('COMMIT');
 
     return res.status(200).json({
-      message: 'Te has unido a la sala',
+      message: sala.estado === 'jugando'
+        ? 'Te has unido a una partida en curso'
+        : 'Te has unido a la sala',
       sala,
     });
   } catch (error) {
-    await client.query('ROLLBACK');
+    await client.query('ROLLBACK').catch(() => { });
 
     console.error('Error al unirse a la sala:', error);
 
@@ -182,6 +189,7 @@ const unirseSala = async (req, res) => {
     client.release();
   }
 };
+
 
 
 // Obtener los datos de la sala y sus jugadores.
