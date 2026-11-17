@@ -142,8 +142,10 @@ const unirseSala = async (req, res) => {
     if (miembroExistente.rows.length === 0) {
       const total = await client.query(
         `SELECT COUNT(*)::int AS total
-         FROM sala_miembros
-         WHERE sala_id = $1`,
+          FROM sala_miembros sm
+          INNER JOIN salas s ON s.id = sm.sala_id
+          WHERE sm.sala_id = $1
+          AND sm.usuario_id <> s.creador_id`,
         [sala.id]
       );
 

@@ -178,6 +178,12 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
         .showSnackBar(const SnackBar(content: Text('Código copiado')));
   }
 
+  int get _numeroJugadores {
+  return _miembros
+      .where((miembro) => miembro['es_anfitrion'] != true)
+      .length;
+}
+
   @override
   Widget build(BuildContext context) {
     const verde = Color(0xFF298133);
@@ -501,7 +507,7 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                                       BorderRadius.circular(14),
                                                 ),
                                                 child: Text(
-                                                  '${_miembros.length}/$_maxJugadores',
+                                                  '$_numeroJugadores/$_maxJugadores',
                                                   style: GoogleFonts.quicksand(
                                                     fontSize: 19,
                                                     fontWeight: FontWeight.w800,
@@ -869,3 +875,4 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
     );
   }
 }
+ 
