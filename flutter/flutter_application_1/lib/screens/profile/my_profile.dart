@@ -21,7 +21,7 @@ class _MyProfileState extends State<MyProfile> {
 
   static const verde = Color(0xFF298133);
   static const marron = Color(0xFF644633);
-  static const fondo = Color(0xFFFAFDF4);
+  static const fondo = Color(0xFFF7F8F6);
   static const grisDeshabilitado = Color(0xFFE5E5E5);
 
   @override

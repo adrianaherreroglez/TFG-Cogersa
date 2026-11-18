@@ -12,11 +12,13 @@ import 'package:flutter_application_1/widgets/nav_bar.dart';
 class ListPlayersGame extends StatefulWidget {
   final int salaId;
   final String rutaJuego;
+  final String nombreJuego;
 
   const ListPlayersGame({
     super.key,
     required this.salaId,
     required this.rutaJuego,
+    required this.nombreJuego,
   });
 
   @override
@@ -249,6 +251,46 @@ class _ListPlayersGameState extends State<ListPlayersGame> {
                                         color: Colors.black54,
                                       ),
                                     ),
+
+                                    const SizedBox(height: 12),
+
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: verdeClaro,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: const Color(0xFFC8E6C9),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.sports_esports_rounded,
+                                            color: verde,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Flexible(
+                                            child: Text(
+                                              widget.nombreJuego,
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.quicksand(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w800,
+                                                color: verdeOscuro,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
                                     const SizedBox(height: 24),
 
                                     // TARJETA PRINCIPAL

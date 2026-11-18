@@ -136,9 +136,24 @@ class _CrearSalaPageState extends State<CrearSalaPage> {
 
     if (rutaJuego == null) return;
 
+    final nombresJuegos = <int, String>{
+      1: 'Reciclaje - Drag & Drop',
+      2: 'Reciclaje - Fill in the Gaps',
+      3: 'Punto Limpio - Drag & Drop',
+      4: 'Punto Limpio - Fill in the Gaps',
+      5: 'Cartas - Juego de Memoria',
+      6: 'Cuestionarios - Test sobre Reciclaje',
+    };
+
+    final nombreJuego = nombresJuegos[juegoSeleccionado];
+
     context.go(
       '/listPlayersGame',
-      extra: {'salaId': salaIdCreada!, 'rutaJuego': rutaJuego},
+      extra: {
+        'salaId': salaIdCreada!,
+        'rutaJuego': rutaJuego,
+        'nombreJuego': nombreJuego,
+      },
     );
   }
 
