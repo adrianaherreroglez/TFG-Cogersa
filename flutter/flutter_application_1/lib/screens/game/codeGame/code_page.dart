@@ -46,7 +46,10 @@ class _CodePageState extends State<CodePage> {
       // Todos acceden a la misma pantalla de espera.
       context.go(
         '/listPlayersGame',
-        extra: {'salaId': salaId, 'rutaJuego': widget.rutaJuego},
+        extra: {'salaId': salaId, 
+                'rutaJuego': widget.rutaJuego,
+                'nombreJuego': _obtenerNombreJuego(widget.rutaJuego),
+          },
       );
     } catch (e) {
       if (!mounted) return;
@@ -61,6 +64,19 @@ class _CodePageState extends State<CodePage> {
         });
       }
     }
+  }
+
+  String _obtenerNombreJuego(String ruta) {
+    const nombresJuegos = <String, String>{
+      '/first': 'Reciclaje - Drag & Drop',
+      '/fillGaps/first': 'Reciclaje - Fill in the Gaps',
+      '/puntolimpio/firstlevel': 'Punto Limpio - Drag & Drop',
+      '/puntolimpio/fillGaps/firstlevel': 'Punto Limpio - Fill in the Gaps',
+      '/juegoCartas': 'Cartas - Juego de Memoria',
+      '/juegoTest': 'Cuestionarios - Test sobre Reciclaje',
+    };
+
+    return nombresJuegos[ruta] ?? 'Juego seleccionado';
   }
 
   void _irACrearSala() {

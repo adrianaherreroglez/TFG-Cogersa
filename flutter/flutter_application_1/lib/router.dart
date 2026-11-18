@@ -78,7 +78,7 @@ final GoRouter router = GoRouter(
         return ListPlayersGame(
           salaId: datos['salaId'] as int,
           rutaJuego: datos['rutaJuego'] as String,
-          nombreJuego: datos['nombreJuego'] as String,
+          nombreJuego: datos['nombreJuego']?.toString() ?? 'Juego seleccionado',
         );
       },
     ),
